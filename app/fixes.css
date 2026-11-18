@@ -1,0 +1,214 @@
+﻿/* Powered By Vistech Force */
+/* ===== CrewOne fixes layer (loaded last): QA fixes, one set of sizes, mobile layout ===== */
+
+/* one set of base sizes (older layers disagreed: h1 22/24/26, wrap 1200/1240/1320) */
+h1{font-size:24px;font-weight:700;letter-spacing:-.025em;margin:0 0 16px}
+h2{font-size:16px;font-weight:650;letter-spacing:-.01em}
+.wrap{max-width:1320px;margin:0 auto;padding:26px 28px 96px}
+.card,.stat,.grid>*{min-width:0}
+
+/* form controls: same font as the rest, checkboxes are not full width */
+input,select,textarea,button{font-family:inherit}
+input[type="checkbox"],input[type="radio"]{width:auto !important;padding:0;margin:0;flex:none}
+label:has(>input[type="checkbox"]){display:flex;align-items:center;gap:8px}
+input[type="date"],input[type="month"],input[type="time"]{font-variant-numeric:tabular-nums}
+
+/* stat cards: six cards no longer leave one orphan on a second row */
+.grid:has(>.stat:nth-child(6):last-child){grid-template-columns:repeat(3,1fr)}
+@media(min-width:1180px){.grid:has(>.stat:nth-child(6):last-child){grid-template-columns:repeat(6,1fr)}}
+.grid>.stat .l{white-space:normal}
+
+/* present / absent lists */
+.att-grid>.mute{grid-column:1/-1}
+
+/* tables */
+.scroll th,.scroll td{padding:12px 10px}
+.scroll th{letter-spacing:.04em;white-space:nowrap;vertical-align:middle}
+th .bl-c{display:inline-flex;align-items:center;gap:6px;font-weight:inherit;line-height:1}
+.card>.row+.scroll,.card>h2+.scroll,.card>.row+table{margin-top:14px}
+
+/* break log rows: real columns */
+@media(min-width:641px){
+.bl-row{grid-template-columns:130px 150px 1fr 76px}
+.bl-r{text-align:right}
+.bl-d{text-align:right}
+}
+
+/* settings forms use the width instead of a 420px strip */
+form.grid[style*="max-width"]{max-width:none !important;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));align-items:end}
+form.grid[style*="max-width"]>.btn,form.grid[style*="max-width"]>button,form.grid[style*="max-width"]>.err,form.grid[style*="max-width"]>.okmsg{grid-column:1/-1;justify-self:start;width:auto !important;min-width:160px}
+form.grid[style*="max-width"]>.err,form.grid[style*="max-width"]>.okmsg{justify-self:stretch}
+
+/* create user: shift dropdown gets room so the text is not cut */
+@media(min-width:700px){.form>div:has(select[name="shift_type"]){grid-column:span 2}}
+
+/* chat floating button never covers content at the end of a page (extra bottom padding above) */
+.chat-fab{right:20px;bottom:20px}
+
+/* ===== mobile and tablet (top bar becomes: logo + actions, menu row below) ===== */
+@media(max-width:900px){
+body{padding-left:0}
+.top{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"logo who" "nav nav";align-items:center;gap:8px 10px;height:auto;padding:8px 12px 6px;flex-wrap:nowrap}
+.top .logo{grid-area:logo;padding:0;min-width:0}
+.top .logo img{height:28px;max-width:100%;width:auto;object-fit:contain;object-position:left center}
+.top .who{grid-area:who;display:flex;flex-wrap:nowrap;align-items:center;justify-content:flex-end;gap:6px;margin:0;padding:0;border:0;background:none}
+.top .who-t,.top .cw,.top .cw-d,.top .cw-w{display:none !important}
+.top .who>.btn{padding:6px 9px;font-size:11px;white-space:nowrap}
+.top .who .avatar{width:32px !important;height:32px !important}
+.top .theme-btn,.top .bell-btn,.top .logout-btn{width:34px;height:34px}
+.top nav{grid-area:nav;display:flex;flex-wrap:nowrap;align-items:center;gap:4px;overflow-x:auto;overflow-y:hidden;margin:0 -12px;padding:2px 12px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch;flex:none;min-width:0}
+.top nav::-webkit-scrollbar{display:none}
+.top nav a,.top nav .more-btn{flex:none;display:inline-flex;align-items:center;gap:6px;padding:7px 13px;font-size:13px;border-radius:99px;white-space:nowrap}
+.top .more{position:static;flex:none}
+.top .more-pop{position:absolute;left:12px;right:12px;top:100%;min-width:0;margin-top:2px;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh2);padding:6px;z-index:70}
+.top nav .more-pop a{color:var(--ink);border-radius:8px;padding:10px 12px;display:block}
+.top .bell{position:static}
+.bell-pop{position:absolute;left:12px;right:12px;top:100%;width:auto;max-width:none;margin-top:2px}
+
+.wrap{margin:0 auto;padding:16px 14px 90px}
+h1{font-size:21px;margin-bottom:12px}
+.card{padding:16px;border-radius:14px;margin-bottom:14px}
+.stat{padding:12px 14px}
+.grid:has(>.stat:nth-child(6):last-child),.g4{grid-template-columns:repeat(2,1fr)}
+.stat .n{font-size:24px}
+.g2{grid-template-columns:1fr}
+th,td{padding:10px 9px}
+.form{grid-template-columns:1fr}
+.chat-fab{right:12px;bottom:12px}
+.chat-fab-btn{padding:10px 16px;font-size:13px}
+.chat-panel{width:min(320px,calc(100vw - 24px))}
+.live-toasts{left:10px;right:10px;bottom:70px}
+.row{gap:8px}
+.card>.row:first-child{align-items:flex-start}
+.att-grid{grid-template-columns:repeat(auto-fill,minmax(104px,1fr))}
+.bigcal .day{min-height:58px;padding:3px}
+.bigcal .cev,.cal-day{font-size:9.5px}
+.bigcal .cev{padding:1px 3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.btn{min-height:38px}
+.lgx .login{margin:6vh auto 0}
+}
+
+@media(max-width:420px){
+.top .who>.btn{padding:5px 7px;font-size:10.5px}
+.top .who{gap:5px}
+.top .theme-btn,.top .bell-btn,.top .logout-btn{width:32px;height:32px}
+.bl-cats{grid-template-columns:1fr 1fr}
+}
+
+/* header action pills match the dark top bar (mobile) */
+@media(max-width:900px){
+.top .who>.btn{background:rgba(255,255,255,.08);color:#e2e8f0;border:1px solid #475569;box-shadow:none}
+}
+@media(max-width:900px){
+.row>.spacer{display:none}
+input[type="month"],input[type="date"],input[type="time"]{width:auto !important;min-width:176px}
+form.row input[type="month"]{flex:1}
+}
+
+/* sidebar profile card (desktop): Alerts on its own row, three equal icon buttons below */
+@media(min-width:901px){
+.top .who{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px}
+.top .who>.btn{order:4;flex:1 1 100%;width:100%;min-height:36px;padding:7px 10px;font-size:12.5px;font-weight:600}
+.top .who>.bell{order:5;flex:1 1 0;min-width:0;display:flex}
+.top .who>.theme-btn,.top .who>.logout-btn{order:5;flex:1 1 0;min-width:0}
+.top .who .bell-btn,.top .who .theme-btn,.top .who .logout-btn{width:100%;height:36px}
+.top .who .bell .bell-btn{width:100%}
+}
+
+/* sidebar clock chip: time and weather on one row, date under the time, never wider than the card */
+@media(min-width:901px){
+.top .who>.cw{box-sizing:border-box;width:100%;min-width:0;max-width:100%;flex-wrap:wrap;row-gap:1px;column-gap:8px;padding:8px 12px;overflow:hidden;white-space:normal}
+.top .who>.cw .cw-t{order:1;flex:1 1 auto;font-size:15px}
+.top .who>.cw .cw-w{order:2;flex:none;margin-left:auto;white-space:nowrap}
+.top .who>.cw .cw-d{order:3;flex:1 0 100%;font-size:11.5px;line-height:1.2}
+.top .who>.who-t{flex:1 1 0;min-width:0}
+.top .who>.who-t,.top .who>.who-t small{overflow:hidden;text-overflow:ellipsis}
+}
+
+/* missed OUT prompt (user dashboard) */
+.mo-box{border:1px solid var(--line);border-left:4px solid var(--warn);border-radius:12px;padding:14px 16px;background:var(--card)}
+.mo-t{font-weight:700;font-size:15px}
+
+/* Release 11: clean Present / Absent lists on the admin dashboard */
+.pp-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:10px 14px;max-height:520px;overflow:auto}
+.pp-list>.mute{grid-column:1/-1}
+.pp-row{display:flex;align-items:center;gap:11px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;min-width:0}
+.pp-av{position:relative;display:inline-block;width:40px;height:40px;flex:none}
+.pp-av .avatar{width:40px;height:40px;border-radius:50%;object-fit:cover;display:flex;align-items:center;justify-content:center}
+.pp-dot{position:absolute;right:-1px;bottom:-1px;width:12px;height:12px;border-radius:50%;border:2px solid var(--card,#fff)}
+.pp-dot.ok{background:#16a34a}
+.pp-dot.bad{background:#dc2626}
+.pp-txt{min-width:0}
+.pp-name{font-weight:600;font-size:13.5px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pp-sub{font-size:12px;color:var(--mute);line-height:1.3}
+.pp-late{font-size:12px;font-weight:600;color:#dc2626;line-height:1.3}
+
+/* On break now strip (admin dashboard) */
+.dot-warn{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:6px;background:#d97706}
+.pp-dot.warn{background:#d97706}
+.bk-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px 14px}
+.bk-list>.mute{grid-column:1/-1}
+.bk-row{justify-content:flex-start}
+.bk-row .pp-txt{flex:1}
+.bk-reason{display:flex;align-items:center;gap:5px;font-size:12px;color:var(--mute);line-height:1.3}
+.bk-time{margin-left:auto;font-variant-numeric:tabular-nums;font-weight:700;font-size:15px;color:#d97706;white-space:nowrap}
+
+/* Finance page (admin) */
+.fin-bar{display:flex;align-items:center;gap:12px;flex-wrap:wrap}
+.fin-nav{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.fin-month{font-size:18px;min-width:150px;text-align:center}
+.fin-off{opacity:.4;pointer-events:none}
+.fin-tiles{display:grid;grid-template-columns:repeat(5,1fr);gap:14px;margin-bottom:18px}
+.fin-tiles .stat .n{font-size:22px}
+.fin-grand{background:linear-gradient(135deg,#4f46e5,#6d5df0);color:#fff;border-color:transparent}
+.fin-grand .n,.fin-grand .l{color:#fff}
+.fin-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.9fr);gap:18px;margin-bottom:18px;align-items:start}
+.fin-t td,.fin-t th{padding:6px 8px}
+.fin-t .r{text-align:right}
+.fin-in{width:100%;min-width:0;border:1px solid transparent;background:transparent;border-radius:8px;padding:7px 8px;font:inherit;color:inherit}
+.fin-in:hover{border-color:var(--line)}
+.fin-in:focus{border-color:#6366f1;background:var(--card,#fff);outline:none;box-shadow:0 0 0 3px rgba(99,102,241,.15)}
+.fin-num{text-align:right;font-variant-numeric:tabular-nums}
+.fin-dim{color:var(--mute)}
+.fin-calc{font-variant-numeric:tabular-nums;font-weight:600;padding-right:14px}
+.fin-total td{font-weight:700;border-top:2px solid var(--ink,#111827);padding-top:10px;padding-bottom:10px;font-variant-numeric:tabular-nums}
+.fin-zero td{background:rgba(250,204,21,.16)}
+.fin-x{border:0;background:transparent;color:var(--mute);font-size:20px;line-height:1;cursor:pointer;border-radius:6px;padding:2px 9px}
+.fin-x:hover{background:rgba(220,38,38,.1);color:#dc2626}
+.fin-ask{display:inline-flex;gap:6px}
+.btn.bad{background:#dc2626;border-color:#dc2626;color:#fff}
+.fin-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+@media (max-width:1100px){.fin-two{grid-template-columns:1fr}.fin-tiles{grid-template-columns:repeat(2,1fr)}.fin-grand{grid-column:1/-1}}
+.fin-t td:last-child{white-space:nowrap}
+.fin-two .fin-t input[type=date]{padding-left:4px;padding-right:2px;font-size:13px}
+[data-theme="dark"] .fin-in{background:transparent;border-color:transparent}
+[data-theme="dark"] .fin-in:hover{border-color:var(--line)}
+[data-theme="dark"] .fin-in:focus{background:var(--card);border-color:#818cf8}
+.fin-in[type=date]{color-scheme:light}
+[data-theme="dark"] .fin-in[type=date]{color-scheme:dark}
+@media (max-width:900px){.fin-w1{min-width:720px}.fin-w2{min-width:620px}}
+.fin-w1 th:nth-child(2){min-width:160px}
+.fin-w2 th:nth-child(2){min-width:150px}
+
+/* Finance: paid status and ledger */
+.fin-pay{border:1px solid var(--line);background:transparent;color:var(--mute);border-radius:99px;padding:4px 12px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap}
+.fin-pay:hover{border-color:#16a34a;color:#16a34a}
+.fin-pay.on{background:rgba(22,163,74,.14);border-color:rgba(22,163,74,.5);color:#15803d}
+[data-theme="dark"] .fin-pay.on{color:#4ade80}
+.fin-paidbar{padding:14px 18px}
+.fin-pb-row{display:flex;gap:22px;flex-wrap:wrap;align-items:center;margin-bottom:8px;font-variant-numeric:tabular-nums}
+.fin-pb{height:8px;border-radius:99px;background:rgba(148,163,184,.25);overflow:hidden}
+.fin-pb i{display:block;height:100%;background:#16a34a;border-radius:99px}
+@media (max-width:900px){.fin-w1{min-width:820px}.fin-w2{min-width:700px}}
+.fin-pay.static{cursor:default;pointer-events:none;padding:2px 10px}
+.lg-filter{padding:16px 18px}
+.lg-presets{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
+.lg-form{display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end}
+.lg-form label{display:flex;flex-direction:column;gap:4px;font-size:12px;color:var(--mute);min-width:150px}
+.lg-form label input,.lg-form label select{min-width:150px}
+.lg-tiles{grid-template-columns:repeat(3,1fr)}
+.lg-t th,.lg-t td{padding:9px 10px}
+@media (max-width:900px){.lg-t{min-width:640px}.lg-t2{min-width:760px}.lg-tiles{grid-template-columns:1fr 1fr}.lg-tiles .stat:first-child{grid-column:1/-1}.lg-form label{flex:1 1 140px}}
+@media (max-width:900px){.fin-w3{min-width:430px}.fin-w3 th:first-child{min-width:150px}.lg-form label{flex:1 1 100%}.lg-form label input,.lg-form label select{width:100%;min-width:0}}
+@media (min-width:1101px){.fin-two{grid-template-columns:minmax(0,1.05fr) minmax(0,1.25fr)}.fin-w3 th:first-child{min-width:170px}}
+@media (min-width:1101px){.fin-two{grid-template-columns:minmax(0,1fr) minmax(0,1.5fr)}.fin-w2 th:nth-child(3){min-width:130px}.fin-w2 th:nth-child(2){min-width:120px}.fin-t td,.fin-t th{padding:6px 6px}}

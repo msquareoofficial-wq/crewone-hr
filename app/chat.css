@@ -1,0 +1,21 @@
+﻿/* Powered By Vistech Force */
+.nav-badge{display:inline-block;margin-left:6px;min-width:18px;padding:1px 6px;border-radius:99px;background:#ef4444;color:#fff;font-size:11px;font-weight:700;text-align:center;line-height:16px}
+.chat-fab{position:fixed;right:20px;bottom:20px;z-index:60;display:flex;flex-direction:column;align-items:flex-end;gap:10px}
+.chat-fab-btn{position:relative;border:0;border-radius:99px;background:var(--brand);color:#fff;font-weight:700;padding:12px 20px;cursor:pointer;box-shadow:0 4px 14px rgba(0,0,0,.25);font-size:14px}
+.chat-fab-btn .nav-badge{position:absolute;top:-6px;right:-4px;margin:0}
+.chat-panel{width:320px;max-height:420px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 28px rgba(0,0,0,.22)}
+.chat-panel .h{display:flex;align-items:center;gap:8px;padding:10px 14px;border-bottom:1px solid var(--line);font-weight:700}
+.chat-panel a.it{display:flex;gap:10px;align-items:center;padding:10px 14px;border-bottom:1px solid var(--line);color:var(--ink)}
+.chat-panel a.it:hover{background:#f5f6fa}
+.chat-panel .meta{flex:1;min-width:0}
+.chat-panel .t{font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-panel .s{color:var(--mute);font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.chat-toast{display:block;width:300px;background:#111827;color:#fff;border-radius:12px;padding:10px 14px;box-shadow:0 8px 28px rgba(0,0,0,.35)}
+.chat-toast b{display:block;font-size:13px}
+.chat-toast span{display:block;font-size:12px;color:#cbd5e1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mention{background:#fef3c7;color:#92400e;border-radius:4px;padding:0 3px;font-weight:600}
+.msg.mentioned{border-color:#f59e0b;box-shadow:0 0 0 2px #fde68a}
+.mention-list{position:absolute;left:0;bottom:calc(100% + 6px);width:260px;max-height:220px;overflow:auto;background:#fff;border:1px solid var(--line);border-radius:10px;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:20}
+.mention-list div{padding:8px 12px;cursor:pointer}
+.mention-list div:hover{background:#eef2ff}
+.live-toasts{position:fixed;left:18px;bottom:18px;z-index:70;display:flex;flex-direction:column;gap:8px}
