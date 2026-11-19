@@ -121,6 +121,7 @@ form.row input[type="month"]{flex:1}
 .top .who>.cw .cw-t{order:1;flex:1 1 auto;font-size:15px}
 .top .who>.cw .cw-w{order:2;flex:none;margin-left:auto;white-space:nowrap}
 .top .who>.cw .cw-d{order:3;flex:1 0 100%;font-size:11.5px;line-height:1.2}
+.top .who>.cw .cw-khi{opacity:.7;font-size:11px}
 .top .who>.who-t{flex:1 1 0;min-width:0}
 .top .who>.who-t,.top .who>.who-t small{overflow:hidden;text-overflow:ellipsis}
 }

@@ -14,7 +14,7 @@ import MyProfile from "./MyProfile";
 import ProjectsNavLink from "./ProjectsNav";
 import { LiveNavLink, LiveToasts, NotifBell } from "./LiveTabs";
 import { BRAND, getBrandLogos } from "@/lib/brand";
-import { getNavLabels } from "@/lib/db";
+import { getNavLabels, getSettings } from "@/lib/db";
 
 // online: true = green dot (active), false = red dot (inactive), undefined = no dot
 export function Avatar({ src, name, size = 34, online }: { src?: string | null; name: string; size?: number; online?: boolean }) {
@@ -29,6 +29,7 @@ export default async function Shell({ user, children }: { user: SessionUser; chi
   const admin = user.role === "admin";
   const logos = await getBrandLogos();
   const labels = await getNavLabels();
+  const s = await getSettings();
   return (
     <>
       <header className="top">
@@ -76,7 +77,7 @@ export default async function Shell({ user, children }: { user: SessionUser; chi
         <div className="who">
           <MyProfile name={user.name} picture={user.picture} status={user.status_text} />
           <span className="who-t">{user.name} ({user.emp_id}){(user.designation || user.status_text) && <small>{[user.designation, user.status_text].filter(Boolean).join(" " + String.fromCharCode(183) + " ")}</small>}</span>
-          <ClockWeather />
+          <ClockWeather timezone={s.timezone} />
           <NotifBell />
           <PushToggle />
           <ThemeToggle />

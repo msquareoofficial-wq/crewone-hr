@@ -2,12 +2,8 @@
 "use client";
 import { useEffect, useState } from "react";
 
-// Change these three lines to move the widget to another city.
-const CITY = "Karachi";
 const LAT = 24.8607;
 const LON = 67.0011;
-const TZ = "Asia/Karachi";
-const TZ_LABEL = "PKT";
 const CACHE_KEY = "cw_weather_v1";
 const CACHE_MS = 20 * 60 * 1000;
 const cp = (...n: number[]) => String.fromCodePoint(...n);
@@ -31,7 +27,14 @@ function fmt(d: Date, tz: string, opts: Intl.DateTimeFormatOptions) {
   try { return new Intl.DateTimeFormat("en-US", { timeZone: tz, ...opts }).format(d); } catch { return ""; }
 }
 
-export default function ClockWeather() {
+function tzLabel(tz: string, d: Date): string {
+  try {
+    const parts = new Intl.DateTimeFormat("en-US", { timeZone: tz, timeZoneName: "short" }).formatToParts(d);
+    return parts.find((p) => p.type === "timeZoneName")?.value || tz;
+  } catch { return tz; }
+}
+
+export default function ClockWeather({ timezone = "Asia/Karachi" }: { timezone?: string }) {
   const [now, setNow] = useState<Date | null>(null);
   const [wx, setWx] = useState<Wx | null>(null);
 
@@ -71,17 +74,22 @@ export default function ClockWeather() {
 
   if (!now) return <div className="cw" aria-hidden="true" />;
 
-  const time = fmt(now, TZ, { hour: "2-digit", minute: "2-digit", hour12: true });
-  const date = fmt(now, TZ, { weekday: "short", day: "numeric", month: "short" });
-  const full = fmt(now, TZ, { weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true });
-  const us = fmt(now, "America/New_York", { hour: "2-digit", minute: "2-digit", hour12: true });
+  const isKarachi = timezone === "Asia/Karachi";
+  const label = tzLabel(timezone, now);
+  const time = fmt(now, timezone, { hour: "2-digit", minute: "2-digit", hour12: true });
+  const date = fmt(now, timezone, { weekday: "short", day: "numeric", month: "short" });
+  const full = fmt(now, timezone, { weekday: "long", day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit", second: "2-digit", hour12: true });
+
+  // secondary: show Karachi when primary is not Karachi
+  const khiTime = !isKarachi ? fmt(now, "Asia/Karachi", { hour: "2-digit", minute: "2-digit", hour12: true }) : null;
+
   const d = wx ? describe(wx.code, wx.day) : null;
-  const title = full + " (" + TZ_LABEL + ") " + NL + "US Eastern: " + us + (wx && d ? NL + CITY + ": " + wx.t + cp(0xB0) + "C, " + d.text : "");
+  const title = full + " (" + label + ")" + (khiTime ? NL + "Karachi: " + khiTime : "") + (wx && d ? NL + "Karachi: " + wx.t + cp(0xB0) + "C, " + d.text : "");
 
   return (
     <div className="cw" title={title}>
       <span className="cw-t">{time}</span>
-      <span className="cw-d">{date}</span>
+      <span className="cw-d">{date}{khiTime && <span className="cw-khi"> · KHI {khiTime}</span>}</span>
       {wx && d && (
         <span className="cw-w"><span className="cw-i">{d.icon}</span>{wx.t}{cp(0xB0)}C</span>
       )}

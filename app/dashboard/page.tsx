@@ -40,6 +40,13 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
   const hhmm = (m: number) => String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0");
   const missHHMM = miss ? (miss.sign_out ? hhmm(localParts(new Date(miss.sign_out), s.timezone).minutes) : miss.shift_end) : "";
   const att = await q1<any>("SELECT * FROM attendance WHERE user_id=$1 AND work_date=$2", [user.id, today]);
+  // Night shift: open record from a previous day (not auto-closed)
+  const nightAtt = !att ? await q1<any>(
+    "SELECT * FROM attendance WHERE user_id=$1 AND sign_out IS NULL AND auto_out=FALSE AND work_date < $2 ORDER BY work_date DESC LIMIT 1",
+    [user.id, today]
+  ) : null;
+  // Active record = today's OR night shift from previous day
+  const activeAtt = att ?? nightAtt;
   const openBreak = await q1<any>("SELECT start_at, category FROM breaks WHERE user_id=$1 AND end_at IS NULL ORDER BY id DESC LIMIT 1", [user.id]);
   const openTask = await q1<any>("SELECT title, start_at FROM tasks WHERE user_id=$1 AND end_at IS NULL ORDER BY id DESC LIMIT 1", [user.id]);
   const todayTasks = await q<any>(
@@ -61,6 +68,11 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
   const used = await leaveUsed(user.id, today.slice(0, 4));
   const left = Math.max(0, s.leave_quota - used);
   const corrs = await q<any>("SELECT id, work_date, req_in, req_out, status, admin_note FROM attendance_corrections WHERE user_id=$1 ORDER BY created_at DESC LIMIT 10", [user.id]);
+  // Punches: today's, or if night shift active, the night shift date's punches
+  const punchDate = activeAtt?.work_date ?? today;
+  const todayPunches = await q<any>("SELECT punch_type, punched_at FROM attendance_punches WHERE user_id=$1 AND work_date=$2 ORDER BY id ASC", [user.id, punchDate]);
+  // Only show missed-out prompt if there's no active night shift in progress
+  const showMiss = miss && !att && !nightAtt;
 
   return (
     <Shell user={user}>
@@ -70,21 +82,22 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
         <div className="card">
           <h2>Today's attendance ({fmtDate(today)})</h2>
           <div className="row">
-            <div><div className="mute">Sign in</div><div className="big">{fmtTime(att?.sign_in, s.timezone)}</div></div>
-            <div><div className="mute">Sign out</div><div className="big">{fmtTime(att?.sign_out, s.timezone)}</div></div>
+            <div><div className="mute">Sign in</div><div className="big">{fmtTime(activeAtt?.sign_in, s.timezone)}</div></div>
+            <div><div className="mute">Sign out</div><div className="big">{fmtTime(activeAtt?.sign_out, s.timezone)}</div></div>
             <div className="spacer" />
             <div>
-              {!att ? <span className="badge b-mute">Not marked</span> : att.late ? <span className="badge b-bad">Late by {att.late_minutes} min</span> : <span className="badge b-ok">On time</span>}
-              <div className="mute" style={{ marginTop: 6 }}>IP: {att?.ip ?? "-"}</div>
+              {!activeAtt ? <span className="badge b-mute">Not marked</span> : activeAtt.late ? <span className="badge b-bad">Late by {activeAtt.late_minutes} min</span> : <span className="badge b-ok">On time</span>}
+              {nightAtt && <div className="mute" style={{ marginTop: 4 }}>Night shift from {fmtDate(nightAtt.work_date)}</div>}
+              <div className="mute" style={{ marginTop: 6 }}>IP: {activeAtt?.ip ?? "-"}</div>
               <div className="mute">Shift: {fmt12(user.shift_start)} to {fmt12(user.shift_end)}</div>
             </div>
           </div>
-          <div style={{ marginTop: 14 }}>{miss && !att ? <MissedOutPrompt workDate={miss.work_date} dateLabel={fmtDate(miss.work_date)} autoTime={fmt12(missHHMM)} autoHHMM={missHHMM} /> : <AttendanceButtons state={!att ? "none" : att.sign_out ? "out" : "in"} canUndo={!!att?.sign_out && Date.now() - new Date(att.sign_out).getTime() <= 10 * 60 * 1000} />}</div>
+          <div style={{ marginTop: 14 }}>{showMiss ? <MissedOutPrompt workDate={miss.work_date} dateLabel={fmtDate(miss.work_date)} autoTime={fmt12(missHHMM)} autoHHMM={missHHMM} /> : <AttendanceButtons state={!activeAtt ? "none" : activeAtt.sign_out ? "out" : "in"} canUndo={!!att?.sign_out && Date.now() - new Date(att.sign_out).getTime() <= 10 * 60 * 1000} punches={todayPunches.map((p: any) => ({ type: p.punch_type, at: p.punched_at }))} tz={s.timezone} />}</div>
         </div>
-        {att && !att.sign_out ? (
+        {activeAtt && !activeAtt.sign_out ? (
           <UserPanel onBreak={!!openBreak} breakSince={openBreak?.start_at ?? null} breakCat={openBreak?.category ?? null} task={openTask ? { title: openTask.title, since: openTask.start_at } : null} />
         ) : (
-          <div className="card"><h2>Task and Break</h2><p className="mute">{att ? "You are OUT for today." : "Click IN first to start tasks and breaks."}</p></div>
+          <div className="card"><h2>Task and Break</h2><p className="mute">{activeAtt ? "You are OUT for today." : "Click IN first to start tasks and breaks."}</p></div>
         )}
       </div>
 
