@@ -28,7 +28,7 @@ export async function getSettings(): Promise<Settings> {
   const rows = await q<{ key: string; value: string }>("SELECT key, value FROM settings");
   const m = Object.fromEntries(rows.map((r) => [r.key, r.value]));
   return {
-    timezone: m.timezone || "Asia/Karachi",
+    timezone: m.timezone || "America/New_York",
     grace_minutes: Number(m.grace_minutes ?? 30),
     lates_per_off: Number(m.lates_per_off ?? 3),
     leave_quota: Number(m.leave_quota ?? 12),

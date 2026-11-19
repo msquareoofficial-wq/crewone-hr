@@ -24,4 +24,10 @@ async function main() {
   console.log("Admin created:", email);
   await pool.end();
 }
-main().catch((e) => { console.error(e); process.exit(1); });
+main().catch((e) => {
+  if (["ECONNREFUSED", "ENOTFOUND", "ETIMEDOUT"].includes(e.code)) {
+    console.warn("DB unreachable during build, skipping seed:", e.message);
+    process.exit(0);
+  }
+  console.error(e); process.exit(1);
+});

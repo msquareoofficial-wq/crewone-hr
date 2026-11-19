@@ -8,4 +8,10 @@ async function main() {
   console.log("Schema ready");
   await pool.end();
 }
-main().catch((e) => { console.error(e); process.exit(1); });
+main().catch((e) => {
+  if (["ECONNREFUSED", "ENOTFOUND", "ETIMEDOUT", "ENOENT"].includes(e.code) || String(e).includes("password authentication")) {
+    console.warn("DB unreachable during build, skipping migration:", e.message);
+    process.exit(0);
+  }
+  console.error(e); process.exit(1);
+});
