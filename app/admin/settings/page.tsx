@@ -1,6 +1,6 @@
 ﻿// Powered By Vistech Force
 import { requireAdminPage } from "@/lib/auth";
-import { getSettings } from "@/lib/db";
+import { getSettings, getNavLabels } from "@/lib/db";
 import { getBrandLogos } from "@/lib/brand";
 import Shell from "@/components/Shell";
 import SettingsForm from "./SettingsForm";
@@ -9,15 +9,18 @@ import AdminPassword from "./AdminPassword";
 import AdminPicture from "./AdminPicture";
 import AdminName from "./AdminName";
 import ResetData from "./ResetData";
+import NavLabelsForm from "./NavLabelsForm";
 
 export default async function SettingsPage() {
   const admin = await requireAdminPage();
   const s = await getSettings();
   const logos = await getBrandLogos();
+  const navLabels = await getNavLabels();
   return (
     <Shell user={admin}>
       <h1>Settings</h1>
       <div className="card"><h2>Attendance rules</h2><SettingsForm s={s} /></div>
+      <div className="card"><h2>Navigation tab names</h2><p className="mute" style={{ marginTop: 0 }}>Rename the navigation tabs to match your company&apos;s language. Leave blank to use the default name.</p><NavLabelsForm labels={navLabels} /></div>
       <div className="card"><h2>Company logo</h2><BrandingForm light={logos.light} dark={logos.dark} customLight={logos.customLight} customDark={logos.customDark} /></div>
       <div className="card"><h2>My name and designation</h2><AdminName name={admin.name} designation={admin.designation} /></div>
       <div className="card"><h2>My profile picture (DP)</h2><AdminPicture picture={admin.picture} /></div>

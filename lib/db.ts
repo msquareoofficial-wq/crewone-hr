@@ -34,3 +34,17 @@ export async function getSettings(): Promise<Settings> {
     leave_quota: Number(m.leave_quota ?? 12),
   };
 }
+
+export const NAV_KEYS = ["admindash", "users", "notifications", "leaves", "calendar", "corrections", "reports", "performance", "payroll", "finance", "activity", "settings"] as const;
+export type NavKey = (typeof NAV_KEYS)[number];
+export const DEFAULT_NAV_LABELS: Record<NavKey, string> = {
+  admindash: "Dashboard", users: "Users", notifications: "Notifications",
+  leaves: "Leaves", calendar: "Calendar", corrections: "Corrections",
+  reports: "Reports", performance: "Performance", payroll: "Payroll",
+  finance: "Finance", activity: "Activity", settings: "Settings",
+};
+export async function getNavLabels(): Promise<Record<NavKey, string>> {
+  const rows = await q<{ key: string; value: string }>("SELECT key, value FROM settings WHERE key LIKE 'nav_%'");
+  const m = Object.fromEntries(rows.map((r) => [r.key.slice(4), r.value]));
+  return Object.fromEntries(NAV_KEYS.map((k) => [k, m[k]?.trim() || DEFAULT_NAV_LABELS[k]])) as Record<NavKey, string>;
+}

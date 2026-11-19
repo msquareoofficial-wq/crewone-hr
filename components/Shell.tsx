@@ -14,6 +14,7 @@ import MyProfile from "./MyProfile";
 import ProjectsNavLink from "./ProjectsNav";
 import { LiveNavLink, LiveToasts, NotifBell } from "./LiveTabs";
 import { BRAND, getBrandLogos } from "@/lib/brand";
+import { getNavLabels } from "@/lib/db";
 
 // online: true = green dot (active), false = red dot (inactive), undefined = no dot
 export function Avatar({ src, name, size = 34, online }: { src?: string | null; name: string; size?: number; online?: boolean }) {
@@ -27,6 +28,7 @@ export function Avatar({ src, name, size = 34, online }: { src?: string | null; 
 export default async function Shell({ user, children }: { user: SessionUser; children: React.ReactNode }) {
   const admin = user.role === "admin";
   const logos = await getBrandLogos();
+  const labels = await getNavLabels();
   return (
     <>
       <header className="top">
@@ -39,22 +41,22 @@ export default async function Shell({ user, children }: { user: SessionUser; chi
         <nav>
           {admin ? (
             <>
-              <LiveNavLink tab="admindash" href="/admin" label="Dashboard" exact />
-              <LiveNavLink tab="users" href="/admin/users" label="Users" />
-              <LiveNavLink tab="notifications" href="/admin/notifications" label="Notifications" />
-              <LiveNavLink tab="leaves" href="/admin/leaves" label="Leaves" />
-              <LiveNavLink tab="calendar" href="/calendar" label="Calendar" />
+              <LiveNavLink tab="admindash" href="/admin" label={labels.admindash} exact />
+              <LiveNavLink tab="users" href="/admin/users" label={labels.users} />
+              <LiveNavLink tab="notifications" href="/admin/notifications" label={labels.notifications} />
+              <LiveNavLink tab="leaves" href="/admin/leaves" label={labels.leaves} />
+              <LiveNavLink tab="calendar" href="/calendar" label={labels.calendar} />
               <ProjectsNavLink />
               <ChatNavLink />
               <NavMore items={[
-                { href: "/admin/corrections", label: "Corrections" },
-                { href: "/admin/reports", label: "Reports" },
-                { href: "/admin/performance", label: "Performance" },
-                { href: "/admin/payroll", label: "Payroll" },
-                { href: "/admin/finance", label: "Finance" },
-                { href: "/admin/activity", label: "Activity" },
-                { href: "/admin/settings", label: "Settings" },
+                { href: "/admin/corrections", label: labels.corrections },
+                { href: "/admin/reports", label: labels.reports },
+                { href: "/admin/performance", label: labels.performance },
+                { href: "/admin/payroll", label: labels.payroll },
+                { href: "/admin/finance", label: labels.finance },
+                { href: "/admin/activity", label: labels.activity },
               ]} />
+              <LiveNavLink tab="settings" href="/admin/settings" label={labels.settings} />
             </>
           ) : (
             <>
