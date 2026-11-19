@@ -1,6 +1,6 @@
 ﻿// Powered By Vistech Force
 "use client";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -78,13 +78,13 @@ function useLive() {
 
 const cnt = (n: number) => (n > 99 ? "99+" : String(n));
 
-export function LiveNavLink({ tab, href, label, exact }: { tab: string; href: string; label: string; exact?: boolean }) {
+export function LiveNavLink({ tab, href, label, exact, icon }: { tab: string; href: string; label: string; exact?: boolean; icon?: React.ReactNode }) {
   const s = useLive();
   const path = usePathname();
   const n = s.tabs[tab] || 0;
   const on = !!path && (exact ? path === href : path.startsWith(href));
   useEffect(() => { if (on && n > 0 && MARKABLE.includes(tab)) markTab(tab); }, [on, n, tab]);
-  return <Link href={href}>{label}{n > 0 && <span className="nav-badge">{cnt(n)}</span>}</Link>;
+  return <Link href={href}>{icon}{label}{n > 0 && <span className="nav-badge">{cnt(n)}</span>}</Link>;
 }
 
 export function LiveToasts() {
