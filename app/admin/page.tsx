@@ -21,7 +21,8 @@ export default async function AdminHome() {
   const missed = await adminMissedOut(date);
   const hh = (m: number) => String(Math.floor(m / 60)).padStart(2, "0") + ":" + String(m % 60).padStart(2, "0");
   const missedItems = missed.map((m: any) => ({ id: m.id, name: m.name, emp_id: m.emp_id, dateLabel: fmtDate(m.work_date), signIn: fmtTime(m.sign_in, s.timezone), open: !m.sign_out, outLabel: m.sign_out ? fmt12(hh(localParts(new Date(m.sign_out), s.timezone).minutes)) : "", hhmm: m.sign_out ? hh(localParts(new Date(m.sign_out), s.timezone).minutes) : m.shift_end }));
-  const present = rows.filter((r) => r.sign_in).length;
+  const presentRows0 = rows.filter((r) => r.sign_in && !r.sign_out);
+  const present = presentRows0.length;
   const late = rows.filter((r) => r.late).length;
   const onBreak = rows.filter((r) => r.on_break).length;
   const absentRows = rows.filter((r) => !r.sign_in && r.shift_type !== "hybrid");
@@ -35,7 +36,7 @@ export default async function AdminHome() {
   const isHoliday = !!(await q<any>("SELECT 1 FROM holidays WHERE holiday_date=$1", [date])).length;
   // not IN, not on leave, and the shift started more than the grace period ago (same-day shifts only)
   const overdue = isHoliday ? [] : rows.filter((r) => !r.sign_in && r.shift_type !== "hybrid" && !onLeave.has(r.id) && hhmmToMinutes(r.shift_start) <= hhmmToMinutes(r.shift_end) && nowMin >= hhmmToMinutes(r.shift_start) + s.grace_minutes && nowMin <= hhmmToMinutes(r.shift_end));
-  const presentRows = rows.filter((r) => r.sign_in);
+  const presentRows = presentRows0;
   const openBreaks = await q<any>("SELECT DISTINCT ON (user_id) user_id, start_at, category FROM breaks WHERE end_at IS NULL ORDER BY user_id, start_at DESC");
   const breakBy = new Map<number, any>(openBreaks.map((b: any) => [b.user_id, b]));
   const onBreakRows = rows.filter((r) => breakBy.has(r.id)).sort((x, y) => +new Date(breakBy.get(x.id).start_at) - +new Date(breakBy.get(y.id).start_at));
