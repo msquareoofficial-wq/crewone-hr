@@ -163,7 +163,7 @@ form.row input[type="month"]{flex:1}
 .fin-tiles .stat .l{font-size:11px;letter-spacing:.04em}
 .fin-grand{background:linear-gradient(135deg,#4f46e5,#6d5df0);color:#fff;border-color:transparent}
 .fin-grand .n,.fin-grand .l{color:#fff}
-.fin-usd{background:linear-gradient(135deg,#059669,#10b981);color:#fff;border-color:transparent}
+.fin-usd{background:linear-gradient(135deg,#1d4ed8,#3b82f6);color:#fff;border-color:transparent}
 .fin-usd .n,.fin-usd .l{color:#fff}
 .fin-two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.9fr);gap:18px;margin-bottom:18px;align-items:start}
 .fin-t td,.fin-t th{padding:6px 8px}
