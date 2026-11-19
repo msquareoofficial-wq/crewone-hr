@@ -48,3 +48,9 @@ export async function getNavLabels(): Promise<Record<NavKey, string>> {
   const m = Object.fromEntries(rows.map((r) => [r.key.slice(4), r.value]));
   return Object.fromEntries(NAV_KEYS.map((k) => [k, m[k]?.trim() || DEFAULT_NAV_LABELS[k]])) as Record<NavKey, string>;
 }
+
+export async function getFinUsdColors(): Promise<{ c1: string; c2: string }> {
+  const rows = await q<{ key: string; value: string }>("SELECT key, value FROM settings WHERE key IN ('fin_usd_color1', 'fin_usd_color2')");
+  const m = Object.fromEntries(rows.map((r) => [r.key, r.value]));
+  return { c1: m.fin_usd_color1 || "#1d4ed8", c2: m.fin_usd_color2 || "#3b82f6" };
+}

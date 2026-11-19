@@ -1,6 +1,6 @@
 ﻿// Powered By Vistech Force
 import { requireAdminPage } from "@/lib/auth";
-import { getSettings } from "@/lib/db";
+import { getSettings, getFinUsdColors } from "@/lib/db";
 import { currentMonth } from "@/lib/hr";
 import { localParts } from "@/lib/time";
 import { ensureMonth, listItems, okMonth, autoFillGet } from "@/lib/finance";
@@ -18,10 +18,11 @@ export default async function FinancePage({ searchParams }: { searchParams: Prom
   await autoFillGet(cur, Number(localParts(new Date(), s.timezone).date.slice(8, 10)));
   const rows = await listItems(month);
   const today = month === cur ? localParts(new Date(), s.timezone).date : month + "-01";
+  const usdColors = await getFinUsdColors();
   return (
     <Shell user={admin}>
       <h1>Finance</h1>
-      <FinanceClient key={month} month={month} cur={cur} today={today} initial={rows} />
+      <FinanceClient key={month} month={month} cur={cur} today={today} initial={rows} usdC1={usdColors.c1} usdC2={usdColors.c2} />
     </Shell>
   );
 }

@@ -41,7 +41,7 @@ function Num({ value, onSave, dim }: { value: number; onSave: (n: number) => voi
   );
 }
 
-export default function FinanceClient({ month, cur, today, initial }: { month: string; cur: string; today: string; initial: Row[] }) {
+export default function FinanceClient({ month, cur, today, initial, usdC1 = "#1d4ed8", usdC2 = "#3b82f6" }: { month: string; cur: string; today: string; initial: Row[]; usdC1?: string; usdC2?: string }) {
   const [rows, setRows] = useState<Row[]>(initial);
   const [focus, setFocus] = useState<number | null>(null);
   const [ask, setAsk] = useState<number | null>(null);
@@ -171,7 +171,7 @@ export default function FinanceClient({ month, cur, today, initial }: { month: s
         <div className="stat"><div className="n">{fmt(tExp)}</div><div className="l">Office expense</div></div>
         <div className="stat"><div className="n">{fmt(tSpend)}</div><div className="l">Monthly spending</div></div>
         <div className="stat fin-grand"><div className="n">{fmt(grand)}</div><div className="l">Grand total (PKR)</div></div>
-        <div className="stat fin-usd"><div className="n">{"$" + fmt(tUsd)}</div><div className="l">Dollar Expenses</div></div>
+        <div className="stat fin-usd" style={{ background: `linear-gradient(135deg,${usdC1},${usdC2})` }}><div className="n">{"$" + fmt(tUsd)}</div><div className="l">Dollar Expenses</div></div>
       </div>
 
       <div className="card fin-paidbar">
