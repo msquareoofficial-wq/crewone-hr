@@ -1,7 +1,7 @@
 ﻿// Powered By Vistech Force
 import { q, q1 } from "./db";
 
-export const FIN_SECTIONS = ["salary", "expense", "spend"] as const;
+export const FIN_SECTIONS = ["salary", "expense", "spend", "usd_spend"] as const;
 export type FinSection = (typeof FIN_SECTIONS)[number];
 
 export const okMonth = (m: any): m is string => typeof m === "string" && /^[0-9]{4}-(0[1-9]|1[0-2])$/.test(m);
@@ -87,9 +87,10 @@ export async function buildLedger(from: string, to: string, emp: string, status:
     const sum = (sec: string, f: (r: LedgerRow) => number) => rs.filter((r) => r.section === sec).reduce((a, r) => a + f(r), 0);
     const salary = sum("salary", (r) => r.amount), comm = sum("salary", (r) => r.commission);
     const exp = sum("expense", (r) => r.amount), spend = sum("spend", (r) => r.amount);
+    const usd = sum("usd_spend", (r) => r.amount);
     const paid = rs.filter((r) => r.paid).reduce((a, r) => a + lineDue(r), 0);
     const total = salary + comm + exp + spend;
-    return { month: m, rows: rs.length, salary, comm, exp, spend, total, paid, pending: total - paid };
+    return { month: m, rows: rs.length, salary, comm, exp, spend, usd, total, paid, pending: total - paid };
   });
   return { all, names: Array.from(names.entries()).sort((a, b) => a[1].localeCompare(b[1])), staff, people: Array.from(people.entries()).map(([k, v]) => ({ key: k, ...v })).sort((a, b) => a.name.localeCompare(b.name)), monthly };
 }

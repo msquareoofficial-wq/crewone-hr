@@ -3,12 +3,13 @@
 import { useState } from "react";
 import { fmtMonth } from "@/lib/fmtdate";
 
-type Row = { id: number; section: "salary" | "expense" | "spend"; name: string; dept: string | null; amount: number; get_amt: number; commission: number; spent_on: string | null; paid: boolean; paid_on: string | null };
+type Row = { id: number; section: "salary" | "expense" | "spend" | "usd_spend"; name: string; dept: string | null; amount: number; get_amt: number; commission: number; spent_on: string | null; paid: boolean; paid_on: string | null };
 
 const fmt = (n: number) => (n || 0).toLocaleString("en-US", { maximumFractionDigits: 2 });
 const due = (r: Row) => (Number(r.amount) || 0) + (r.section === "salary" ? Number(r.commission) || 0 : 0);
 const sum = (rs: Row[], k: "amount" | "get_amt" | "commission") => rs.reduce((a, r) => a + (Number(r[k]) || 0), 0);
 const SPEND_CATS = ["Spiff", "Subscription", "Equipment / PC", "Marketing", "Software", "Other"];
+const USD_CATS = ["Software / SaaS", "API / Cloud", "Domain / Hosting", "Marketing", "Freelancer", "Other"];
 const DEPTS = ["Sales", "Production", "Office Boy", "Designer", "Marketer"];
 
 function shift(m: string, n: number) {
@@ -49,16 +50,20 @@ export default function FinanceClient({ month, cur, today, initial }: { month: s
   const salary = rows.filter((r) => r.section === "salary");
   const expense = rows.filter((r) => r.section === "expense");
   const spend = rows.filter((r) => r.section === "spend");
+  const usd = rows.filter((r) => r.section === "usd_spend");
   const tSalary = sum(salary, "amount"), tGet = sum(salary, "get_amt"), tComm = sum(salary, "commission");
-  const tExp = sum(expense, "amount"), tSpend = sum(spend, "amount");
+  const tExp = sum(expense, "amount"), tSpend = sum(spend, "amount"), tUsd = sum(usd, "amount");
   const grand = tSalary + tComm + tExp + tSpend;
   const tPaid = rows.filter((r) => r.paid).reduce((a, r) => a + due(r), 0);
   const tPending = grand - tPaid;
   const paidPct = grand ? Math.round((tPaid / grand) * 100) : 0;
   const depts = Array.from(new Set([...DEPTS, ...salary.map((r) => r.dept || "").filter(Boolean)]));
   const cats = Array.from(new Set([...SPEND_CATS, ...spend.map((r) => r.dept || "").filter(Boolean)]));
+  const usdCats = Array.from(new Set([...USD_CATS, ...usd.map((r) => r.dept || "").filter(Boolean)]));
   const byCat = new Map<string, number>();
   spend.forEach((r) => byCat.set(r.dept || "Other", (byCat.get(r.dept || "Other") || 0) + (Number(r.amount) || 0)));
+  const usdByCat = new Map<string, number>();
+  usd.forEach((r) => usdByCat.set(r.dept || "Other", (usdByCat.get(r.dept || "Other") || 0) + (Number(r.amount) || 0)));
 
   const fail = (j: any) => setMsg({ t: "err", m: j && j.error ? j.error : "Failed, please try again" });
   async function api(method: string, body?: any, qs = "") {
@@ -110,13 +115,19 @@ export default function FinanceClient({ month, cur, today, initial }: { month: s
     L.push(["Total", tExp].map(c).join(","));
     L.push("");
     L.push(["Monthly spending"].map(c).join(","));
-    L.push(["Date", "Title", "Category", "Amount", "Status"].map(c).join(","));
+    L.push(["Date", "Title", "Category", "Amount PKR", "Status"].map(c).join(","));
     spend.forEach((r) => L.push([r.spent_on, r.name, r.dept, r.amount, r.paid ? "Paid" : "Pending"].map(c).join(",")));
     L.push(["Total", "", "", tSpend, ""].map(c).join(","));
     L.push("");
-    L.push(["Grand total (salary + commission + office expense + spending)", grand].map(c).join(","));
+    L.push(["Dollar Expenses (USD)"].map(c).join(","));
+    L.push(["Date", "Title", "Category", "Amount USD", "Status"].map(c).join(","));
+    usd.forEach((r) => L.push([r.spent_on, r.name, r.dept, r.amount, r.paid ? "Paid" : "Pending"].map(c).join(",")));
+    L.push(["Total USD", "", "", tUsd, ""].map(c).join(","));
+    L.push("");
+    L.push(["Grand total PKR (salary + commission + office expense + spending)", grand].map(c).join(","));
     L.push(["Paid", tPaid].map(c).join(","));
     L.push(["Pending", tPending].map(c).join(","));
+    L.push(["Total dollar expenses USD", tUsd].map(c).join(","));
     const blob = new Blob([L.join(NL)], { type: "text/csv" });
     const a = document.createElement("a");
     a.href = URL.createObjectURL(blob); a.download = `finance-${month}.csv`; a.click();
@@ -139,6 +150,7 @@ export default function FinanceClient({ month, cur, today, initial }: { month: s
     <>
       <datalist id="fin-dept">{depts.map((d) => <option key={d} value={d} />)}</datalist>
       <datalist id="fin-cat">{cats.map((d) => <option key={d} value={d} />)}</datalist>
+      <datalist id="fin-usd-cat">{usdCats.map((d) => <option key={d} value={d} />)}</datalist>
 
       <div className="card fin-bar">
         <div className="fin-nav">
@@ -159,6 +171,7 @@ export default function FinanceClient({ month, cur, today, initial }: { month: s
         <div className="stat"><div className="n">{fmt(tExp)}</div><div className="l">Office expense</div></div>
         <div className="stat"><div className="n">{fmt(tSpend)}</div><div className="l">Monthly spending</div></div>
         <div className="stat fin-grand"><div className="n">{fmt(grand)}</div><div className="l">Grand total (PKR)</div></div>
+        <div className="stat fin-usd"><div className="n">{"$" + fmt(tUsd)}</div><div className="l">Dollar Expenses</div></div>
       </div>
 
       <div className="card fin-paidbar">
@@ -243,7 +256,33 @@ export default function FinanceClient({ month, cur, today, initial }: { month: s
           {byCat.size > 0 && <div className="fin-chips">{Array.from(byCat.entries()).map(([k, v]) => <span key={k} className="badge b-info">{k}: {fmt(v)}</span>)}</div>}
         </div>
       </div>
-      <p className="mute" style={{ marginTop: 14 }}>Grand total = salaries + commission + office expense + monthly spending. Get = Salary + Commission, filled when you add commission and automatically from the 4th for the closed month. Changes save automatically when you leave a box.</p>
+
+      <div className="card">
+        <div className="row"><h2 style={{ margin: 0 }}>Dollar Expenses ($)</h2><div className="spacer" /><button className="btn sm" onClick={() => add("usd_spend", { spent_on: today, dept: "Other" })}>+ Add dollar expense</button></div>
+        <p className="mute" style={{ margin: "4px 0 8px" }}>Payments made in US dollars — software, APIs, domains, freelancers, etc. Starts empty every month.</p>
+        <div className="scroll">
+          <table className="fin-t fin-w2">
+            <thead><tr><th style={{ width: 128 }}>Date</th><th>Title</th><th style={{ width: 140 }}>Category</th><th className="r" style={{ width: 110 }}>Amount $</th><th style={{ width: 84 }}>Status</th><th style={{ width: 40 }}></th></tr></thead>
+            <tbody>
+              {usd.map((r) => (
+                <tr key={r.id} className={!r.amount ? "fin-zero" : ""}>
+                  <td><Txt type="date" value={r.spent_on || ""} onSave={(v) => patch(r.id, { spent_on: v })} /></td>
+                  <td><Txt value={r.name} placeholder="What was it?" autoFocus={focus === r.id} onSave={(v) => patch(r.id, { name: v })} /></td>
+                  <td><Txt value={r.dept || ""} list="fin-usd-cat" placeholder="Category" onSave={(v) => patch(r.id, { dept: v })} /></td>
+                  <td><Num value={r.amount} onSave={(n) => patch(r.id, { amount: n })} /></td>
+                  <td><Pay r={r} /></td>
+                  <td className="r"><Del id={r.id} /></td>
+                </tr>
+              ))}
+              {!usd.length && <tr><td colSpan={6} className="mute">No dollar expenses this month. Click &quot;+ Add dollar expense&quot;.</td></tr>}
+              <tr className="fin-total"><td></td><td>Total</td><td></td><td className="r">{"$" + fmt(tUsd)}</td><td></td><td></td></tr>
+            </tbody>
+          </table>
+        </div>
+        {usdByCat.size > 0 && <div className="fin-chips">{Array.from(usdByCat.entries()).map(([k, v]) => <span key={k} className="badge b-warn">{k}: ${fmt(v)}</span>)}</div>}
+      </div>
+
+      <p className="mute" style={{ marginTop: 14 }}>Grand total (PKR) = salaries + commission + office expense + monthly spending. Dollar expenses are tracked separately in USD. Get = Salary + Commission, filled when you add commission and automatically from the 4th for the closed month. Changes save automatically when you leave a box.</p>
     </>
   );
 }
