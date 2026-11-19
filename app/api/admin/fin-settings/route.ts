@@ -1,10 +1,11 @@
 // Powered By Vistech Force
-import { requireAdmin } from "@/lib/auth";
+import { getSession } from "@/lib/auth";
 import { q } from "@/lib/db";
 import { NextResponse } from "next/server";
 
 export async function PUT(req: Request) {
-  await requireAdmin(req);
+  const me = await getSession();
+  if (!me || me.role !== "admin") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { c1, c2 } = await req.json();
   const save = async (key: string, val: string) =>
     q("INSERT INTO settings(key,value) VALUES($1,$2) ON CONFLICT(key) DO UPDATE SET value=$2", [key, val]);
