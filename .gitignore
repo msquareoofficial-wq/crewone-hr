@@ -19,3 +19,6 @@ Thumbs.db
 
 # uploads (runtime data)
 uploads/
+
+.vercel
+.env*
