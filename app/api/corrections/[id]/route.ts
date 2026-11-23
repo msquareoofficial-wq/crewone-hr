@@ -12,18 +12,19 @@ export async function PUT(req: Request, ctx: { params: Promise<{ id: string }> }
   const id = Number((await ctx.params).id);
   const b = await req.json();
   if (!["approved", "rejected"].includes(b.status)) return NextResponse.json({ error: "Invalid status" }, { status: 400 });
-  const c = await q1<any>("SELECT c.*, u.name, u.shift_start, u.shift_type FROM attendance_corrections c JOIN users u ON u.id=c.user_id WHERE c.id=$1", [id]);
+  const c = await q1<any>("SELECT c.*, u.name, u.shift_start, u.shift_type, u.grace_minutes AS user_grace FROM attendance_corrections c JOIN users u ON u.id=c.user_id WHERE c.id=$1", [id]);
   if (!c || c.status !== "pending") return NextResponse.json({ error: "Request not found or already decided" }, { status: 400 });
   if (b.status === "approved") {
     const s = await getSettings();
+    const grace = c.user_grace ?? s.grace_minutes;
     const ex = await q1<any>("SELECT id FROM attendance WHERE user_id=$1 AND work_date=$2", [c.user_id, c.work_date]);
     if (!ex && !c.req_in) return NextResponse.json({ error: "No attendance exists for that day, so an IN time is required" }, { status: 400 });
     const ts = (t: string) => `(($1::text || ' ' || $2::text)::timestamp AT TIME ZONE $3)`;
     if (c.req_in) {
       const diff = minutesLate(hhmmToMinutes(c.req_in), c.shift_start);
-      const late = c.shift_type !== "hybrid" && diff >= s.grace_minutes;
-      if (ex) await q(`UPDATE attendance SET sign_in=${ts("")}, late=$4, late_minutes=$5 WHERE id=$6`, [c.work_date, c.req_in, s.timezone, late, late ? diff : 0, ex.id]);
-      else await q(`INSERT INTO attendance (user_id, work_date, sign_in, ip, late, late_minutes) VALUES ($6, $1, ${ts("")}, 'correction', $4, $5)`, [c.work_date, c.req_in, s.timezone, late, late ? diff : 0, c.user_id]);
+      const late = c.shift_type !== "hybrid" && diff >= grace;
+      if (ex) await q(`UPDATE attendance SET sign_in=${ts("")}, late=$4, late_minutes=$5 WHERE id=$6`, [c.work_date, c.req_in, s.timezone, late, late ? diff - grace : 0, ex.id]);
+      else await q(`INSERT INTO attendance (user_id, work_date, sign_in, ip, late, late_minutes) VALUES ($6, $1, ${ts("")}, 'correction', $4, $5)`, [c.work_date, c.req_in, s.timezone, late, late ? diff - grace : 0, c.user_id]);
     }
     if (c.req_out) await q(`UPDATE attendance SET sign_out=${ts("")}, auto_out=FALSE, out_confirmed=TRUE WHERE user_id=$4 AND work_date=$1`, [c.work_date, c.req_out, s.timezone, c.user_id]);
   }

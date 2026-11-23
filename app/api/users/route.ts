@@ -5,7 +5,7 @@ import { getSession, PERM_KEYS } from "@/lib/auth";
 import { q1 } from "@/lib/db";
 import { genPassword, nextEmpId } from "@/lib/hr";
 
-const FIELDS = ["name","pseudo_name","phone","office_phone","email","office_email","pseudo_email","cnic","joining_date","department","designation","shift_start","shift_end","shift_type","picture"] as const;
+const FIELDS = ["name","pseudo_name","phone","office_phone","email","office_email","pseudo_email","cnic","joining_date","department","designation","shift_start","shift_end","shift_type","grace_minutes","picture"] as const;
 
 export async function POST(req: Request) {
   const me = await getSession();

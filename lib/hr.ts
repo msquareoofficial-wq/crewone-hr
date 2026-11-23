@@ -3,8 +3,9 @@ import { q, q1, getSettings } from "./db";
 import { localParts, minutesLate } from "./time";
 import { autoCloseStale } from "./missedout";
 
-export async function markAttendance(user: { id: number; shift_start: string; shift_type?: string }, ip: string) {
+export async function markAttendance(user: { id: number; shift_start: string; shift_type?: string; grace_minutes?: number | null }, ip: string) {
   const s = await getSettings();
+  const grace = user.grace_minutes ?? s.grace_minutes;
   const now = new Date();
   const lp = localParts(now, s.timezone);
   const existing = await q1("SELECT id FROM attendance WHERE user_id=$1 AND work_date=$2", [user.id, lp.date]);
@@ -13,11 +14,11 @@ export async function markAttendance(user: { id: number; shift_start: string; sh
   await q("UPDATE breaks SET end_at=start_at WHERE user_id=$1 AND end_at IS NULL AND work_date<>$2", [user.id, lp.date]);
   await q("UPDATE tasks SET end_at=start_at WHERE user_id=$1 AND end_at IS NULL AND work_date<>$2", [user.id, lp.date]);
   const diff = minutesLate(lp.minutes, user.shift_start);
-  const late = user.shift_type !== "hybrid" && diff >= s.grace_minutes;
+  const late = user.shift_type !== "hybrid" && diff >= grace;
   await q(
     `INSERT INTO attendance (user_id, work_date, sign_in, ip, late, late_minutes)
      VALUES ($1,$2,$3,$4,$5,$6) ON CONFLICT (user_id, work_date) DO NOTHING`,
-    [user.id, lp.date, now, ip, late, late ? diff - s.grace_minutes : 0]
+    [user.id, lp.date, now, ip, late, late ? diff - grace : 0]
   );
   return { created: true, late, diff };
 }

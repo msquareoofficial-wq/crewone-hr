@@ -74,14 +74,18 @@ export default function UserForm({ initial, id }: { initial?: U; id?: number }) 
           </div>
         </div>
         <div>
-          <label>12. Picture</label>
+          <label>12. Grace period (minutes) — leave blank to use the global setting</label>
+          <input name="grace_minutes" type="number" defaultValue={v("grace_minutes")} min={0} max={120} placeholder="e.g. 15" />
+        </div>
+        <div>
+          <label>13. Picture</label>
           <input type="file" accept="image/*" onChange={(e) => { const f = e.target.files?.[0]; if (f) setCropFile(f); e.target.value = ""; }} />
           {cropFile && <ImageCropper file={cropFile} outW={256} round onDone={(d) => { setPic(d); setCropFile(null); }} onCancel={() => setCropFile(null)} />}
           {pic && /* eslint-disable-next-line @next/next/no-img-element */ <img src={pic} alt="" className="avatar" style={{ width: 56, height: 56, marginTop: 8 }} />}
         </div>
       </div>
       <div style={{ marginTop: 14 }}>
-        <label>13. Admin rights (optional, for heads like Head of Sales / Head of Production)</label>
+        <label>14. Admin rights (optional, for heads like Head of Sales / Head of Production)</label>
         <div className="pj-members" style={{ maxHeight: "none" }}>
           {PERM_LIST.map((p) => (
             <label key={p.key}><input type="checkbox" name="perms" value={p.key} defaultChecked={(initial?.perms ?? []).includes(p.key)} />{p.label}</label>

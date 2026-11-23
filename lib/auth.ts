@@ -17,6 +17,7 @@ export type SessionUser = {
   shift_start: string;
   shift_end: string;
   shift_type: string;
+  grace_minutes: number | null;
   picture: string | null;
   perms: string[];
   designation: string | null;
@@ -57,7 +58,7 @@ export async function getSession(): Promise<SessionUser | null> {
   try {
     const { payload } = await jwtVerify(token, secret());
     const u = await q1<SessionUser>(
-      "SELECT id, emp_id, role, name, pseudo_name, department, shift_start, shift_end, shift_type, picture, perms, designation, status_text FROM users WHERE id=$1 AND active=TRUE",
+      "SELECT id, emp_id, role, name, pseudo_name, department, shift_start, shift_end, shift_type, grace_minutes, picture, perms, designation, status_text FROM users WHERE id=$1 AND active=TRUE",
       [payload.uid]
     );
     if (u) await q("UPDATE users SET last_seen=now() WHERE id=$1 AND (last_seen IS NULL OR last_seen < now() - interval '1 minute')", [u.id]);
