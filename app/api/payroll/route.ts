@@ -47,10 +47,12 @@ export async function PUT(req: Request) {
     await q("UPDATE users SET monthly_salary=$2 WHERE id=$1 AND role='user'", [b.userId, s]);
     return NextResponse.json({ ok: true });
   }
-  if (b.weekly_off !== undefined) {
-    const w = Number(b.weekly_off);
-    if (!(w >= 0 && w <= 7)) return NextResponse.json({ error: "Invalid day" }, { status: 400 });
-    await q("INSERT INTO settings (key,value) VALUES ('weekly_off',$1) ON CONFLICT (key) DO UPDATE SET value=EXCLUDED.value", [String(w)]);
+  if (b.weekly_off_days !== undefined) {
+    const days: number[] = Array.isArray(b.weekly_off_days)
+      ? b.weekly_off_days.map(Number).filter((n: number) => n >= 0 && n <= 6)
+      : [Number(b.weekly_off_days)].filter((n) => n >= 0 && n <= 6);
+    if (!days.length) return NextResponse.json({ error: "At least one off day required" }, { status: 400 });
+    await q("INSERT INTO settings (key,value) VALUES ('weekly_off',$1) ON CONFLICT (key) DO UPDATE SET value=EXCLUDED.value", [days.join(",")]);
     await q("INSERT INTO settings (key,value) VALUES ('leaves_paid',$1) ON CONFLICT (key) DO UPDATE SET value=EXCLUDED.value", [b.leaves_paid ? "1" : "0"]);
     return NextResponse.json({ ok: true });
   }

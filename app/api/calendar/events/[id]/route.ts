@@ -14,8 +14,9 @@ export async function PUT(req: Request, { params }: Ctx) {
   if (ev.created_by !== me.id && me.role !== "admin") return NextResponse.json({ error: "Forbidden" }, { status: 403 });
   const b = await req.json();
   if (!b.title?.trim()) return NextResponse.json({ error: "Title is required" }, { status: 400 });
+  const rec = ["none", "daily", "weekly", "monthly"].includes(b.recurrence) ? b.recurrence : "none";
   await q1(
-    `UPDATE calendar_events SET title=$2, description=$3, start_dt=$4, end_dt=$5, color=$6, all_day=$7, visibility=$8 WHERE id=$1`,
+    `UPDATE calendar_events SET title=$2, description=$3, start_dt=$4, end_dt=$5, color=$6, all_day=$7, visibility=$8, recurrence=$9, recurrence_until=$10 WHERE id=$1`,
     [
       id,
       b.title.trim(),
@@ -24,7 +25,9 @@ export async function PUT(req: Request, { params }: Ctx) {
       b.end_dt,
       b.color || "#4f46e5",
       b.all_day ?? false,
-      b.visibility === "team" ? "team" : "personal"
+      b.visibility === "team" ? "team" : "personal",
+      rec,
+      rec !== "none" && b.recurrence_until ? b.recurrence_until : null,
     ]
   );
   return NextResponse.json({ ok: true });

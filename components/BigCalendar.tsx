@@ -20,11 +20,17 @@ type Ev = {
   description?: string;
   visibility?: "personal" | "team";
   editable: boolean;
+  recurrence?: "none" | "daily" | "weekly" | "monthly";
+  recurrenceUntil?: string;
+  isRecurringInstance?: boolean;
 };
+
+type Recurrence = "none" | "daily" | "weekly" | "monthly";
 
 interface SaveData {
   title: string; description: string; date: string; endDate: string;
-  startTime: string; endTime: string; color: string; allDay: boolean; visibility: "personal" | "team";
+  startTime: string; endTime: string; color: string; allDay: boolean;
+  visibility: "personal" | "team"; recurrence: Recurrence; recurrenceUntil: string;
 }
 
 // ---- Constants ----
@@ -88,12 +94,16 @@ function apiToEv(e: any): Ev {
   const start = new Date(e.start_dt);
   const end = new Date(e.end_dt);
   return {
-    id: e.id, date: e.start_dt.slice(0, 10), endDate: e.end_dt.slice(0, 10),
+    id: e.recurrence_base_id ?? e.id,
+    date: e.start_dt.slice(0, 10), endDate: e.end_dt.slice(0, 10),
     title: e.title, color: e.color, kind: "custom",
     startMin: e.all_day ? undefined : start.getUTCHours() * 60 + start.getUTCMinutes(),
     endMin: e.all_day ? undefined : end.getUTCHours() * 60 + end.getUTCMinutes(),
     allDay: e.all_day, description: e.description ?? undefined,
     visibility: e.visibility, editable: true,
+    recurrence: e.recurrence ?? "none",
+    recurrenceUntil: e.recurrence_until ?? undefined,
+    isRecurringInstance: !!e.recurrence_base_id,
   };
 }
 
@@ -117,12 +127,14 @@ function EventModal({ mode, ev, initDate, initStartMin, saving, onSave, onClose 
   );
   const [color, setColor] = useState(ev?.color ?? "#4f46e5");
   const [vis, setVis] = useState<"personal" | "team">(ev?.visibility ?? "personal");
+  const [rec, setRec] = useState<Recurrence>(ev?.recurrence ?? "none");
+  const [recUntil, setRecUntil] = useState(ev?.recurrenceUntil ?? "");
   const [err, setErr] = useState("");
 
   function handleSave() {
     if (!title.trim()) { setErr("Title is required"); return; }
     setErr("");
-    onSave({ title: title.trim(), description: desc, date, endDate: endDate || date, startTime: startT, endTime: endT, color, allDay, visibility: vis });
+    onSave({ title: title.trim(), description: desc, date, endDate: endDate || date, startTime: startT, endTime: endT, color, allDay, visibility: vis, recurrence: rec, recurrenceUntil: recUntil });
   }
 
   return (
@@ -188,6 +200,26 @@ function EventModal({ mode, ev, initDate, initStartMin, saving, onSave, onClose 
               <option value="team">Whole team</option>
             </select>
           </div>
+          <div>
+            <div className="gcal-label">Repeat</div>
+            <div className="gcal-modal-row" style={{ gap: 10, flexWrap: "wrap" }}>
+              <select value={rec} onChange={(e) => setRec(e.target.value as Recurrence)} style={{ flex: 1, minWidth: 140 }}>
+                <option value="none">Does not repeat</option>
+                <option value="daily">Every day</option>
+                <option value="weekly">Every week</option>
+                <option value="monthly">Every month</option>
+              </select>
+              {rec !== "none" && (
+                <div style={{ display: "flex", alignItems: "center", gap: 8, flexWrap: "wrap" }}>
+                  <span style={{ fontSize: 12, color: "var(--mute)", whiteSpace: "nowrap" }}>Until (optional)</span>
+                  <input type="date" value={recUntil} min={date}
+                    onChange={(e) => setRecUntil(e.target.value)}
+                    style={{ width: 150 }} />
+                </div>
+              )}
+            </div>
+            {rec !== "none" && <div style={{ fontSize: 12, color: "var(--mute)", marginTop: 4 }}>Editing applies to all instances of this event.</div>}
+          </div>
           {err && <div style={{ color: "#ef4444", fontSize: 13 }}>{err}</div>}
         </div>
         <div className="gcal-modal-foot">
@@ -221,6 +253,11 @@ function EventPopup({ ev, onEdit, onDelete, onClose }: {
                 : `${ev.date} · ${fmt12(ev.startMin ?? 0)} – ${fmt12(ev.endMin ?? 0)}`}
             </div>
             {ev.visibility === "team" && <div className="gcal-popup-vis">Team event</div>}
+            {ev.recurrence && ev.recurrence !== "none" && (
+              <div className="gcal-popup-vis" style={{ color: "var(--mute)" }}>
+                ↻ Repeats {ev.recurrence}{ev.recurrenceUntil ? ` until ${ev.recurrenceUntil}` : ""}
+              </div>
+            )}
             {ev.description && <div className="gcal-popup-desc">{ev.description}</div>}
           </div>
           <button className="gcal-close" onClick={onClose}>✕</button>
@@ -307,7 +344,7 @@ export default function BigCalendar({ month: initialMonth, today, events: hrEven
     try {
       const start_dt = form.allDay ? form.date + "T00:00:00Z" : `${form.date}T${form.startTime}:00Z`;
       const end_dt = form.allDay ? (form.endDate || form.date) + "T23:59:59Z" : `${form.endDate || form.date}T${form.endTime}:00Z`;
-      const body = { title: form.title, description: form.description, start_dt, end_dt, color: form.color, all_day: form.allDay, visibility: form.visibility };
+      const body = { title: form.title, description: form.description, start_dt, end_dt, color: form.color, all_day: form.allDay, visibility: form.visibility, recurrence: form.recurrence, recurrence_until: form.recurrenceUntil || null };
       const isEdit = modal?.type === "edit" && (modal as { type: "edit"; ev: Ev }).ev?.id;
       const id = isEdit ? (modal as { type: "edit"; ev: Ev }).ev.id : undefined;
       const r = await fetch(isEdit ? `/api/calendar/events/${id}` : "/api/calendar/events", {
@@ -367,7 +404,9 @@ export default function BigCalendar({ month: initialMonth, today, events: hrEven
                 <div key={j} className="gcal-chip"
                   style={{ background: ev.color + "22", borderLeft: `3px solid ${ev.color}`, color: ev.color }}
                   onClick={(e) => { e.stopPropagation(); openView(ev); }} title={ev.title}>
-                  {!ev.allDay && <span style={{ opacity: .75 }}>{fmt12(ev.startMin ?? 0)} </span>}{ev.title}
+                  {!ev.allDay && <span style={{ opacity: .75 }}>{fmt12(ev.startMin ?? 0)} </span>}
+                  {ev.isRecurringInstance && <span style={{ opacity: .6, fontSize: 10 }}>↻ </span>}
+                  {ev.title}
                 </div>
               ))}
               {evs.length > 3 && (

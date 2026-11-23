@@ -21,7 +21,7 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
   return (
     <Shell user={admin}>
       <h1>Payroll</h1>
-      <PayrollClient key={month} month={month} rows={rows} weeklyOff={ps.weekly_off} leavesPaid={ps.leaves_paid} />
+      <PayrollClient key={month} month={month} rows={rows} weeklyOffDays={ps.weekly_off_days} leavesPaid={ps.leaves_paid} />
     </Shell>
   );
 }

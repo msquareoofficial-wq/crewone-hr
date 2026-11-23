@@ -16,10 +16,10 @@ async function call(method: string, body: any) {
   return { ok: r.ok, j };
 }
 
-export default function PayrollClient({ month, rows, weeklyOff, leavesPaid }: { month: string; rows: Row[]; weeklyOff: number; leavesPaid: boolean }) {
+export default function PayrollClient({ month, rows, weeklyOffDays, leavesPaid }: { month: string; rows: Row[]; weeklyOffDays: number[]; leavesPaid: boolean }) {
   const router = useRouter();
   const [msg, setMsg] = useState<{ t: string; m: string } | null>(null);
-  const [off, setOff] = useState(weeklyOff);
+  const [offDays, setOffDays] = useState<number[]>(weeklyOffDays);
   const [paid, setPaid] = useState(leavesPaid);
   const [edit, setEdit] = useState<Record<number, Row>>({});
   const [sal, setSal] = useState<Record<number, string>>({});
@@ -37,10 +37,25 @@ export default function PayrollClient({ month, rows, weeklyOff, leavesPaid }: { 
           <button className="btn" onClick={async () => { const x = await call("POST", { action: "generate", month }); x.ok ? done(`Auto calculated ${x.j.count} users (manual and paid rows were kept)`) : fail(x.j); }}>Calculate automatically</button>
           <a className="btn sec" href={`/api/payroll?month=${month}`}>Download CSV</a>
         </div>
-        <div className="row" style={{ marginTop: 12 }}>
-          <div><label>Weekly off day</label><select value={off} onChange={(e) => setOff(Number(e.target.value))} style={{ width: 150 }}>{DAYS.map((d, i) => <option key={i} value={i}>{d}</option>)}<option value={7}>None</option></select></div>
-          <label className="row" style={{ color: "var(--ink)", fontWeight: 400, margin: "18px 0 0" }}><input type="checkbox" style={{ width: "auto" }} checked={paid} onChange={(e) => setPaid(e.target.checked)} />Approved leaves are paid</label>
-          <button className="btn sec sm" style={{ marginTop: 18 }} onClick={async () => { const x = await call("PUT", { weekly_off: off, leaves_paid: paid }); x.ok ? done("Rules saved. Click Calculate automatically to apply.") : fail(x.j); }}>Save rules</button>
+        <div className="row" style={{ marginTop: 12, flexWrap: "wrap", gap: 10 }}>
+          <div>
+            <label>Weekly off days</label>
+            <div className="row" style={{ gap: 8, flexWrap: "wrap", marginTop: 4 }}>
+              {DAYS.map((d, i) => (
+                <label key={i} className="row" style={{ color: "var(--ink)", fontWeight: 400, gap: 4, cursor: "pointer" }}>
+                  <input type="checkbox" style={{ width: "auto" }}
+                    checked={offDays.includes(i)}
+                    onChange={(e) => setOffDays(e.target.checked ? [...offDays, i].sort() : offDays.filter((x) => x !== i))} />
+                  {d}
+                </label>
+              ))}
+            </div>
+          </div>
+          <label className="row" style={{ color: "var(--ink)", fontWeight: 400, margin: "18px 0 0" }}>
+            <input type="checkbox" style={{ width: "auto" }} checked={paid} onChange={(e) => setPaid(e.target.checked)} />
+            Approved leaves are paid
+          </label>
+          <button className="btn sec sm" style={{ marginTop: 18 }} onClick={async () => { const x = await call("PUT", { weekly_off_days: offDays, leaves_paid: paid }); x.ok ? done("Rules saved. Click Calculate automatically to apply.") : fail(x.j); }}>Save rules</button>
         </div>
         <p className="mute" style={{ marginBottom: 0 }}>Auto formula: per day = salary / working days (weekly offs and holidays excluded). Deductions = absent days x per day, plus (lates / lates-per-off) x per day. Net = salary - deductions + bonus - other deduction. You can edit any row manually.</p>
         {msg && <div className={msg.t}>{msg.m}</div>}
@@ -83,6 +98,7 @@ export default function PayrollClient({ month, rows, weeklyOff, leavesPaid }: { 
                               <button className="btn sec sm" disabled={r.status === "paid"} onClick={() => setEdit({ ...edit, [r.user_id]: { ...r } })}>Edit</button>
                               <button className="btn sec sm" disabled={r.status === "paid"} title="Back to automatic values" onClick={async () => { const x = await call("POST", { action: "recalc", id: r.id }); x.ok ? done("Recalculated") : fail(x.j); }}>Recalc</button>
                               <button className={`btn sm ${r.status === "paid" ? "sec" : "ok"}`} onClick={async () => { const x = await call("PUT", { id: r.id, status: r.status === "paid" ? "draft" : "paid" }); x.ok ? done(r.status === "paid" ? "Marked unpaid" : "Marked paid") : fail(x.j); }}>{r.status === "paid" ? "Undo paid" : "Mark paid"}</button>
+                              <a className="btn sec sm" href={`/api/payslip/${r.id}`} target="_blank" rel="noreferrer" title="Open payslip (print/save as PDF)">Payslip</a>
                             </>
                           )}
                         </div></td>

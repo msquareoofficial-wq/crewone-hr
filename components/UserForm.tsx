@@ -77,6 +77,10 @@ export default function UserForm({ initial, id }: { initial?: U; id?: number }) 
           <label>12. Grace period (minutes) — leave blank to use the global setting</label>
           <input name="grace_minutes" type="number" defaultValue={v("grace_minutes")} min={0} max={120} placeholder="e.g. 15" style={{ maxWidth: 200 }} />
         </div>
+        <div style={{ gridColumn: "1 / -1" }}>
+          <label>12b. Leave quota (days/year) — leave blank to use the global setting</label>
+          <input name="leave_quota" type="number" defaultValue={v("leave_quota")} min={0} max={365} placeholder="e.g. 15" style={{ maxWidth: 200 }} />
+        </div>
         <div>
           <label>13. Picture</label>
           <input type="file" accept="image/*" onChange={(e) => { const f = e.target.files?.[0]; if (f) setCropFile(f); e.target.value = ""; }} />

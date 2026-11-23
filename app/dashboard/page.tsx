@@ -22,8 +22,11 @@ import Feed from "@/components/Feed";
 import Calendar from "@/components/Calendar";
 import LeaveForm from "./LeaveForm";
 import CorrectionForm from "./CorrectionForm";
-import { leaveUsed } from "@/lib/leave";
+import { leaveBalance } from "@/lib/leave";
+import LeaveBalance from "@/components/LeaveBalance";
 import MyLeaves from "./MyLeaves";
+import DashboardCharts from "@/components/DashboardCharts";
+import AttendanceHeatmap from "@/components/AttendanceHeatmap";
 import AttendanceButtons from "./AttendanceButtons";
 import { getNotifications } from "@/lib/hr";
 import { fmtDate, fmtMonth } from "@/lib/fmtdate";
@@ -64,10 +67,31 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
   const hols = await q<any>("SELECT holiday_date, title FROM holidays WHERE holiday_date LIKE $1", [cal + "-%"]);
   const myLeaves = await q<any>("SELECT * FROM leave_requests WHERE user_id=$1 ORDER BY start_date DESC LIMIT 30", [user.id]);
   const calAtt = await q<any>("SELECT work_date, late FROM attendance WHERE user_id=$1 AND work_date LIKE $2", [user.id, cal + "-%"]);
-  const me = await q1<any>("SELECT phone FROM users WHERE id=$1", [user.id]);
-  const used = await leaveUsed(user.id, today.slice(0, 4));
-  const left = Math.max(0, s.leave_quota - used);
+  const me = await q1<any>("SELECT phone, leave_quota FROM users WHERE id=$1", [user.id]);
+  const bal = await leaveBalance(user.id, today.slice(0, 4), s.leave_quota, me?.leave_quota);
   const corrs = await q<any>("SELECT id, work_date, req_in, req_out, status, admin_note FROM attendance_corrections WHERE user_id=$1 ORDER BY created_at DESC LIMIT 10", [user.id]);
+  // Heatmap: last 364 days attendance + leaves + holidays
+  const heatAtt = await q<{ work_date: string; late: boolean }>(
+    "SELECT work_date, late FROM attendance WHERE user_id=$1 AND work_date >= (CURRENT_DATE - INTERVAL '364 days')::text ORDER BY work_date",
+    [user.id]
+  );
+  const heatLeaves = await q<{ start_date: string; end_date: string }>(
+    "SELECT start_date, end_date FROM leave_requests WHERE user_id=$1 AND status='approved' AND end_date >= (CURRENT_DATE - INTERVAL '364 days')::text",
+    [user.id]
+  );
+  const heatHols = await q<{ holiday_date: string }>(
+    "SELECT holiday_date FROM holidays WHERE holiday_date >= (CURRENT_DATE - INTERVAL '364 days')::text",
+    []
+  );
+
+  const trend = await q<{ month: string; present: number; late_count: number }>(
+    `SELECT TO_CHAR(work_date, 'YYYY-MM') AS month,
+       COUNT(*)::int AS present,
+       COUNT(*) FILTER (WHERE late)::int AS late_count
+     FROM attendance WHERE user_id=$1 AND work_date >= (CURRENT_DATE - INTERVAL '5 months')::date
+     GROUP BY month ORDER BY month`,
+    [user.id]
+  );
   // Punches: today's, or if night shift active, the night shift date's punches
   const punchDate = activeAtt?.work_date ?? today;
   const todayPunches = await q<any>("SELECT punch_type, punched_at FROM attendance_punches WHERE user_id=$1 AND work_date=$2 ORDER BY id ASC", [user.id, punchDate]);
@@ -108,6 +132,8 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
 
       <MonthStats s={sum} />
 
+      <DashboardCharts trend={trend} monthRows={sum.rows} month={month} />
+
       <div className="grid g2">
         <div className="card">
           <h2>Today's tasks</h2>
@@ -137,7 +163,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
         </div>
         <div className="card">
           <h2>Apply for leave / off</h2>
-          <p className="mute" style={{ marginTop: 0 }}>Leave balance {today.slice(0, 4)}: <b style={{ color: left === 0 ? "var(--bad)" : "var(--ok)" }}>{left}</b> of {s.leave_quota} days left ({used} used)</p>
+          <LeaveBalance used={bal.used} quota={bal.quota} left={bal.left} year={today.slice(0, 4)} />
           <LeaveForm today={today} />
           <h2 style={{ marginTop: 18 }}>My leave requests</h2>
           <MyLeaves leaves={myLeaves} />
@@ -148,6 +174,13 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
         <h2>Forgot to mark IN or OUT?</h2>
         <CorrectionForm today={today} items={corrs} />
       </div>
+
+      <AttendanceHeatmap
+        attendance={heatAtt}
+        leaves={heatLeaves}
+        holidays={heatHols.map((h) => h.holiday_date)}
+        today={today}
+      />
 
       <div className="card">
         <div className="row"><h2 style={{ margin: 0 }}>Monthly record</h2><div className="spacer" /><a className="btn sec sm" href={`/api/reports?month=${month}`}>Download CSV</a></div>

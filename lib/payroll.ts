@@ -7,7 +7,10 @@ const r2 = (n: number) => Math.round(n * 100) / 100;
 export async function payrollSettings() {
   const rows = await q<{ key: string; value: string }>("SELECT key, value FROM settings WHERE key IN ('weekly_off','leaves_paid')");
   const m = Object.fromEntries(rows.map((r) => [r.key, r.value]));
-  return { weekly_off: Number(m.weekly_off ?? 0), leaves_paid: (m.leaves_paid ?? "1") === "1" };
+  // weekly_off supports comma-separated days: "0,6" = Sun+Sat, "0" = Sun only (legacy)
+  const raw = m.weekly_off ?? "0";
+  const weekly_off_days: number[] = raw.split(",").map(Number).filter((n) => n >= 0 && n <= 6);
+  return { weekly_off: Number(weekly_off_days[0] ?? 0), weekly_off_days, leaves_paid: (m.leaves_paid ?? "1") === "1" };
 }
 
 // Automatic calculation for one user and month (YYYY-MM).
@@ -23,7 +26,7 @@ export async function calcPayroll(userId: number, month: string) {
   const working: string[] = [];
   for (let d = 1; d <= days; d++) {
     const ds = `${month}-${String(d).padStart(2, "0")}`;
-    if (new Date(ds + "T00:00:00Z").getUTCDay() !== ps.weekly_off && !hols.has(ds)) working.push(ds);
+    if (!ps.weekly_off_days.includes(new Date(ds + "T00:00:00Z").getUTCDay()) && !hols.has(ds)) working.push(ds);
   }
   const att = await q<{ work_date: string; late: boolean }>("SELECT work_date, late FROM attendance WHERE user_id=$1 AND work_date LIKE $2", [userId, month + "-%"]);
   const present = new Set(att.map((a) => a.work_date));

@@ -10,3 +10,11 @@ export async function leaveUsed(userId: number, year: string): Promise<number> {
   );
   return r?.n ?? 0;
 }
+
+// Full balance: used, quota (per-user override or global), remaining.
+export async function leaveBalance(userId: number, year: string, globalQuota: number, userQuota?: number | null) {
+  const quota = userQuota ?? globalQuota;
+  const used = await leaveUsed(userId, year);
+  const left = Math.max(0, quota - used);
+  return { used, quota, left };
+}
