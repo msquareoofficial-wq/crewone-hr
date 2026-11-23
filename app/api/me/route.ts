@@ -8,6 +8,12 @@ import { q, q1 } from "@/lib/db";
 // Users maintain their own profile (limited fields). Core HR fields stay admin-only.
 const SELF = ["pseudo_name", "phone", "picture", "status_text"] as const;
 
+export async function GET() {
+  const me = await getSession();
+  if (!me) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  return NextResponse.json({ id: me.id, name: me.name, role: me.role });
+}
+
 export async function PUT(req: Request) {
   const me = await getSession();
   if (!me) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
