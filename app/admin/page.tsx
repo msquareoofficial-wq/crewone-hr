@@ -117,7 +117,7 @@ export default async function AdminHome() {
             <thead><tr><th>User</th><th>Dept</th><th>Shift</th><th>Status</th><th>Sign in</th><th>IP</th><th>Late</th><th>Breaks</th><th>Break time</th><th>Current task</th></tr></thead>
             <tbody>
               {rows.map((r) => (
-                <tr key={r.id}>
+                <tr key={r.id} style={{ verticalAlign: "middle" }}>
                   <td><div className="row"><Avatar src={r.picture} name={r.name} online={!!r.sign_in && !r.sign_out} />{isAdmin ? <Link href={`/admin/users/${r.id}`}>{r.name}</Link> : <span>{r.name}</span>}<span className="mute">{r.emp_id}</span></div></td>
                   <td>{r.department ?? "-"}</td>
                   <td>{r.shift_type === "hybrid" ? <span className="badge b-info">Hybrid</span> : `${fmt12(r.shift_start)} - ${fmt12(r.shift_end)}`}</td>
@@ -127,7 +127,7 @@ export default async function AdminHome() {
                   <td>{r.sign_in ? (r.late ? <span className="badge b-bad">{r.late_minutes}m late</span> : <span className="badge b-ok">No</span>) : "-"}</td>
                   <td>{r.break_count}</td>
                   <td>{fmtDur(r.break_seconds)}</td>
-                  <td>{r.current_task ?? "-"}</td>
+                  <td><span title={r.current_task ?? undefined} style={{ display: "inline-block", maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", verticalAlign: "middle", cursor: r.current_task ? "default" : undefined }}>{r.current_task ?? "-"}</span></td>
                 </tr>
               ))}
               {!rows.length && <tr><td colSpan={10} className="mute">No users yet. Create one from the Users page.</td></tr>}
