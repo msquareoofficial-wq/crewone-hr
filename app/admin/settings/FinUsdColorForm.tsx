@@ -13,7 +13,6 @@ export default function FinUsdColorForm({ c1, c2 }: { c1: string; c2: string }) 
 
   return (
     <div>
-      <p className="mute" style={{ marginTop: 0 }}>Customize the Dollar Expenses tile gradient on the Finance page.</p>
       <div style={{ display: "flex", alignItems: "center", gap: 24, flexWrap: "wrap", marginBottom: 16 }}>
         <div>
           <label style={{ fontSize: "0.82rem", color: "var(--mute)" }}>Start color</label>
