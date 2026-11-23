@@ -205,8 +205,8 @@ export function ChatWidget() {
         setCwProgress(Math.min(100, Math.round(((off + CH) / f.size) * 100)));
       }
       if (!active) return;
-      await fetch(`/api/chat/rooms/${active}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ file: { id: j.id } }) });
-      await fetchMsgs(active, false);
+      await fetch(`/api/chat/rooms/${active.id}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ file: { id: j.id } }) });
+      await fetchMsgs(active.id, false);
     } catch {}
     setCwProgress(null);
     if (cwFileRef.current) cwFileRef.current.value = "";
