@@ -17,7 +17,7 @@ export async function markAttendance(user: { id: number; shift_start: string; sh
   await q(
     `INSERT INTO attendance (user_id, work_date, sign_in, ip, late, late_minutes)
      VALUES ($1,$2,$3,$4,$5,$6) ON CONFLICT (user_id, work_date) DO NOTHING`,
-    [user.id, lp.date, now, ip, late, late ? diff : 0]
+    [user.id, lp.date, now, ip, late, late ? diff - s.grace_minutes : 0]
   );
   return { created: true, late, diff };
 }
