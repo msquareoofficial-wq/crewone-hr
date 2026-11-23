@@ -1,25 +1,9 @@
 // Powered By Vistech Force
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
-import { q, q1 } from "@/lib/db";
-
-export type PayslipSettings = {
-  header_color: string;
-  accent_color: string;
-  address: string;
-  currency: string;
-  footer_note: string;
-  show_signature: boolean;
-};
-
-export const PAYSLIP_DEFAULTS: PayslipSettings = {
-  header_color: "#0f172a",
-  accent_color: "#0f172a",
-  address: "",
-  currency: "",
-  footer_note: "This is a system generated payslip.",
-  show_signature: false,
-};
+import { q } from "@/lib/db";
+import { PAYSLIP_DEFAULTS } from "@/lib/payslip-settings";
+import type { PayslipSettings } from "@/lib/payslip-settings";
 
 export async function GET() {
   const rows = await q<{ key: string; value: string }>(

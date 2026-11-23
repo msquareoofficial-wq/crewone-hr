@@ -12,7 +12,7 @@ import ResetData from "./ResetData";
 import NavLabelsForm from "./NavLabelsForm";
 import FinUsdColorForm from "./FinUsdColorForm";
 import PayslipSettingsForm from "./PayslipSettingsForm";
-import type { PayslipSettings } from "@/app/api/payslip-settings/route";
+import type { PayslipSettings } from "@/lib/payslip-settings";
 
 async function getPayslipSettingsFromDB(): Promise<PayslipSettings> {
   const rows = await q<{ key: string; value: string }>(

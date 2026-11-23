@@ -3,7 +3,7 @@ import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { q } from "@/lib/db";
 import { BRAND, getBrandLogos } from "@/lib/brand";
-import type { PayslipSettings } from "@/app/api/payslip-settings/route";
+import type { PayslipSettings } from "@/lib/payslip-settings";
 
 function fmt(n: number, currency: string) {
   const num = Number(n ?? 0).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });

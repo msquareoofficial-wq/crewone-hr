@@ -1,7 +1,7 @@
 // Powered By Vistech Force
 "use client";
 import { useState } from "react";
-import type { PayslipSettings } from "@/app/api/payslip-settings/route";
+import type { PayslipSettings } from "@/lib/payslip-settings";
 
 export default function PayslipSettingsForm({ initial }: { initial: PayslipSettings }) {
   const [form, setForm] = useState<PayslipSettings>(initial);
