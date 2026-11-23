@@ -73,9 +73,9 @@ export default function UserForm({ initial, id }: { initial?: U; id?: number }) 
             <input name="shift_end" type="time" defaultValue={v("shift_end", "17:00")} style={{ flex: 1 }} />
           </div>
         </div>
-        <div>
+        <div style={{ gridColumn: "1 / -1" }}>
           <label>12. Grace period (minutes) — leave blank to use the global setting</label>
-          <input name="grace_minutes" type="number" defaultValue={v("grace_minutes")} min={0} max={120} placeholder="e.g. 15" />
+          <input name="grace_minutes" type="number" defaultValue={v("grace_minutes")} min={0} max={120} placeholder="e.g. 15" style={{ maxWidth: 200 }} />
         </div>
         <div>
           <label>13. Picture</label>
