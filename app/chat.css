@@ -58,4 +58,19 @@
 [data-theme="dark"] .cw-bubble{background:#1e293b}
 [data-theme="dark"] .cw-msg.me .cw-bubble{background:var(--brand)}
 [data-theme="dark"] .cw-input input{background:#1e293b;border-color:#334155}
+/* icon buttons inside widget input */
+.cw-ic-btn{width:30px;height:30px;border-radius:8px;border:0;background:none;color:var(--mute);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .12s,color .12s}
+.cw-ic-btn:hover{background:var(--sbhov);color:var(--ink)}
+.cw-ic-btn:disabled{opacity:.4;cursor:default}
+/* emoji popup */
+.cw-emoji-pop{position:absolute;bottom:calc(100% + 6px);left:0;width:240px;max-height:180px;overflow-y:auto;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.18);z-index:10;display:grid;grid-template-columns:repeat(8,1fr);padding:6px}
+.cw-emoji-pop button{background:none;border:0;font-size:18px;cursor:pointer;border-radius:6px;padding:3px;line-height:1}
+.cw-emoji-pop button:hover{background:var(--sbhov)}
+/* recording bar */
+.cw-rec{display:flex;align-items:center;gap:8px;padding:8px 10px;border-top:1px solid var(--line);flex-shrink:0;background:var(--card)}
+.cw-rec-dot{color:#ef4444;font-size:12px;animation:cwblink 1s step-end infinite}
+@keyframes cwblink{0%,100%{opacity:1}50%{opacity:0}}
+/* upload progress */
+.cw-upload-bar{height:3px;background:var(--line);flex-shrink:0}
+.cw-upload-fill{height:100%;background:var(--brand);transition:width .2s}
 @media(max-width:480px){.cw-panel{width:calc(100vw - 24px)}}

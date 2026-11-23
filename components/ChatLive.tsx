@@ -4,6 +4,16 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
+const MAX_FILE = 50 * 1024 * 1024;
+const EMOJIS = ["😀","😃","😄","😁","😆","😅","😂","🤣","😊","🙂","😉","😍","😘","😎","🤩","🥳","🙏","👍","👎","👏","🙌","💪","👌","✌️","🤞","👋","❤️","🧡","💛","💚","💙","💜","🔥","⭐","✨","🎉","✅","❌","⚠️","💯","☕","🎂","🚀","😢","😭","😤","😡","🤯","😱","🥺","🤒","🤔","😐","😶","🙄","😴","😷","🤐","😬","🤭"];
+const fmtSecs = (s: number) => `${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}`;
+const isVoice = (n: string | null) => !!n && /^voice-\d+\.(webm|m4a|ogg)$/.test(n);
+const isImg   = (n: string | null) => !!n && /\.(png|jpe?g|gif|webp|bmp)$/i.test(n);
+const IcClip  = () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21.4 11.1l-9.2 9.2a6 6 0 01-8.5-8.5l9.2-9.2a4 4 0 015.7 5.7l-9.2 9.2a2 2 0 01-2.8-2.8l8.5-8.5"/></svg>;
+const IcSmile = () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01M15 9h.01"/></svg>;
+const IcMic   = () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 11a7 7 0 0014 0M12 18v4"/></svg>;
+const IcSend  = () => <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>;
+
 /* ── shared types ── */
 type Grp  = { room_id: number; title: string; count: number; last: string; mentioned: boolean };
 type Item = { id: number; room_id: number; title: string; sender: string; text: string; mentioned: boolean };
@@ -114,9 +124,16 @@ export function ChatWidget() {
   const [text, setText]       = useState("");
   const [sending, setSending] = useState(false);
   const [meId, setMeId]       = useState<number|null>(null);
-  const lastId   = useRef(0);
-  const endRef   = useRef<HTMLDivElement>(null);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [cwProgress, setCwProgress] = useState<number | null>(null);
+  const [cwRecSecs, setCwRecSecs]   = useState<number | null>(null);
+  const [cwEmoji, setCwEmoji]       = useState(false);
+  const lastId    = useRef(0);
+  const endRef    = useRef<HTMLDivElement>(null);
+  const inputRef  = useRef<HTMLInputElement>(null);
+  const cwFileRef = useRef<HTMLInputElement>(null);
+  const cwRecRef  = useRef<{ mr: MediaRecorder; stream: MediaStream; chunks: Blob[]; cancelled: boolean } | null>(null);
+  const cwRecTimer= useRef<any>(null);
+  const cwOnFile  = useRef<(f: File) => void>(() => {});
 
   /* fetch current user id once */
   useEffect(() => {
@@ -167,6 +184,57 @@ export function ChatWidget() {
       await fetchMsgs(active.id, false);
     } catch {} finally { setSending(false); }
     inputRef.current?.focus();
+  }
+
+  /* file upload */
+  async function cwUploadFile(f: File) {
+    if (f.size > MAX_FILE) return;
+    setCwProgress(0); setCwEmoji(false);
+    try {
+      const r = await fetch("/api/chat/files", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ name: f.name, size: f.size, type: f.type || "application/octet-stream" }) });
+      const j = await r.json();
+      if (!r.ok) throw new Error();
+      const CH = 3 * 1024 * 1024;
+      for (let i = 0, off = 0; off < f.size; i++, off += CH) {
+        const pr = await fetch(`/api/chat/files/${j.id}?idx=${i}`, { method: "PUT", headers: { "Content-Type": "application/octet-stream" }, body: f.slice(off, off + CH) });
+        if (!pr.ok) throw new Error();
+        setCwProgress(Math.min(100, Math.round(((off + CH) / f.size) * 100)));
+      }
+      if (!active) return;
+      await fetch(`/api/chat/rooms/${active}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ file: { id: j.id } }) });
+      await fetchMsgs(active, false);
+    } catch {}
+    setCwProgress(null);
+    if (cwFileRef.current) cwFileRef.current.value = "";
+  }
+  cwOnFile.current = cwUploadFile;
+
+  /* voice recording */
+  async function cwStartRec() {
+    if (!navigator.mediaDevices?.getUserMedia || typeof MediaRecorder === "undefined") return;
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      const mt = ["audio/webm;codecs=opus","audio/webm","audio/mp4","audio/ogg;codecs=opus"].find(t => (MediaRecorder as any).isTypeSupported?.(t));
+      const mr = new MediaRecorder(stream, mt ? { mimeType: mt } : undefined);
+      const st = { mr, stream, chunks: [] as Blob[], cancelled: false };
+      mr.ondataavailable = e => { if (e.data.size) st.chunks.push(e.data); };
+      mr.onstop = () => {
+        stream.getTracks().forEach(t => t.stop());
+        clearInterval(cwRecTimer.current); setCwRecSecs(null); cwRecRef.current = null;
+        if (st.cancelled || !st.chunks.length) return;
+        const type = (mr.mimeType || mt || "audio/webm").split(";")[0];
+        const ext = type.includes("mp4") ? "m4a" : type.includes("ogg") ? "ogg" : "webm";
+        cwOnFile.current(new File(st.chunks, `voice-${Date.now()}.${ext}`, { type }));
+      };
+      cwRecRef.current = st; mr.start();
+      const t0 = Date.now(); setCwRecSecs(0);
+      cwRecTimer.current = setInterval(() => { const n = Math.floor((Date.now() - t0) / 1000); setCwRecSecs(n); if (n >= 300) cwStopRec(false); }, 500);
+    } catch {}
+  }
+  function cwStopRec(cancel: boolean) {
+    const st = cwRecRef.current; if (!st) return;
+    st.cancelled = cancel;
+    if (st.mr.state !== "inactive") st.mr.stop();
   }
 
   const time = (d: string) => new Date(d).toLocaleTimeString("en-US", { hour: "numeric", minute: "2-digit" });
@@ -244,29 +312,53 @@ export function ChatWidget() {
                 {msgs.map(m => (
                   <div key={m.id} className={`cw-msg${m.sender_id === meId ? " me" : ""}`}>
                     {m.body && <div className="cw-bubble">{m.body}</div>}
-                    {m.file_url && m.file_name && (
-                      <a className="cw-bubble cw-file" href={m.file_url} target="_blank" rel="noopener noreferrer">
-                        📎 {m.file_name}
-                      </a>
+                    {m.file_url && isVoice(m.file_name) && (
+                      <CwVoice url={m.file_url} name={m.file_name!} />
+                    )}
+                    {m.file_url && !isVoice(m.file_name) && (
+                      <div className="cw-bubble" style={{ padding: 0, overflow: "hidden" }}>
+                        {isImg(m.file_name) && /* eslint-disable-next-line @next/next/no-img-element */ <img src={m.file_url} alt={m.file_name ?? ""} style={{ maxWidth: 220, maxHeight: 160, display: "block", borderRadius: 10 }} />}
+                        {!isImg(m.file_name) && <a href={m.file_url} target="_blank" rel="noopener noreferrer" style={{ display: "flex", gap: 6, alignItems: "center", padding: "8px 12px", textDecoration: "none", color: "inherit" }}>📎 {m.file_name}</a>}
+                      </div>
                     )}
                     <div className="cw-time">{time(m.created_at)}</div>
                   </div>
                 ))}
                 <div ref={endRef} />
               </div>
+              {cwProgress !== null && <div className="cw-upload-bar"><div className="cw-upload-fill" style={{ width: `${cwProgress}%` }} /></div>}
+              {cwRecSecs !== null ? (
+                <div className="cw-rec">
+                  <span className="cw-rec-dot">●</span>
+                  <span style={{ flex: 1, fontSize: 13 }}>{fmtSecs(cwRecSecs)}</span>
+                  <button type="button" className="cw-ic-btn" onClick={() => cwStopRec(true)} title="Cancel">✕</button>
+                  <button type="button" className="cw-send-btn" onClick={() => cwStopRec(false)} title="Send voice"><IcSend /></button>
+                </div>
+              ) : (
               <form className="cw-input" onSubmit={e => { e.preventDefault(); send(); }}>
+                <input ref={cwFileRef} type="file" hidden onChange={e => { const f = e.target.files?.[0]; if (f) cwOnFile.current(f); }} />
+                <button type="button" className="cw-ic-btn" onClick={() => cwFileRef.current?.click()} title="Attach file" disabled={cwProgress !== null}><IcClip /></button>
+                <div style={{ position: "relative" }}>
+                  <button type="button" className="cw-ic-btn" onClick={() => setCwEmoji(v => !v)} title="Emoji"><IcSmile /></button>
+                  {cwEmoji && (
+                    <div className="cw-emoji-pop">
+                      {EMOJIS.map(e => <button key={e} type="button" onClick={() => { setText(t => t + e); setCwEmoji(false); inputRef.current?.focus(); }}>{e}</button>)}
+                    </div>
+                  )}
+                </div>
                 <input
                   ref={inputRef}
                   value={text}
                   onChange={e => setText(e.target.value)}
                   placeholder="Type a message…"
-                  disabled={sending}
+                  disabled={sending || cwProgress !== null}
                   autoFocus
                 />
-                <button type="submit" disabled={!text.trim() || sending} className="cw-send-btn">
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
-                </button>
+                {text.trim()
+                  ? <button type="submit" disabled={sending || cwProgress !== null} className="cw-send-btn"><IcSend /></button>
+                  : <button type="button" className="cw-send-btn" onClick={cwStartRec} disabled={cwProgress !== null} title="Voice message"><IcMic /></button>}
               </form>
+              )}
             </>
           )}
         </div>
@@ -281,4 +373,21 @@ export function ChatWidget() {
       </button>
     </div>
   );
+}
+
+function CwVoice({ url, name }: { url: string; name: string }) {
+  const [src, setSrc] = useState<string | null>(null);
+  const [busy, setBusy] = useState(false);
+  async function load() {
+    setBusy(true);
+    try {
+      const r = await fetch(url); if (!r.ok) throw new Error();
+      const type = name.endsWith(".m4a") ? "audio/mp4" : name.endsWith(".ogg") ? "audio/ogg" : "audio/webm";
+      setSrc(URL.createObjectURL(new Blob([await r.arrayBuffer()], { type })));
+    } catch {}
+    setBusy(false);
+  }
+  useEffect(() => () => { if (src) URL.revokeObjectURL(src); }, [src]);
+  if (src) return <audio controls autoPlay src={src} style={{ maxWidth: 220, display: "block" }} />;
+  return <button type="button" className="cw-bubble" style={{ border: "none", cursor: "pointer", background: "#f1f5f9", color: "var(--ink)" }} disabled={busy} onClick={load}>{busy ? "Loading…" : "▶ Voice message"}</button>;
 }
