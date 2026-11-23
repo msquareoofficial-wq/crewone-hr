@@ -85,10 +85,10 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
   );
 
   const trend = await q<{ month: string; present: number; late_count: number }>(
-    `SELECT TO_CHAR(work_date, 'YYYY-MM') AS month,
+    `SELECT TO_CHAR(work_date::date, 'YYYY-MM') AS month,
        COUNT(*)::int AS present,
        COUNT(*) FILTER (WHERE late)::int AS late_count
-     FROM attendance WHERE user_id=$1 AND work_date >= (CURRENT_DATE - INTERVAL '5 months')::date
+     FROM attendance WHERE user_id=$1 AND work_date::date >= CURRENT_DATE - INTERVAL '5 months'
      GROUP BY month ORDER BY month`,
     [user.id]
   );
