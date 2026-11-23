@@ -310,4 +310,10 @@
 
 ---
 
-*Last updated: 2026-11-23 — Attendance Heatmap complete*
+### 18. More Dropdown Not Opening in Top-Nav Mode
+**Problem:** "More ▾" button click karne pe dropdown open nahi ho raha tha — top-nav mode mein.
+**Root Cause:** `<nav>` element pe `overflow-x: auto` tha top-nav mode mein. CSS spec ke according, `overflow-x: auto` automatically `overflow-y` ko bhi `auto` set kar deta hai, jo `position: absolute` dropdown ko clip kar deta tha.
+**Fix:** React Portal use kiya — top-nav mode mein `.more-pop` `document.body` pe render hota hai `position: fixed` ke saath, `getBoundingClientRect()` se position calculate karke. Sidebar mode mein pehle ki tarah inline render hota hai.
+**Files Changed:** `components/NavMore.tsx`
+
+*Last updated: 2026-11-23 — More dropdown portal fix*
