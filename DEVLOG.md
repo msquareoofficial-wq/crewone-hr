@@ -316,4 +316,28 @@
 **Fix:** React Portal use kiya — top-nav mode mein `.more-pop` `document.body` pe render hota hai `position: fixed` ke saath, `getBoundingClientRect()` se position calculate karke. Sidebar mode mein pehle ki tarah inline render hota hai.
 **Files Changed:** `components/NavMore.tsx`
 
-*Last updated: 2026-11-23 — More dropdown portal fix*
+### 19. Payslip Template Customisation
+**Feature:** Admin can customise payslip appearance from Settings → Payslip template.
+
+**Options available:**
+| Setting | Description |
+|---------|-------------|
+| Header background color | Color picker — header ki background (default #0f172a navy) |
+| Net salary box color | Color picker — net amount box ka accent color |
+| Currency symbol | Text — e.g. PKR, Rs., $ — amounts ke saath show hota hai |
+| Company address | Text — logo ke neeche header mein show hota hai |
+| Footer note | Textarea — payslip bottom pe message |
+| Signature line | Checkbox — "Employee Signature / Authorised Signatory" boxes |
+
+**Preview:** "Preview" button click karne pe sample data ke saath live payslip opens — changes reflect hoti hain immediately after save.
+
+**New Files:**
+- `app/admin/settings/PayslipSettingsForm.tsx` — settings form component
+- `app/api/payslip-settings/route.ts` — GET + PUT for payslip settings
+- `app/api/payslip/preview/route.ts` — preview with dummy data + yellow banner
+
+**Updated Files:**
+- `app/api/payslip/[id]/route.ts` — reads settings, applies header_color, accent_color, currency, address, footer_note, show_signature
+- `app/admin/settings/page.tsx` — "Payslip template" card added
+
+*Last updated: 2026-11-23 — Payslip template customisation*
