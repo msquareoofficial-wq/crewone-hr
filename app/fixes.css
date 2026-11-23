@@ -115,6 +115,12 @@ form.row input[type="month"]{flex:1}
 .top .who .bell .bell-btn{width:100%}
 }
 
+/* sidebar: show full name, allow wrapping */
+@media(min-width:901px){
+html:not([data-nav="top"]) .top .who>.who-t{max-width:none;white-space:normal;overflow:visible;text-overflow:unset;flex:1 1 100%}
+html:not([data-nav="top"]) .top .who>.who-t small{white-space:normal;overflow:visible;text-overflow:unset}
+}
+
 /* sidebar clock chip: time and weather on one row, date under the time, never wider than the card */
 @media(min-width:901px){
 .top .who>.cw{box-sizing:border-box;width:100%;min-width:0;max-width:100%;flex-wrap:wrap;row-gap:1px;column-gap:8px;padding:8px 12px;overflow:hidden;white-space:normal}
