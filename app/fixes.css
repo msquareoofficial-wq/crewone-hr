@@ -218,3 +218,29 @@ form.row input[type="month"]{flex:1}
 @media (max-width:900px){.fin-w3{min-width:430px}.fin-w3 th:first-child{min-width:150px}.lg-form label{flex:1 1 100%}.lg-form label input,.lg-form label select{width:100%;min-width:0}}
 @media (min-width:1101px){.fin-two{grid-template-columns:minmax(0,1.05fr) minmax(0,1.25fr)}.fin-w3 th:first-child{min-width:170px}}
 @media (min-width:1101px){.fin-two{grid-template-columns:minmax(0,1fr) minmax(0,1.5fr)}.fin-w2 th:nth-child(3){min-width:130px}.fin-w2 th:nth-child(2){min-width:120px}.fin-t td,.fin-t th{padding:6px 6px}}
+
+/* ===== Top-nav mode: data-nav="top" forces horizontal top bar on desktop ===== */
+@media(min-width:901px){
+html[data-nav="top"] body{padding-left:0}
+html[data-nav="top"] body:not(:has(.lgx)){padding-top:0}
+html[data-nav="top"] .top.top{position:sticky;top:0;left:auto;bottom:auto;width:100%;height:auto;min-height:52px;flex-direction:row;align-items:center;justify-content:flex-start;overflow:visible;padding:0 14px;gap:0;border-right:0;border-bottom:1px solid var(--line);z-index:40}
+html[data-nav="top"] .top .logo{padding:0 14px 0 0;flex:none}
+html[data-nav="top"] .top .logo img{height:28px}
+html[data-nav="top"] .top.top nav{flex-direction:row;flex:1 1 auto;gap:2px;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none;min-width:0}
+html[data-nav="top"] .top.top nav::-webkit-scrollbar{display:none}
+html[data-nav="top"] .top.top nav a{padding:6px 12px;font-size:13.5px;white-space:nowrap}
+html[data-nav="top"] .top.top nav a::before,html[data-nav="top"] .top .more-btn::before{display:none}
+html[data-nav="top"] .more{position:relative}
+html[data-nav="top"] .more-btn{padding:6px 12px;font-size:13.5px;white-space:nowrap}
+html[data-nav="top"] .more-pop{position:absolute;min-width:180px;background:var(--card);border:1px solid var(--line);box-shadow:var(--sh);padding:6px;border-radius:12px;top:calc(100% + 4px);left:0;margin:0}
+html[data-nav="top"] .top.top nav .more-pop a::before{display:none}
+html[data-nav="top"] .top.top nav .more-pop a{padding:9px 12px;font-size:13.5px;border-radius:8px}
+html[data-nav="top"] .top .who{flex:none;flex-wrap:nowrap;border:0;border-radius:0;padding:0 0 0 8px;margin-top:0;gap:4px;background:none}
+html[data-nav="top"] .top .who>.btn{flex:none;width:auto;min-height:0;padding:5px 10px;font-size:12px}
+html[data-nav="top"] .top .who>.bell,.top .who>.theme-btn,.top .who>.logout-btn{flex:none;order:0}
+html[data-nav="top"] .top .who .bell-btn,.top .who .theme-btn,.top .who .logout-btn{width:34px;height:34px}
+html[data-nav="top"] .top .who-t{display:none}
+html[data-nav="top"] .top .cw{display:none}
+html[data-nav="top"] .bell-pop{left:auto;right:16px;bottom:auto;top:56px}
+html[data-nav="top"] .top .logout-btn::after{top:calc(100% + 8px);bottom:auto}
+}

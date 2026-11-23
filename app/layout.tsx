@@ -25,6 +25,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {/* eslint-disable-next-line @next/next/no-page-custom-font */}
         <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" />
         <script dangerouslySetInnerHTML={{ __html: `try{var t=localStorage.getItem("theme");if(!t&&window.matchMedia("(prefers-color-scheme: dark)").matches)t="dark";if(t==="dark")document.documentElement.dataset.theme="dark"}catch(e){}` }} />
+        <script dangerouslySetInnerHTML={{ __html: `try{if(localStorage.getItem("nav-layout")==="top")document.documentElement.setAttribute("data-nav","top")}catch(e){}` }} />
       </head>
       <body>
         {children}

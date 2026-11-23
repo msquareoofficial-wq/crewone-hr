@@ -15,6 +15,7 @@ import ProjectsNavLink from "./ProjectsNav";
 import { LiveNavLink, LiveToasts, NotifBell } from "./LiveTabs";
 import { BRAND, getBrandLogos } from "@/lib/brand";
 import { getNavLabels, getSettings } from "@/lib/db";
+import NavToggle from "./NavToggle";
 
 // online: true = green dot (active), false = red dot (inactive), undefined = no dot
 export function Avatar({ src, name, size = 34, online }: { src?: string | null; name: string; size?: number; online?: boolean }) {
@@ -80,6 +81,7 @@ export default async function Shell({ user, children }: { user: SessionUser; chi
           <ClockWeather timezone={s.timezone} />
           <NotifBell />
           <PushToggle />
+          <NavToggle />
           <ThemeToggle />
           <LogoutButton />
         </div>
