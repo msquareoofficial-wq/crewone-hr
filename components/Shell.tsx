@@ -16,6 +16,7 @@ import { LiveNavLink, LiveToasts, NotifBell } from "./LiveTabs";
 import { BRAND, getBrandLogos } from "@/lib/brand";
 import { getNavLabels, getSettings } from "@/lib/db";
 import NavToggle from "./NavToggle";
+import MobileNav from "./MobileNav";
 
 // online: true = green dot (active), false = red dot (inactive), undefined = no dot
 export function Avatar({ src, name, size = 34, online }: { src?: string | null; name: string; size?: number; online?: boolean }) {
@@ -40,7 +41,7 @@ export default async function Shell({ user, children }: { user: SessionUser; chi
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img className="lg-l" src={logos.light} alt={BRAND.name} />
         </div>
-        <nav>
+        <MobileNav>
           {admin ? (
             <>
               <LiveNavLink tab="admindash" href="/admin" label={labels.admindash} exact />
@@ -73,7 +74,7 @@ export default async function Shell({ user, children }: { user: SessionUser; chi
               <ChatNavLink />
             </>
           )}
-        </nav>
+        </MobileNav>
         <NavActive />
         <div className="who">
           <MyProfile name={user.name} picture={user.picture} status={user.status_text} />

@@ -45,10 +45,10 @@ form.grid[style*="max-width"]>.err,form.grid[style*="max-width"]>.okmsg{justify-
 /* chat floating button never covers content at the end of a page (extra bottom padding above) */
 .chat-fab{right:20px;bottom:20px}
 
-/* ===== mobile and tablet (top bar becomes: logo + actions, menu row below) ===== */
+/* ===== mobile and tablet (top bar: logo + actions, burger opens nav dropdown) ===== */
 @media(max-width:900px){
 body{padding-left:0}
-.top{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"logo who" "nav nav";align-items:center;gap:8px 10px;height:auto;padding:8px 12px 6px;flex-wrap:nowrap}
+.top{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"logo who";align-items:center;gap:0 10px;height:auto;padding:8px 12px;flex-wrap:nowrap;position:relative}
 .top .logo{grid-area:logo;padding:0;min-width:0}
 .top .logo img{height:28px;max-width:100%;width:auto;object-fit:contain;object-position:left center}
 .top .who{grid-area:who;display:flex;flex-wrap:nowrap;align-items:center;justify-content:flex-end;gap:6px;margin:0;padding:0;border:0;background:none}
@@ -56,12 +56,17 @@ body{padding-left:0}
 .top .who>.btn{padding:6px 9px;font-size:11px;white-space:nowrap}
 .top .who .avatar{width:32px !important;height:32px !important}
 .top .theme-btn,.top .bell-btn,.top .logout-btn{width:34px;height:34px}
-.top nav{grid-area:nav;display:flex;flex-wrap:nowrap;align-items:center;gap:4px;overflow-x:auto;overflow-y:hidden;margin:0 -12px;padding:2px 12px 4px;scrollbar-width:none;-webkit-overflow-scrolling:touch;flex:none;min-width:0}
-.top nav::-webkit-scrollbar{display:none}
-.top nav a,.top nav .more-btn{flex:none;display:inline-flex;align-items:center;gap:6px;padding:7px 13px;font-size:13px;border-radius:99px;white-space:nowrap}
-.top .more{position:static;flex:none}
-.top .more-pop{position:absolute;left:12px;right:12px;top:100%;min-width:0;margin-top:2px;background:var(--card);border:1px solid var(--line);border-radius:12px;box-shadow:var(--sh2);padding:6px;z-index:70}
-.top nav .more-pop a{color:var(--ink);border-radius:8px;padding:10px 12px;display:block}
+/* burger button */
+.burger-btn{display:flex;align-items:center;justify-content:center;width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;flex:none}
+/* nav hidden by default on mobile, shown when .mob-open */
+.top nav{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;background:var(--card);border-bottom:1px solid var(--line);padding:8px 12px;z-index:60;box-shadow:var(--sh)}
+.top nav.mob-open{display:flex}
+.top nav a,.top nav .more-btn{display:flex;align-items:center;gap:10px;padding:11px 12px;font-size:14px;border-radius:10px;white-space:nowrap;width:100%;color:var(--sbtxt)}
+.top nav a:hover,.top nav .more-btn:hover{background:var(--sbhov);color:var(--ink)}
+.top nav a.on{background:var(--brand-soft);color:var(--brand);font-weight:600}
+.top .more{position:static;flex:none;width:100%}
+.top .more-pop{position:static;min-width:0;background:transparent;border:0;box-shadow:none;padding:0 0 0 20px;margin:0}
+.top nav .more-pop a{padding:9px 12px;font-size:13.5px}
 .top .bell{position:static}
 .bell-pop{position:absolute;left:12px;right:12px;top:100%;width:auto;max-width:none;margin-top:2px}
 
@@ -114,6 +119,9 @@ form.row input[type="month"]{flex:1}
 .top .who .bell-btn,.top .who .theme-btn,.top .who .logout-btn{width:100%;height:36px}
 .top .who .bell .bell-btn{width:100%}
 }
+
+/* burger button: desktop mein hide */
+@media(min-width:901px){.burger-btn{display:none}}
 
 /* sidebar: show full name, allow wrapping */
 @media(min-width:901px){
