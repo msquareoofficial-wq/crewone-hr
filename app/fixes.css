@@ -61,6 +61,7 @@ form.grid[style*="max-width"]>.err,form.grid[style*="max-width"]>.okmsg{justify-
 
 /* chat floating button never covers content at the end of a page (extra bottom padding above) */
 .chat-fab{right:20px;bottom:20px}
+.cw-fab{left:20px;bottom:20px}
 
 /* ===== mobile and tablet (top bar: logo + actions, burger opens nav dropdown) ===== */
 @media(max-width:900px){
