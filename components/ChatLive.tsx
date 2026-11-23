@@ -19,7 +19,8 @@ type Grp  = { room_id: number; title: string; count: number; last: string; menti
 type Item = { id: number; room_id: number; title: string; sender: string; text: string; mentioned: boolean };
 type S    = { total: number; groups: Grp[]; toasts: Item[] };
 type Room = { id: number; kind: "dm"|"group"; title: string; unread: number; last_body: string|null; last_at: string|null; other_id: number|null; has_picture: boolean; online: boolean|null };
-type Msg  = { id: number; sender_id: number; sender_name: string; body: string|null; file_url: string|null; file_name: string|null; created_at: string };
+type Msg    = { id: number; sender_id: number; sender_name: string; body: string|null; file_url: string|null; file_name: string|null; created_at: string };
+type Member = { id: number; online: boolean; last_read_id?: number };
 
 /* ── global poll state ── */
 let state: S = { total: 0, groups: [], toasts: [] };
@@ -127,6 +128,7 @@ export function ChatWidget() {
   const [cwProgress, setCwProgress] = useState<number | null>(null);
   const [cwRecSecs, setCwRecSecs]   = useState<number | null>(null);
   const [cwEmoji, setCwEmoji]       = useState(false);
+  const [cwMembers, setCwMembers]   = useState<Member[]>([]);
   const lastId    = useRef(0);
   const endRef    = useRef<HTMLDivElement>(null);
   const inputRef  = useRef<HTMLInputElement>(null);
@@ -154,8 +156,11 @@ export function ChatWidget() {
       const r = await fetch(`/api/chat/rooms/${roomId}?after=${reset ? 0 : lastId.current}`);
       if (!r.ok) return;
       const j = await r.json();
-      if (reset) setMsgs(j.messages || []);
-      else if (j.messages?.length) setMsgs(p => [...p, ...j.messages]);
+      if (reset) { setMsgs(j.messages || []); setCwMembers(j.members || []); }
+      else {
+        if (j.messages?.length) setMsgs(p => [...p, ...j.messages]);
+        if (j.members?.length)  setCwMembers(j.members);
+      }
       if (j.messages?.length) { lastId.current = j.messages[j.messages.length-1].id; loadRooms(); }
     } catch {}
   }, [loadRooms]);
@@ -325,7 +330,10 @@ export function ChatWidget() {
                         {!isImg(m.file_name) && <a href={m.file_url} target="_blank" rel="noopener noreferrer" style={{ display: "flex", gap: 6, alignItems: "center", padding: "8px 12px", textDecoration: "none", color: "inherit" }}>📎 {m.file_name}</a>}
                       </div>
                     )}
-                    <div className="cw-time">{time(m.created_at)}</div>
+                    <div className="cw-time">
+                      {time(m.created_at)}
+                      {m.sender_id === meId && <CwTick msgId={m.id} members={cwMembers} meId={meId} />}
+                    </div>
                   </div>
                 ))}
                 <div ref={endRef} />
@@ -394,4 +402,17 @@ function CwVoice({ url, name }: { url: string; name: string }) {
   useEffect(() => () => { if (src) URL.revokeObjectURL(src); }, [src]);
   if (src) return <audio controls autoPlay src={src} style={{ maxWidth: 220, display: "block" }} />;
   return <button type="button" className="cw-bubble" style={{ border: "none", cursor: "pointer", background: "#f1f5f9", color: "var(--ink)" }} disabled={busy} onClick={load}>{busy ? "Loading…" : "▶ Voice message"}</button>;
+}
+
+function CwTick({ msgId, members, meId }: { msgId: number; members: Member[]; meId: number | null }) {
+  const others = members.filter(x => x.id !== meId);
+  if (!others.length) return null;
+  const read      = others.every(x => (x.last_read_id ?? 0) >= msgId);
+  const delivered = read || others.some(x => x.online);
+  return (
+    <svg className={`cw-tick${read ? " read" : ""}`} width="16" height="11" viewBox="0 0 18 12" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-label={read ? "Read" : delivered ? "Delivered" : "Sent"}>
+      <path d="M1.5 6.5l3.5 3.5L11.5 2" />
+      {delivered && <path d="M7.5 9.2l.8.8L16 2" />}
+    </svg>
+  );
 }

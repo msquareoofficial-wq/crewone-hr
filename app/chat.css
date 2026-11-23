@@ -58,6 +58,9 @@
 [data-theme="dark"] .cw-bubble{background:#1e293b}
 [data-theme="dark"] .cw-msg.me .cw-bubble{background:var(--brand)}
 [data-theme="dark"] .cw-input input{background:#1e293b;border-color:#334155}
+/* read receipt ticks */
+.cw-tick{color:#94a3b8;display:inline-block;margin-left:3px;vertical-align:middle;flex-shrink:0}
+.cw-tick.read{color:#3b82f6}
 /* icon buttons inside widget input */
 .cw-ic-btn{width:30px;height:30px;border-radius:8px;border:0;background:none;color:var(--mute);cursor:pointer;display:flex;align-items:center;justify-content:center;flex-shrink:0;transition:background .12s,color .12s}
 .cw-ic-btn:hover{background:var(--sbhov);color:var(--ink)}
