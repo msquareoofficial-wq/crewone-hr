@@ -131,7 +131,8 @@ export function ChatWidget() {
   const endRef    = useRef<HTMLDivElement>(null);
   const inputRef  = useRef<HTMLInputElement>(null);
   const cwFileRef = useRef<HTMLInputElement>(null);
-  const cwRecRef  = useRef<{ mr: MediaRecorder; stream: MediaStream; chunks: Blob[]; cancelled: boolean } | null>(null);
+  const cwRecRef   = useRef<{ mr: MediaRecorder; stream: MediaStream; chunks: Blob[]; cancelled: boolean } | null>(null);
+  const sendingRef = useRef(false);
   const cwRecTimer= useRef<any>(null);
   const cwOnFile  = useRef<(f: File) => void>(() => {});
 
@@ -172,17 +173,20 @@ export function ChatWidget() {
 
   /* send */
   async function send() {
-    if (!active || !text.trim() || sending) return;
+    if (!active || !text.trim() || sendingRef.current) return;
+    sendingRef.current = true;
     setSending(true);
+    const body = text.trim();
+    setText(""); // Clear immediately — prevents duplicate sends on rapid Enter
     try {
       await fetch(`/api/chat/rooms/${active.id}`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ body: text.trim() }),
+        body: JSON.stringify({ body }),
       });
-      setText("");
       await fetchMsgs(active.id, false);
-    } catch {} finally { setSending(false); }
+    } catch { setText(body); }
+    finally { sendingRef.current = false; setSending(false); }
     inputRef.current?.focus();
   }
 

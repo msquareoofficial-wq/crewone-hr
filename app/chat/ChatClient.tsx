@@ -61,6 +61,7 @@ export default function ChatClient({ meId, meRole, tz, initialRoom }: { meId: nu
   const recTimer = useRef<any>(null);
   const onFileRef = useRef<(f: File) => void>(() => {});
   const [recSecs, setRecSecs] = useState<number | null>(null);
+  const sendingRef = useRef(false);
 
   const loadRooms = useCallback(async () => {
     try { const r = await fetch("/api/chat/rooms"); if (r.ok) setRooms((await r.json()).rooms); } catch {}
@@ -91,16 +92,19 @@ export default function ChatClient({ meId, meRole, tz, initialRoom }: { meId: nu
   useEffect(() => { endRef.current?.scrollIntoView({ block: "end" }); }, [msgs.length, active]);
 
   async function send(file?: { id: number }) {
-    if (!active) return;
+    if (!active || sendingRef.current) return;
     const body = text.trim();
     if (!body && !file) return;
+    sendingRef.current = true;
+    // Clear immediately so rapid Enter presses don't re-send
+    setText(""); setTagged([]); setErr(""); setReplyTo(null); setShowEmoji(false);
     try {
       const r = await fetch(`/api/chat/rooms/${active}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ body, file, reply_to: replyTo?.id, mentions: tagged.filter((t) => body.includes("@" + t.name)).map((t) => t.id) }) });
       let j: any = {}; try { j = await r.json(); } catch {}
-      if (!r.ok) return setErr(j.error || "Could not send");
-      setText(""); setTagged([]); setErr(""); setReplyTo(null); setShowEmoji(false);
+      if (!r.ok) { setText(body); return setErr(j.error || "Could not send"); }
       await fetchMsgs(active, false);
-    } catch { setErr("Network error"); }
+    } catch { setText(body); setErr("Network error"); }
+    finally { sendingRef.current = false; }
   }
 
   async function onFile(f: File) {
