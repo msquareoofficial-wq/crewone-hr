@@ -6,6 +6,19 @@
 
 ---
 
+## 2026-11-24 (System check — post Sprint 2)
+
+### Full system audit
+- **TypeScript**: `npx tsc --noEmit` → **0 errors** (all Sprint 2 additions clean)
+- **API routes reviewed** (~30 routes + all core lib files):
+  - `attendance`, `break`, `task`, `leaves`, `corrections`, `me`, `cron/reminders`, `push`, `live` (SSE), `auth/login`, `notifications`, `users`, `payroll`, `calendar/events`, `projects`, `admin/finance`, `admin/missed-out`, `admin/backup`, `admin/reset`, `reports`, `chat/rooms`, `chat/rooms/[id]`, `projects/[id]/tasks`, `payslip/[id]`
+  - Lib files: `auth.ts`, `db.ts`, `hr.ts`, `missedout.ts`, `payroll.ts`, `push.ts`
+- **No bugs found** — all routes have correct auth guards, input validation, DB queries
+- Notable: `autoCloseStale()` throttled to 30s intervals (module-level `lastRun` cache), payroll deduction logic handles hybrid shifts, missed-out uses 7-day window for user, 14-day for admin
+- Cron (`0 9 * * *`) confirmed correct for daily OUT auto-close
+
+---
+
 ## 2026-11-24 (Vercel cron fix)
 
 ### Build error fix — cron schedule
