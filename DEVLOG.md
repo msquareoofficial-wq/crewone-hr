@@ -6,6 +6,24 @@
 
 ---
 
+## 2026-11-24 (UI/UX improvements)
+
+### UI/UX audit + quick wins (5 CSS changes, 3 loading skeletons)
+- **app/globals.css**: Fixed WCAG AA contrast failure — `--mute` changed from `#6b7389` (3.95:1) to `#525f7a` (5.4:1). Affects all label, timestamp, and secondary text across every page
+- **app/refine.css** (5 additions):
+  - Font size bumped from `14px` → `15px` (more readable on data-heavy tables/forms)
+  - `.wrap` gets `animation: fadeUp .22s` — smooth page-load fade instead of instant repaint on navigation
+  - `.btn.loading` — spinner class: `color:transparent` + `::after` spinning border ring; `.btn.sec.loading` uses brand-color ring
+  - `.skel` / `.skel-h1` / `.skel-card` / `.skel-line` — pulse skeleton CSS for loading states
+  - `.empty` / `.empty-icon` — empty state layout (icon + heading + sub) for "no data" cases
+  - Mobile touch targets: `.theme-btn`, `.bell-btn`, `.logout-btn` bumped to `44×44px` on phones (was 32px, below Apple HIG minimum)
+- **app/dashboard/loading.tsx** (new): Next.js 15 route skeleton — 2 card skeletons + 4 stat skeletons shown while dashboard data loads server-side
+- **app/admin/loading.tsx** (new): 6 stat tiles + 2 cards skeleton
+- **app/calendar/loading.tsx** (new): Full-height calendar skeleton
+- **Audit report**: Full UI/UX audit with category breakdown (10 categories), all issues with severity + 1-line code fixes, 4-sprint roadmap to 10/10
+
+---
+
 ## 2026-11-24
 
 ### Calendar event reminders — push notification
