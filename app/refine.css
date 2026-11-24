@@ -128,6 +128,14 @@ body:has(.login){background:
 .skel-line{height:14px;width:100%;margin-bottom:8px;border-radius:4px}
 .skel-line.w60{width:60%}
 .skel-line.w40{width:40%}
+.skel-line.w30{width:30%}
+.skel-line.w80{width:80%}
+.skel-avatar{width:36px;height:36px;border-radius:50%;flex:none}
+.skel-avatar.lg{width:48px;height:48px}
+.skel-btn{height:34px;width:110px;border-radius:8px}
+.skel-badge{height:22px;width:64px;border-radius:20px}
+.skel-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:1px solid var(--line)}
+.skel-cell{height:14px;border-radius:4px;flex:1}
 
 /* empty state */
 .empty{display:flex;flex-direction:column;align-items:center;text-align:center;padding:36px 20px 28px;color:var(--mute);gap:10px}
