@@ -6,6 +6,32 @@
 
 ---
 
+## 2026-11-24 (Sprint 3 — Micro-animations & UI polish)
+
+### Weak points fixed (from UI/UX audit)
+
+**Toast exit animation** (`lib/toast.ts`, `components/Toaster.tsx`)
+- Added `_exiting` set to singleton store; toasts now spend 280ms in exit state before DOM removal
+- `Toaster.tsx` applies `.ac-toast-out` class → `@keyframes acOut` (slide-right + fade + collapse height)
+
+**Bottom sheet close animation** (`components/BottomBar.tsx`)
+- Added `closing` state + `close()` with 210ms timeout
+- Sheet stays in DOM while closing, gets `.btm-closing` → `@keyframes btmSlideDown` + overlay fade-out
+
+**Micro-animations** (`app/refine.css`):
+- `.btn:active` → `scale(.97)` press feedback
+- `.btm-tab:active` → `scale(.88)` tap feedback  
+- `input/select/textarea` → smooth `border-color + box-shadow` transition on focus
+- `tbody tr` → smooth `background` transition on hover
+- `.stat:hover` → `translateY(-2px)` + shadow upgrade
+- `.bell-pop`, `.more-pop` → `popIn` slide-down animation on open
+- `.modal-bg .modal` → reuses `dppop` for consistent open
+- `.top nav a`, `.more-pop a`, `.more-btn` → `background + color` transition
+- `@media(prefers-reduced-motion)` gate on all new animations
+- Commit: `b597d10`
+
+---
+
 ## 2026-11-24 (System check — post Sprint 2)
 
 ### Full system audit
