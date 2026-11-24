@@ -147,7 +147,7 @@ body:has(.login){background:
 
 /* ---------- clock + weather chip (header) ---------- */
 .cw{display:flex;align-items:center;gap:8px;padding:5px 11px;border-radius:10px;background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.08);color:#e2e8f0;font-size:12.5px;line-height:1.1;white-space:nowrap;min-height:30px;cursor:default}
-.cw-t{font-weight:700;font-size:13.5px;font-variant-numeric:tabular-nums;color:#fff}
+.cw .cw-t{font-weight:700;font-size:13.5px;font-variant-numeric:tabular-nums;color:#fff}
 .cw-d{color:#94a3b8}
 .cw-w{display:flex;align-items:center;gap:4px;padding-left:8px;border-left:1px solid rgba(255,255,255,.14);font-weight:600;color:#fff}
 .cw-i{font-size:15px;line-height:1}

@@ -6,6 +6,27 @@
 
 ---
 
+## 2026-11-24
+
+### CSS Fixes — Dark mode text, chat names, Karachi clock size
+- **Dark mode text blur** (`dark.css`): Added `-webkit-font-smoothing: antialiased` + `letter-spacing: 0` to `[data-theme="dark"] body` — removes negative letter-spacing that looks fuzzy on dark backgrounds (Windows ClearType issue)
+- **Light mode chat names missing** (`refine.css`): `.cw-t{color:#fff}` was set globally, making chat room names white on white background. Scoped it to `.cw .cw-t` (clock chip only) so chat widget names inherit `var(--ink)` correctly
+- **Karachi time bigger** (`fixes.css`): Sidebar clock `.cw-t` font-size bumped from `15px` → `19px`
+
+---
+
+## 2026-11-23
+
+### Chat widget — attachment, emoji, voice (commit `2a3338d`)
+- **Paperclip button** → file picker, chunked upload to `/api/chat/files` (max 50 MB)
+- **Emoji button** → 60-emoji grid popup (`.cw-emoji-pop`)
+- **Mic button** → voice recording (MediaRecorder), blinking recording bar with cancel/send
+- Images show inline preview in widget bubbles; voice messages playable inline
+- Upload progress bar (`.cw-upload-bar`) under messages area
+- New CSS: `.cw-ic-btn`, `.cw-emoji-pop`, `.cw-rec`, `.cw-upload-bar`
+
+---
+
 ## Bug Fixes
 
 ### 1. Late Minutes — Grace Period Calculation Wrong

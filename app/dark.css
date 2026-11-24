@@ -1,5 +1,6 @@
 ﻿/* Powered By Vistech Force */
 html[data-theme="dark"]{color-scheme:dark}
+[data-theme="dark"] body{-webkit-font-smoothing:antialiased;-moz-osx-font-smoothing:grayscale;letter-spacing:0}
 [data-theme="dark"]{--bg:#0e1320;--card:#171d2d;--ink:#e6e9f2;--mute:#99a2ba;--line:#2b3349;--brand:#6366f1;--brand2:#4f46e5}
 [data-theme="dark"] a{color:#a5b4fc}
 [data-theme="dark"] .btn,[data-theme="dark"] .btn:hover,[data-theme="dark"] a.btn{color:#fff}
