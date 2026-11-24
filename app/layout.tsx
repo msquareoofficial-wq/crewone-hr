@@ -8,6 +8,7 @@ import "./refine.css";
 import "./saas.css";
 import "./fixes.css";
 import "./calendar.css";
+import "../components/breaklog.css";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {

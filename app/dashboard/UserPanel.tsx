@@ -1,6 +1,7 @@
 ﻿// Powered By Vistech Force
 "use client";
 import { useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import CatIcon from "@/components/CatIcon";
 import { BREAK_CATS, catLabel } from "@/lib/breakcats";
@@ -71,7 +72,7 @@ export default function UserPanel({ onBreak, breakSince, breakCat, task }: { onB
         </div>
       )}
       {err && <div className="err">{err}</div>}
-      {pick && (
+      {pick && typeof document !== "undefined" && createPortal(
         <div className="bk-ov" onClick={() => !busy && setPick(false)}>
           <div className="bk-modal" onClick={(e) => e.stopPropagation()}>
             <h3>What kind of break?</h3>
@@ -86,7 +87,8 @@ export default function UserPanel({ onBreak, breakSince, breakCat, task }: { onB
             </div>
             <button className="btn sec sm" style={{ marginTop: 14 }} onClick={() => setPick(false)}>Cancel</button>
           </div>
-        </div>
+        </div>,
+        document.body
       )}
     </div>
   );
