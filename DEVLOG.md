@@ -15,6 +15,20 @@
 
 ---
 
+## 2026-11-24 (Sprint 2 — Mobile bottom tab bar)
+
+### Mobile bottom nav (phone ≤640px)
+- **BottomBar.tsx** (new): fixed bottom bar, role-aware tabs
+  - Admin: Dashboard | Users | Leaves | Notices | More
+  - User: Dashboard | Calendar | Projects | Chat | More
+- "More" opens slide-up sheet (all nav links as children) with backdrop + handle grip
+- Active tab: brand-color + top indicator line, inactive: muted
+- Burger button hidden on phones (`≤640px`), tablet keeps burger
+- `.wrap` bottom padding bumped to clear the bar; toast already at `bottom:76px`
+- Commit: `cd2253b`
+
+---
+
 ## 2026-11-24 (Sprint 2 — Inline form validation)
 
 ### Real-time field validation on key forms
