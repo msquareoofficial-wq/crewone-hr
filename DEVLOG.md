@@ -6,6 +6,28 @@
 
 ---
 
+## 2026-11-24 (Vercel cron fix)
+
+### Build error fix — cron schedule
+- **vercel.json**: Changed cron expression from `* * * * *` (every minute) to `0 9 * * *` (daily at 9 AM)
+- Root cause: Vercel Hobby plan only allows once-per-day crons; every-minute schedule caused `ERROR` state on all deployments
+- Commit: `ca1d0f3`
+
+---
+
+## 2026-11-24 (Sprint 2 — Toast system)
+
+### Global toast notification system
+- **lib/toast.ts** (new): singleton pub/sub store — `toast(msg, type)` callable from any client component, no prop drilling
+- **components/Toaster.tsx** (new): portal-based renderer (`createPortal` to `document.body`), subscribes to store with `useEffect`
+- **components/Shell.tsx**: `<Toaster />` mounted globally next to LiveToasts
+- **app/refine.css**: `.ac-toast-*` styles — ok/bad/warn/info variants with dark mode support, slide-up animation, mobile-safe positioning
+- **UserPanel.tsx**: toast on break start ("Break started — lunch"), break end ("welcome back!"), task start, task end, and API errors
+- **AttendanceButtons.tsx**: toast on IN ("have a great day!"), OUT ("see you tomorrow!"), undo, and errors
+- Commit: `1ecc056`
+
+---
+
 ## 2026-11-24 (UI/UX improvements)
 
 ### UI/UX audit + quick wins (5 CSS changes, 3 loading skeletons)
