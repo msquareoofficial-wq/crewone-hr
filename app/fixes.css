@@ -272,7 +272,9 @@ html[data-nav="top"] .top .who>.btn{flex:none;width:auto;min-height:0;padding:5p
 html[data-nav="top"] .top .who>.bell,.top .who>.theme-btn,.top .who>.logout-btn{flex:none;order:0}
 html[data-nav="top"] .top .who .bell-btn,.top .who .theme-btn,.top .who .logout-btn{width:34px;height:34px}
 html[data-nav="top"] .top .who-t{display:flex;flex-direction:column;max-width:160px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px;line-height:1.2}
-html[data-nav="top"] .top .cw{display:none}
+html[data-nav="top"] .top .cw{display:flex;padding:4px 10px;font-size:12px;min-height:28px;white-space:nowrap}
+html[data-nav="top"] .top .cw .cw-t{font-size:13px}
+html[data-nav="top"] .top .cw .cw-d{display:none}
 html[data-nav="top"] .bell-pop{left:auto;right:16px;bottom:auto;top:56px}
 html[data-nav="top"] .top .logout-btn::after{top:calc(100% + 8px);bottom:auto}
 }
