@@ -26,6 +26,7 @@ async function getPayslipSettingsFromDB(): Promise<PayslipSettings> {
   }
   return {
     header_color: m.header_color || "#0f172a",
+    header_text_color: m.header_text_color || "#ffffff",
     accent_color: m.accent_color || "#0f172a",
     address: m.address ?? "",
     currency: m.currency ?? "",

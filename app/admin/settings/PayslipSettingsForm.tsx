@@ -93,7 +93,7 @@ export default function PayslipSettingsForm({ initial }: { initial: PayslipSetti
     }
   }
 
-  const colorInput = (label: string, key: "header_color" | "accent_color", placeholder: string) => (
+  const colorInput = (label: string, key: "header_color" | "header_text_color" | "accent_color", placeholder: string) => (
     <label>
       {label}
       <div className="row" style={{ gap: 8, marginTop: 4 }}>
@@ -144,6 +144,7 @@ export default function PayslipSettingsForm({ initial }: { initial: PayslipSetti
       {/* ── Colors ── */}
       <div className="grid g2" style={{ gap: 16 }}>
         {colorInput("Header background color", "header_color", "#0f172a")}
+        {colorInput("Header text color", "header_text_color", "#ffffff")}
         {colorInput("Net salary box color", "accent_color", "#0f172a")}
       </div>
 

@@ -23,7 +23,8 @@ export function buildPayslipHtml(
   logoUrl: string,
   isPreview = false
 ): string {
-  const { header_color, accent_color, address, currency: c, footer_note, show_signature } = ps;
+  const { header_color, header_text_color, accent_color, address, currency: c, footer_note, show_signature } = ps;
+  const htc = header_text_color || "#ffffff";
   const fields = ps.custom_fields?.length ? ps.custom_fields : DEFAULT_FIELDS;
   const isPaid = row.status === "paid";
 
@@ -56,12 +57,12 @@ export function buildPayslipHtml(
   body{font-family:"Segoe UI",Arial,sans-serif;font-size:13px;color:#111;background:#f5f5f5}
   ${previewCss}
   .page{max-width:760px;margin:${isPreview ? "24px" : "32px"} auto;background:#fff;border-radius:10px;overflow:hidden;box-shadow:0 2px 20px rgba(0,0,0,.12)}
-  .header{background:${header_color};color:#fff;padding:28px 36px 22px;display:flex;justify-content:space-between;align-items:flex-start}
+  .header{background:${header_color};color:${htc};padding:28px 36px 22px;display:flex;justify-content:space-between;align-items:flex-start}
   .header-left{display:flex;flex-direction:column;gap:6px}
   .header img{height:44px;object-fit:contain;max-width:220px}
-  .header-address{font-size:11px;color:rgba(255,255,255,.65);line-height:1.4;max-width:260px}
+  .header-address{font-size:11px;color:${htc};opacity:.7;line-height:1.4;max-width:260px}
   .header-right{text-align:right}.header-right .title{font-size:20px;font-weight:700;letter-spacing:.04em}
-  .header-right .month{font-size:13px;color:rgba(255,255,255,.65);margin-top:2px}
+  .header-right .month{font-size:13px;color:${htc};opacity:.75;margin-top:2px}
   .info{display:grid;grid-template-columns:1fr 1fr;gap:0;border-bottom:1px solid #e2e8f0}
   .info-col{padding:20px 36px}.info-col:first-child{border-right:1px solid #e2e8f0}
   .info-label{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:#64748b;margin-bottom:10px;font-weight:600}
@@ -82,7 +83,7 @@ export function buildPayslipHtml(
   .stamp-text{display:inline-block;border:3px solid #16a34a;color:#16a34a;font-size:15px;font-weight:800;letter-spacing:.15em;text-transform:uppercase;padding:4px 14px;border-radius:4px;transform:rotate(-8deg);opacity:.85}
   .stamp-text.draft{border-color:#f59e0b;color:#f59e0b}
   .print-btn{display:flex;justify-content:center;padding:24px;background:#f8fafc;border-top:1px solid #e2e8f0}
-  .print-btn button{background:${header_color};color:#fff;border:none;padding:10px 32px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.02em}
+  .print-btn button{background:${header_color};color:${htc};border:none;padding:10px 32px;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;letter-spacing:.02em}
   @media print{body{background:#fff}.page{box-shadow:none;margin:0;border-radius:0;max-width:100%}.print-btn${isPreview ? ",.preview-banner" : ""}{display:none}}
 </style>
 </head>

@@ -18,6 +18,7 @@ export async function GET() {
 
   return NextResponse.json({
     header_color: m.header_color || PAYSLIP_DEFAULTS.header_color,
+    header_text_color: m.header_text_color || PAYSLIP_DEFAULTS.header_text_color,
     accent_color: m.accent_color || PAYSLIP_DEFAULTS.accent_color,
     address: m.address ?? "",
     currency: m.currency ?? "",
@@ -35,6 +36,7 @@ export async function PUT(req: Request) {
 
   const fields: Record<string, string> = {
     payslip_header_color: String(b.header_color || PAYSLIP_DEFAULTS.header_color),
+    payslip_header_text_color: String(b.header_text_color || PAYSLIP_DEFAULTS.header_text_color),
     payslip_accent_color: String(b.accent_color || PAYSLIP_DEFAULTS.accent_color),
     payslip_address: String(b.address ?? ""),
     payslip_currency: String(b.currency ?? ""),

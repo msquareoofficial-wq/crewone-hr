@@ -9,6 +9,7 @@ export type CustomField = {
 
 export type PayslipSettings = {
   header_color: string;
+  header_text_color: string;
   accent_color: string;
   address: string;
   currency: string;
@@ -45,6 +46,7 @@ export const DEFAULT_FIELDS: CustomField[] = [
 
 export const PAYSLIP_DEFAULTS: PayslipSettings = {
   header_color: "#0f172a",
+  header_text_color: "#ffffff",
   accent_color: "#0f172a",
   address: "",
   currency: "",
