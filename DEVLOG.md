@@ -8,6 +8,14 @@
 
 ## 2026-11-24
 
+### Appearance customization per user
+- **MyProfile.tsx**: Added Appearance section in the avatar modal (accessible to all users + admins)
+  - Font style: Inter / System / Serif / Mono (live preview on click)
+  - Font size: S (13px) / M (14px) / L (15px) / XL (16px)
+  - Accent color: Indigo / Blue / Violet / Teal / Rose (color swatches)
+- **layout.tsx**: Added init script that reads `app-font`, `app-size`, `app-accent` from localStorage and injects `<style id="u-pref">` before render — no flash on page load
+- All settings are localStorage-based (per-browser, no DB change needed); apply instantly on click
+
 ### CSS Fixes — Dark mode text, chat names, Karachi clock size
 - **Dark mode text blur** (`dark.css`): Added `-webkit-font-smoothing: antialiased` + `letter-spacing: 0` to `[data-theme="dark"] body` — removes negative letter-spacing that looks fuzzy on dark backgrounds (Windows ClearType issue)
 - **Light mode chat names missing** (`refine.css`): `.cw-t{color:#fff}` was set globally, making chat room names white on white background. Scoped it to `.cw .cw-t` (clock chip only) so chat widget names inherit `var(--ink)` correctly
