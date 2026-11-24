@@ -6,6 +6,7 @@ import { ACT_CATS } from "@/lib/activity";
 import { fmtDateTime } from "@/lib/time";
 import Shell from "@/components/Shell";
 import { EmptyRow } from "@/components/EmptyState";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const LABEL: Record<string, string> = { auth: "Login", attendance: "Attendance", break: "Break", task: "Task timer", leave: "Leave", project: "Projects", chat: "Chat", profile: "Profile" };
 const BADGE: Record<string, string> = { auth: "b-ok", attendance: "b-ok", break: "b-warn", leave: "b-warn", chat: "", task: "", project: "", profile: "" };
@@ -32,6 +33,7 @@ export default async function ActivityPage({ searchParams }: { searchParams: Pro
   const qs = (extra: Record<string, string>) => new URLSearchParams({ ...(uid ? { user: String(uid) } : {}), ...(cat ? { cat } : {}), ...(day ? { day } : {}), ...extra }).toString();
   return (
     <Shell user={admin}>
+      <Breadcrumbs items={[{ href: "/admin", label: "Dashboard" }, { label: "Activity log" }]} />
       <h1>User activity log</h1>
       <div className="card">
         <form method="get" className="row" style={{ marginBottom: 12 }}>

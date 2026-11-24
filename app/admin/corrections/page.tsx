@@ -6,6 +6,7 @@ import { fmtDate } from "@/lib/fmtdate";
 import Shell from "@/components/Shell";
 import Decide from "./Decide";
 import { EmptyRow } from "@/components/EmptyState";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default async function CorrectionsPage() {
   const admin = await requireAdminPage();
@@ -18,6 +19,7 @@ export default async function CorrectionsPage() {
   const times = (c: any) => [c.req_in && `IN ${fmt12(c.req_in)}`, c.req_out && `OUT ${fmt12(c.req_out)}`].filter(Boolean).join(", ");
   return (
     <Shell user={admin}>
+      <Breadcrumbs items={[{ href: "/admin", label: "Dashboard" }, { label: "Corrections" }]} />
       <h1>Attendance corrections</h1>
       <div className="card">
         <h2>Pending ({pending.length})</h2>

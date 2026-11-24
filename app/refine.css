@@ -296,3 +296,11 @@ html[data-nav="top"] .top .top-nav-cw .cw .cw-d{display:none}
 @keyframes ivIn{from{opacity:0;transform:translateY(-3px)}to{opacity:1;transform:none}}
 .iv-msg::before{content:"";display:inline-block;width:12px;height:12px;background:var(--bad);border-radius:50%;flex:none;mask:url("data:image/svg+xml,%3Csvg viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='6' cy='6' r='5' stroke='white' stroke-width='1.5'/%3E%3Cpath d='M6 4v3M6 8.5v.5' stroke='white' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat;-webkit-mask:url("data:image/svg+xml,%3Csvg viewBox='0 0 12 12' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Ccircle cx='6' cy='6' r='5' stroke='white' stroke-width='1.5'/%3E%3Cpath d='M6 4v3M6 8.5v.5' stroke='white' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E") center/contain no-repeat}
 .iv-hint{font-size:12px;color:var(--mute)}
+
+/* ── Breadcrumbs ──────────────────────────────────────────── */
+.bc-nav{display:flex;align-items:center;flex-wrap:wrap;gap:2px;margin-bottom:10px;font-size:13px}
+.bc-item{display:flex;align-items:center;gap:2px}
+.bc-sep{color:var(--mute);margin:0 4px;user-select:none;font-size:11px}
+.bc-link{color:var(--mute);text-decoration:none;transition:color .15s}
+.bc-link:hover{color:var(--brand)}
+.bc-cur{color:var(--ink);font-weight:500}

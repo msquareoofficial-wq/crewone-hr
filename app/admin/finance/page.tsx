@@ -5,6 +5,7 @@ import { currentMonth } from "@/lib/hr";
 import { localParts } from "@/lib/time";
 import { ensureMonth, listItems, okMonth, autoFillGet } from "@/lib/finance";
 import Shell from "@/components/Shell";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import FinanceClient from "./FinanceClient";
 
 export default async function FinancePage({ searchParams }: { searchParams: Promise<{ month?: string }> }) {
@@ -21,6 +22,7 @@ export default async function FinancePage({ searchParams }: { searchParams: Prom
   const usdColors = await getFinUsdColors();
   return (
     <Shell user={admin}>
+      <Breadcrumbs items={[{ href: "/admin", label: "Dashboard" }, { label: "Finance" }]} />
       <h1>Finance</h1>
       <FinanceClient key={month} month={month} cur={cur} today={today} initial={rows} usdC1={usdColors.c1} usdC2={usdColors.c2} />
     </Shell>

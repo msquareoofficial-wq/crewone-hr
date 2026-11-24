@@ -3,6 +3,7 @@ import { requireAdminPage } from "@/lib/auth";
 import { q, getSettings } from "@/lib/db";
 import Shell from "@/components/Shell";
 import { EmptyRow } from "@/components/EmptyState";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { DeleteBtn } from "@/components/FeedClient";
 import LeaveDecision from "./LeaveDecision";
 import { fmtDate, fmtMonth } from "@/lib/fmtdate";
@@ -28,6 +29,7 @@ export default async function LeavesPage() {
   const dates = (l: any) => (l.start_date === l.end_date ? fmtDate(l.start_date) : `${fmtDate(l.start_date)} to ${fmtDate(l.end_date)}`);
   return (
     <Shell user={admin}>
+      <Breadcrumbs items={[{ href: "/admin", label: "Dashboard" }, { label: "Leaves" }]} />
       <h1>Leave requests</h1>
 
       <div className="card">

@@ -6,6 +6,7 @@ import { currentMonth } from "@/lib/hr";
 import { buildLedger, clampRange, shiftMonth, lineDue } from "@/lib/finance";
 import { fmtMonth, fmtDate } from "@/lib/fmtdate";
 import Shell from "@/components/Shell";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 const fmt = (n: number) => (n || 0).toLocaleString("en-US", { maximumFractionDigits: 2 });
 type SP = { from?: string; to?: string; emp?: string; status?: string };
@@ -32,6 +33,7 @@ export default async function LedgerPage({ searchParams }: { searchParams: Promi
   let bal = 0;
   return (
     <Shell user={admin}>
+      <Breadcrumbs items={[{ href: "/admin", label: "Dashboard" }, { href: "/admin/finance", label: "Finance" }, { label: "Ledger" }]} />
       <div className="row" style={{ marginBottom: 6 }}><h1 style={{ margin: 0 }}>Finance ledger</h1><div className="spacer" /><Link className="btn sec" href={`/admin/finance?month=${to}`}>Back to Finance</Link></div>
       <div className="card lg-filter">
         <div className="lg-presets">

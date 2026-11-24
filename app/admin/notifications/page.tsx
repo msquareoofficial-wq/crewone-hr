@@ -3,6 +3,7 @@ import { requireAdminPage } from "@/lib/auth";
 import { q, getSettings } from "@/lib/db";
 import { getNotifications } from "@/lib/hr";
 import Shell from "@/components/Shell";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import Feed from "@/components/Feed";
 import { DeleteBtn } from "@/components/FeedClient";
 import ComposeForm from "./ComposeForm";
@@ -15,6 +16,7 @@ export default async function NotificationsPage() {
   const hols = await q<any>("SELECT id, holiday_date, title FROM holidays ORDER BY holiday_date DESC LIMIT 60");
   return (
     <Shell user={admin}>
+      <Breadcrumbs items={[{ href: "/admin", label: "Dashboard" }, { label: "Notifications" }]} />
       <h1>Notifications</h1>
       <div className="card"><h2>New notification / holiday</h2><ComposeForm /></div>
       <div className="grid g2">

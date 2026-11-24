@@ -7,6 +7,7 @@ import { currentMonth, monthSummary } from "@/lib/hr";
 import { fmtDur } from "@/lib/time";
 import Shell from "@/components/Shell";
 import { EmptyRow } from "@/components/EmptyState";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { MonthPicker } from "@/components/MonthTable";
 import { fmtDate, fmtMonth } from "@/lib/fmtdate";
 import CatIcon from "@/components/CatIcon";
@@ -29,6 +30,7 @@ export default async function Reports({ searchParams }: { searchParams: Promise<
   const rows = await Promise.all(users.map(async (u) => ({ u, sum: await monthSummary(u.id, month) })));
   return (
     <Shell user={admin}>
+      <Breadcrumbs items={[{ href: "/admin", label: "Dashboard" }, { label: "Reports" }]} />
       <h1>Monthly report ({fmtMonth(month)})</h1>
       <div className="card">
         <MonthPicker month={month} extra={<><select name="cat" defaultValue={cat} style={{ width: 160 }}><option value="">All break types</option>{BREAK_CATS.map((c) => <option key={c.key} value={c.key}>{c.label}</option>)}</select><select name="dept" defaultValue={dept} style={{ width: 160 }}><option value="">All departments</option><option>Sales</option><option>Production</option></select></>} />

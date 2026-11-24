@@ -11,6 +11,7 @@ import Shell, { Avatar } from "@/components/Shell";
 import UserForm from "@/components/UserForm";
 import MonthTable, { MonthStats, MonthPicker } from "@/components/MonthTable";
 import UserActions from "./UserActions";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default async function UserDetail({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ month?: string }> }) {
   const admin = await requireAdminPage();
@@ -26,7 +27,7 @@ export default async function UserDetail({ params, searchParams }: { params: Pro
   const todayAtt = await q1<any>("SELECT sign_out FROM attendance WHERE user_id=$1 AND work_date=$2", [u.id, await todayDate()]);
   return (
     <Shell user={admin}>
-      <p><Link href="/admin/users">&larr; Users</Link></p>
+      <Breadcrumbs items={[{ href: "/admin", label: "Dashboard" }, { href: "/admin/users", label: "Users" }, { label: u.name }]} />
       <div className="row" style={{ marginBottom: 16 }}>
         <Avatar src={u.picture} name={u.name} size={56} online={online} />
         <div><h1 style={{ margin: 0 }}>{u.name}</h1><span className="mute">{u.designation ? u.designation + " | " : ""}{u.emp_id} | {u.department ?? "No dept"} | {u.active ? "Active" : "Inactive"}</span></div>

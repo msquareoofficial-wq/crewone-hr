@@ -4,6 +4,7 @@ import { q, getSettings } from "@/lib/db";
 import { currentMonth } from "@/lib/hr";
 import { payrollSettings } from "@/lib/payroll";
 import Shell from "@/components/Shell";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import PayrollClient from "./PayrollClient";
 
 export default async function PayrollPage({ searchParams }: { searchParams: Promise<{ month?: string }> }) {
@@ -20,6 +21,7 @@ export default async function PayrollPage({ searchParams }: { searchParams: Prom
   const ps = await payrollSettings();
   return (
     <Shell user={admin}>
+      <Breadcrumbs items={[{ href: "/admin", label: "Dashboard" }, { label: "Payroll" }]} />
       <h1>Payroll</h1>
       <PayrollClient key={month} month={month} rows={rows} weeklyOffDays={ps.weekly_off_days} leavesPaid={ps.leaves_paid} />
     </Shell>

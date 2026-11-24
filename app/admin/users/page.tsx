@@ -8,6 +8,7 @@ import ResetPasswordBtn from "./ResetPasswordBtn";
 import { fmt12 } from "@/lib/time";
 import { onlineIds } from "@/lib/hr";
 import { EmptyRow } from "@/components/EmptyState";
+import Breadcrumbs from "@/components/Breadcrumbs";
 
 export default async function UsersPage() {
   const admin = await requireAdminPage();
@@ -15,6 +16,7 @@ export default async function UsersPage() {
   const online = await onlineIds();
   return (
     <Shell user={admin}>
+      <Breadcrumbs items={[{ href: "/admin", label: "Dashboard" }, { label: "Users" }]} />
       <h1>Users</h1>
       <div className="card">
         <h2>Create a new user</h2>

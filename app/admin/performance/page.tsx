@@ -5,6 +5,7 @@ import { getSettings } from "@/lib/db";
 import { currentMonth } from "@/lib/hr";
 import { monthPerformance, BREAK_ALLOWANCE_MIN } from "@/lib/perf";
 import Shell, { Avatar } from "@/components/Shell";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import { MonthPicker } from "@/components/MonthTable";
 import { fmtDate, fmtMonth } from "@/lib/fmtdate";
 
@@ -24,6 +25,7 @@ export default async function Performance({ searchParams }: { searchParams: Prom
   const teamAvg = avg.length ? Math.round(avg.reduce((a, r) => a + (r.overall as number), 0) / avg.length) : null;
   return (
     <Shell user={admin}>
+      <Breadcrumbs items={[{ href: "/admin", label: "Dashboard" }, { label: "Performance" }]} />
       <h1>Performance ({fmtMonth(month)})</h1>
       <div className="card">
         <MonthPicker month={month} extra={<select name="dept" defaultValue={dept} style={{ width: 160 }}><option value="">All departments</option><option>Sales</option><option>Production</option></select>} />

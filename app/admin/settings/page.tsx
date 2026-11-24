@@ -3,6 +3,7 @@ import { requireAdminPage } from "@/lib/auth";
 import { getSettings, getNavLabels, getFinUsdColors, q } from "@/lib/db";
 import { getBrandLogos } from "@/lib/brand";
 import Shell from "@/components/Shell";
+import Breadcrumbs from "@/components/Breadcrumbs";
 import SettingsForm from "./SettingsForm";
 import BrandingForm from "./BrandingForm";
 import AdminPassword from "./AdminPassword";
@@ -48,6 +49,7 @@ export default async function SettingsPage() {
   ]);
   return (
     <Shell user={admin}>
+      <Breadcrumbs items={[{ href: "/admin", label: "Dashboard" }, { label: "Settings" }]} />
       <h1>Settings</h1>
       <div className="card"><h2>Attendance rules</h2><SettingsForm s={s} /></div>
       <div className="card"><h2>Dollar Expenses card color</h2><p className="mute" style={{ marginTop: 0 }}>Customize the gradient of the Dollar Expenses card on the Finance page.</p><FinUsdColorForm c1={usdColors.c1} c2={usdColors.c2} /></div>
