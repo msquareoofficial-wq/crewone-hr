@@ -18,6 +18,7 @@ import { getNavLabels, getSettings } from "@/lib/db";
 import NavToggle from "./NavToggle";
 import MobileNav from "./MobileNav";
 import Toaster from "./Toaster";
+import BottomBar from "./BottomBar";
 
 // online: true = green dot (active), false = red dot (inactive), undefined = no dot
 export function Avatar({ src, name, size = 34, online }: { src?: string | null; name: string; size?: number; online?: boolean }) {
@@ -92,6 +93,38 @@ export default async function Shell({ user, children }: { user: SessionUser; chi
       </header>
       <main className="wrap">{children}</main>
       <Footer />
+      <BottomBar role={user.role}>
+        {admin ? (
+          <>
+            <LiveNavLink tab="admindash" href="/admin" label={labels.admindash} exact />
+            <LiveNavLink tab="users" href="/admin/users" label={labels.users} />
+            <LiveNavLink tab="notifications" href="/admin/notifications" label={labels.notifications} />
+            <LiveNavLink tab="leaves" href="/admin/leaves" label={labels.leaves} />
+            <LiveNavLink tab="calendar" href="/calendar" label={labels.calendar} />
+            <ProjectsNavLink />
+            <ChatNavLink />
+            <LiveNavLink tab="settings" href="/admin/settings" label={labels.settings} />
+            <LiveNavLink tab="corrections" href="/admin/corrections" label={labels.corrections} />
+            <LiveNavLink tab="reports" href="/admin/reports" label={labels.reports} />
+            <LiveNavLink tab="performance" href="/admin/performance" label={labels.performance} />
+            <LiveNavLink tab="payroll" href="/admin/payroll" label={labels.payroll} />
+            <LiveNavLink tab="finance" href="/admin/finance" label={labels.finance} />
+            <LiveNavLink tab="activity" href="/admin/activity" label={labels.activity} />
+          </>
+        ) : (
+          <>
+            <LiveNavLink tab="dashboard" href="/dashboard" label="My Dashboard" />
+            {can(user, "dashboard") && <LiveNavLink tab="admindash" href="/admin" label="Team Dashboard" exact />}
+            {can(user, "leaves") && <LiveNavLink tab="leaves" href="/admin/leaves" label="Leaves" />}
+            {can(user, "notifications") && <LiveNavLink tab="notifications" href="/admin/notifications" label="Notices" />}
+            {can(user, "reports") && <Link href="/admin/reports">Reports</Link>}
+            {can(user, "reports") && <Link href="/admin/performance">Performance</Link>}
+            <LiveNavLink tab="calendar" href="/calendar" label="Calendar" />
+            <ProjectsNavLink />
+            <ChatNavLink />
+          </>
+        )}
+      </BottomBar>
       <ChatWidget />
       <LiveToasts />
       <Toaster />

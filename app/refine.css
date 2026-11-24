@@ -304,3 +304,28 @@ html[data-nav="top"] .top .top-nav-cw .cw .cw-d{display:none}
 .bc-link{color:var(--mute);text-decoration:none;transition:color .15s}
 .bc-link:hover{color:var(--brand)}
 .bc-cur{color:var(--ink);font-weight:500}
+
+/* ── Mobile bottom tab bar ────────────────────────────────── */
+.btm-bar{display:none}
+@media(max-width:640px){
+.btm-bar{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:50;background:var(--card);border-top:1px solid var(--line);padding:0 0 env(safe-area-inset-bottom);box-shadow:0 -4px 20px rgba(0,0,0,.08)}
+.btm-tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex:1;padding:8px 4px 7px;cursor:pointer;color:var(--mute);text-decoration:none;border:0;background:none;font-family:inherit;transition:color .15s;position:relative;min-width:0}
+.btm-tab.btm-on{color:var(--brand)}
+.btm-tab.btm-on::after{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:28px;height:2.5px;background:var(--brand);border-radius:0 0 3px 3px}
+.btm-ic{width:22px;height:22px;flex:none}
+.btm-ic svg{width:100%;height:100%}
+.btm-lbl{font-size:10px;font-weight:500;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:56px}
+/* sheet overlay */
+.btm-sheet-ov{position:fixed;inset:0;z-index:51;background:rgba(0,0,0,.35);backdrop-filter:blur(2px);animation:btmFadeIn .18s ease both}
+@keyframes btmFadeIn{from{opacity:0}to{opacity:1}}
+.btm-sheet{position:fixed;bottom:0;left:0;right:0;z-index:52;background:var(--card);border-radius:20px 20px 0 0;padding:8px 0 calc(16px + env(safe-area-inset-bottom));max-height:72vh;overflow-y:auto;animation:btmSlideUp .22s cubic-bezier(.2,.9,.3,1) both}
+@keyframes btmSlideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.btm-sheet-handle{width:36px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 12px;flex:none}
+.btm-sheet a,.btm-sheet button:not(.more-btn){display:flex;align-items:center;gap:12px;padding:13px 20px;font-size:15px;font-weight:500;color:var(--sbtxt);text-decoration:none;width:100%;border:0;background:none;font-family:inherit;cursor:pointer;text-align:left;border-radius:0}
+.btm-sheet a:hover,.btm-sheet button:not(.more-btn):hover{background:var(--sbhov);color:var(--ink)}
+.btm-sheet a.on,.btm-sheet .on{color:var(--brand);background:var(--brand-soft)}
+/* hide burger on small phones, keep on tablet */
+@media(max-width:640px){.burger-btn{display:none!important}}
+/* extra bottom padding so content doesn't hide behind bar */
+.wrap{padding-bottom:calc(80px + env(safe-area-inset-bottom))!important}
+}
