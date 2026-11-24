@@ -6,6 +6,7 @@ import { q, getSettings } from "@/lib/db";
 import { currentMonth, monthSummary } from "@/lib/hr";
 import { fmtDur } from "@/lib/time";
 import Shell from "@/components/Shell";
+import { EmptyRow } from "@/components/EmptyState";
 import { MonthPicker } from "@/components/MonthTable";
 import { fmtDate, fmtMonth } from "@/lib/fmtdate";
 import CatIcon from "@/components/CatIcon";
@@ -44,7 +45,7 @@ export default async function Reports({ searchParams }: { searchParams: Promise<
                   <td>{sum.offs}</td><td>{sum.breakCount}</td><td>{fmtDur(sum.breakSeconds)}</td><td>{taskCounts.get(u.id) ?? 0}</td><td>{fmtDur(sum.taskSeconds)}</td>
                 </tr>
               ))}
-              {!rows.length && <tr><td colSpan={9} className="mute">No records.</td></tr>}
+              {!rows.length && <EmptyRow icon="reports" title="No records this month" sub="Data will appear as employees mark attendance." cols={9} />}
             </tbody>
           </table>
         </div>
@@ -67,7 +68,7 @@ export default async function Reports({ searchParams }: { searchParams: Promise<
                   </tr>
                 );
               })}
-              {!rows.length && <tr><td colSpan={8} className="mute">No records.</td></tr>}
+              {!rows.length && <EmptyRow icon="breaks" title="No break records this month" cols={8} />}
             </tbody>
           </table>
         </div>

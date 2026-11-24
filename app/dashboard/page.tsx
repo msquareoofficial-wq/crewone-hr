@@ -17,6 +17,7 @@ import MonthTable, { MonthStats, MonthPicker } from "@/components/MonthTable";
 import UserPanel from "./UserPanel";
 import ProfileForm from "./ProfileForm";
 import AutoRefresh from "@/components/AutoRefresh";
+import EmptyState from "@/components/EmptyState";
 import { redirect } from "next/navigation";
 import Feed from "@/components/Feed";
 import Calendar from "@/components/Calendar";
@@ -141,7 +142,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
             <div className="scroll"><table><thead><tr><th>Task</th><th>Start</th><th>End</th><th>Time</th></tr></thead><tbody>
               {todayTasks.map((t, i) => (<tr key={i}><td>{t.title}</td><td>{fmtTime(t.start_at, s.timezone)}</td><td>{t.end_at ? fmtTime(t.end_at, s.timezone) : <span className="badge b-info">Running</span>}</td><td>{fmtDur(t.secs)}</td></tr>))}
             </tbody></table></div>
-          ) : <p className="mute">No tasks yet.</p>}
+          ) : <EmptyState icon="tasks" title="No tasks yet" sub="Start a task from the panel above to track your work time." />}
         </div>
         <div className="card">
           <h2>Today's breaks ({todayBreaks.length})</h2>
@@ -149,7 +150,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
             <div className="scroll"><table><thead><tr><th>Type</th><th>Start</th><th>Back</th><th>Duration</th></tr></thead><tbody>
               {todayBreaks.map((b, i) => (<tr key={i}><td><span className="bl-c"><CatIcon cat={b.category} size={16} />{catLabel(b.category)}</span></td><td>{fmtTime(b.start_at, s.timezone)}</td><td>{b.end_at ? fmtTime(b.end_at, s.timezone) : <span className="badge b-warn">On break</span>}</td><td>{fmtDur(b.secs)}</td></tr>))}
             </tbody></table></div>
-          ) : <p className="mute">No breaks taken today.</p>}
+          ) : <EmptyState icon="breaks" title="No breaks today" sub="Take a break and it will appear here." />}
         </div>
       </div>
 

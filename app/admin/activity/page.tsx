@@ -5,6 +5,7 @@ import { q, getSettings } from "@/lib/db";
 import { ACT_CATS } from "@/lib/activity";
 import { fmtDateTime } from "@/lib/time";
 import Shell from "@/components/Shell";
+import { EmptyRow } from "@/components/EmptyState";
 
 const LABEL: Record<string, string> = { auth: "Login", attendance: "Attendance", break: "Break", task: "Task timer", leave: "Leave", project: "Projects", chat: "Chat", profile: "Profile" };
 const BADGE: Record<string, string> = { auth: "b-ok", attendance: "b-ok", break: "b-warn", leave: "b-warn", chat: "", task: "", project: "", profile: "" };
@@ -53,7 +54,7 @@ export default async function ActivityPage({ searchParams }: { searchParams: Pro
                 <td className="mute">{a.ip ?? "-"}</td>
               </tr>
             ))}
-            {!list.length && <tr><td colSpan={6} className="mute">No activity recorded yet. New actions by users will show up here.</td></tr>}
+            {!list.length && <EmptyRow icon="activity" title="No activity yet" sub="User actions will appear here as the team works." cols={6} />}
           </tbody>
         </table></div>
         {more && <div style={{ marginTop: 12 }}><Link className="btn sec sm" href={`/admin/activity?${qs({ n: String(n + 100) })}`}>Load more</Link></div>}

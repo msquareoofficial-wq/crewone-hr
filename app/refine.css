@@ -277,3 +277,13 @@ html[data-nav="top"] .top .top-nav-cw .cw .cw-d{display:none}
 [data-theme="dark"] .ac-toast-warn{background:#78350f;color:#fde68a}
 [data-theme="dark"] .ac-toast-info{background:#1e3a5f;color:#bfdbfe}
 @media(max-width:640px){.ac-toasts{left:12px;right:12px;bottom:76px}.ac-toast{max-width:none}}
+
+/* ── Empty states ─────────────────────────────────────────── */
+.es-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;padding:48px 24px;text-align:center}
+.es-compact{padding:24px 16px;gap:6px}
+.es-icon{width:56px;height:56px;color:var(--mute);opacity:.55;flex:none}
+.es-compact .es-icon{width:36px;height:36px}
+.es-title{font-size:15px;font-weight:600;color:var(--ink);line-height:1.3}
+.es-compact .es-title{font-size:13px}
+.es-sub{font-size:13px;color:var(--mute);max-width:320px;line-height:1.5}
+.es-compact .es-sub{font-size:12px}

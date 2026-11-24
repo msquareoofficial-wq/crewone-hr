@@ -5,6 +5,7 @@ import { fmt12 } from "@/lib/time";
 import { fmtDate } from "@/lib/fmtdate";
 import Shell from "@/components/Shell";
 import Decide from "./Decide";
+import { EmptyRow } from "@/components/EmptyState";
 
 export default async function CorrectionsPage() {
   const admin = await requireAdminPage();
@@ -25,7 +26,7 @@ export default async function CorrectionsPage() {
             <thead><tr><th>User</th><th>Date</th><th>Requested</th><th>Reason</th><th>Decision</th></tr></thead>
             <tbody>{pending.map((c) => (<tr key={c.id}><td>{c.name} <span className="mute">{c.emp_id}</span></td><td>{fmtDate(c.work_date)}</td><td>{times(c)}</td><td>{c.reason}</td><td><Decide id={c.id} /></td></tr>))}</tbody>
           </table></div>
-        ) : <p className="mute">No pending requests.</p>}
+        ) : <EmptyRow icon="corrections" title="No pending requests" sub="Correction requests from employees will appear here." cols={5} />}
       </div>
       <div className="card">
         <h2>History</h2>
@@ -34,7 +35,7 @@ export default async function CorrectionsPage() {
           <tbody>{done.map((c) => (
             <tr key={c.id}><td>{c.name}</td><td>{fmtDate(c.work_date)}</td><td>{times(c)}</td><td>{c.reason}</td>
               <td><span className={`badge ${c.status === "approved" ? "b-ok" : "b-bad"}`}>{c.status}</span></td><td>{c.admin_note ?? "-"}</td></tr>))}
-            {!done.length && <tr><td colSpan={6} className="mute">No records yet.</td></tr>}
+            {!done.length && <EmptyRow icon="corrections" title="No history yet" cols={6} />}
           </tbody>
         </table></div>
       </div>

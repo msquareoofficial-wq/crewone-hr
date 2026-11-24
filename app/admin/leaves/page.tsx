@@ -2,6 +2,7 @@
 import { requireAdminPage } from "@/lib/auth";
 import { q, getSettings } from "@/lib/db";
 import Shell from "@/components/Shell";
+import { EmptyRow } from "@/components/EmptyState";
 import { DeleteBtn } from "@/components/FeedClient";
 import LeaveDecision from "./LeaveDecision";
 import { fmtDate, fmtMonth } from "@/lib/fmtdate";
@@ -61,7 +62,7 @@ export default async function LeavesPage() {
                   </tr>
                 );
               })}
-              {!allUsers.length && <tr><td colSpan={6} className="mute">No users found.</td></tr>}
+              {!allUsers.length && <EmptyRow icon="users" title="No employees found" cols={6} />}
             </tbody>
           </table>
         </div>
@@ -78,7 +79,7 @@ export default async function LeavesPage() {
               return (<tr key={l.id}><td>{l.name} <span className="mute">{l.emp_id}</span></td><td>{l.department ?? "-"}</td><td>{Math.max(0, effQ - l.used)} of {effQ} left</td><td>{dates(l)}</td><td>{l.reason}</td><td><LeaveDecision id={l.id} /></td></tr>);
             })}</tbody>
           </table></div>
-        ) : <p className="mute">No pending requests.</p>}
+        ) : <EmptyRow icon="leaves" title="No pending leave requests" sub="Requests from employees will appear here." cols={6} />}
       </div>
       <div className="card">
         <h2>History</h2>
@@ -91,7 +92,7 @@ export default async function LeavesPage() {
               <td>{l.admin_note ?? "-"}</td>
               <td><div className="row"><LeaveDecision id={l.id} change /><DeleteBtn url={`/api/leaves/${l.id}`} confirmText="Delete this record?" /></div></td>
             </tr>))}
-            {!done.length && <tr><td colSpan={6} className="mute">No records yet.</td></tr>}
+            {!done.length && <EmptyRow icon="leaves" title="No leave history yet" cols={6} />}
           </tbody>
         </table></div>
       </div>

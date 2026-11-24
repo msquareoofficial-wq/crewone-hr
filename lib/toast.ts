@@ -16,4 +16,4 @@ export function toast(msg: string, type: ToastType = "ok", duration = 4000) {
 }
 
 export function getToasts() { return _toasts; }
-export function subscribe(fn: () => void) { _subs.add(fn); return () => _subs.delete(fn); }
+export function subscribe(fn: () => void) { _subs.add(fn); return () => { _subs.delete(fn); }; }

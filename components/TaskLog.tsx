@@ -3,6 +3,7 @@ import { fmtDur } from "@/lib/time";
 import { fmtDate } from "@/lib/fmtdate";
 import type { TaskLogRow } from "@/lib/tasklog";
 import "./tasklog.css";
+import EmptyState from "./EmptyState";
 
 const hm = (d: string | Date, tz: string) => new Date(d).toLocaleTimeString("en-US", { timeZone: tz, hour: "numeric", minute: "2-digit" });
 
@@ -54,7 +55,7 @@ export default function TaskLog({ rows, tz, csvHref, title }: { rows: TaskLogRow
             </div>
           ))}
         </div>
-      ) : <div className="tl-empty">No tasks recorded in this month.</div>}
+      ) : <EmptyState icon="tasks" title="No tasks this month" sub="Tasks you work on will be listed here." compact />}
     </div>
   );
 }

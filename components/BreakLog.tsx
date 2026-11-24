@@ -6,6 +6,7 @@ import { fmtDur } from "@/lib/time";
 import { fmtDate } from "@/lib/fmtdate";
 import { BREAK_CATS, catKey, catLabel } from "@/lib/breakcats";
 import type { BreakLogRow } from "@/lib/breaklog";
+import EmptyState from "./EmptyState";
 import "./breaklog.css";
 import "./tasklog.css";
 
@@ -49,7 +50,7 @@ export default function BreakLog({ rows, tz, csvHref, title }: { rows: BreakLogR
             </div>
           ))}
         </div>
-      ) : <div className="tl-empty">No breaks in this selection.</div>}
+      ) : <EmptyState icon="breaks" title="No breaks recorded" sub="Breaks taken this period will appear here." compact />}
     </div>
   );
 }

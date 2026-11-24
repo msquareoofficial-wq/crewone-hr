@@ -38,7 +38,22 @@ export default function ProjectsClient({ isAdmin }: { isAdmin: boolean }) {
         </div>
       )}
       {list === null && <p className="mute">Loading...</p>}
-      {list && !list.length && <div className="card mute">{isAdmin ? "No projects yet. Click + New project to create one." : "You have not been added to any project yet."}</div>}
+      {list && !list.length && (
+        <div className="card">
+          {isAdmin
+            ? <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, padding: "32px 24px", textAlign: "center" }}>
+                <svg width="56" height="56" viewBox="0 0 48 48" fill="none" style={{ color: "var(--mute)", opacity: 0.55 }}><path d="M6 14a4 4 0 0 1 4-4h8l4 4h16a4 4 0 0 1 4 4v18a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4V14z" stroke="currentColor" strokeWidth="2.5" strokeLinejoin="round" /><path d="M18 28l4 4 8-8" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" /></svg>
+                <strong style={{ fontSize: 15, fontWeight: 600 }}>No projects yet</strong>
+                <span style={{ fontSize: 13, color: "var(--mute)" }}>Click + New project above to create your first project.</span>
+              </div>
+            : <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 10, padding: "32px 24px", textAlign: "center" }}>
+                <svg width="56" height="56" viewBox="0 0 48 48" fill="none" style={{ color: "var(--mute)", opacity: 0.55 }}><path d="M6 14a4 4 0 0 1 4-4h8l4 4h16a4 4 0 0 1 4 4v18a4 4 0 0 1-4 4H10a4 4 0 0 1-4-4V14z" stroke="currentColor" strokeWidth="2.5" strokeLinejoin="round" /></svg>
+                <strong style={{ fontSize: 15, fontWeight: 600 }}>No projects assigned</strong>
+                <span style={{ fontSize: 13, color: "var(--mute)" }}>You haven&apos;t been added to any project yet.</span>
+              </div>
+          }
+        </div>
+      )}
       <div className="pj-grid">
         {list?.map((p) => {
           const pct = p.total ? Math.round((p.done / p.total) * 100) : 0;

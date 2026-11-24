@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { fmtDate, fmtMonth } from "@/lib/fmtdate";
+import { EmptyRow } from "@/components/EmptyState";
 
 type Row = any;
 const DAYS = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
@@ -107,7 +108,7 @@ export default function PayrollClient({ month, rows, weeklyOffDays, leavesPaid }
                   </tr>
                 );
               })}
-              {!rows.length && <tr><td colSpan={14} className="mute">No users yet.</td></tr>}
+              {!rows.length && <EmptyRow icon="payroll" title="No employees yet" sub="Add employees first to run payroll." cols={14} />}
             </tbody>
           </table>
         </div>

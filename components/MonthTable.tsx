@@ -2,9 +2,10 @@
 import type { DayRow } from "@/lib/hr";
 import { fmtTime, fmtDur } from "@/lib/time";
 import { fmtDate, fmtMonth } from "@/lib/fmtdate";
+import EmptyState from "./EmptyState";
 
 export default function MonthTable({ rows, tz }: { rows: DayRow[]; tz: string }) {
-  if (!rows.length) return <p className="mute">No records for this month.</p>;
+  if (!rows.length) return <EmptyState icon="records" title="No attendance records" sub="No data found for this month." />;
   return (
     <div className="scroll">
       <table>

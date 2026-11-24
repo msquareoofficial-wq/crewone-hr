@@ -7,6 +7,7 @@ import UserForm from "@/components/UserForm";
 import ResetPasswordBtn from "./ResetPasswordBtn";
 import { fmt12 } from "@/lib/time";
 import { onlineIds } from "@/lib/hr";
+import { EmptyRow } from "@/components/EmptyState";
 
 export default async function UsersPage() {
   const admin = await requireAdminPage();
@@ -34,7 +35,7 @@ export default async function UsersPage() {
                   <td><ResetPasswordBtn id={u.id} /></td>
                 </tr>
               ))}
-              {!users.length && <tr><td colSpan={8} className="mute">No users.</td></tr>}
+              {!users.length && <EmptyRow icon="users" title="No employees yet" sub="Add your first employee using the form above." cols={8} />}
             </tbody>
           </table>
         </div>

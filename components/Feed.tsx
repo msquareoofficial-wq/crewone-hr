@@ -2,11 +2,12 @@
 import type { Notif } from "@/lib/hr";
 import { fmtDateTime } from "@/lib/time";
 import { CommentForm, DeleteBtn, EditNotif } from "./FeedClient";
+import EmptyState from "./EmptyState";
 
 const audBadge = (a: string) => <span className={`badge ${a === "all" ? "b-info" : a === "Sales" ? "b-warn" : "b-ok"}`}>{a === "all" ? "All" : a}</span>;
 
 export default function Feed({ items, tz, admin, meId }: { items: Notif[]; tz: string; admin?: boolean; meId?: number }) {
-  if (!items.length) return <p className="mute">No notifications yet.</p>;
+  if (!items.length) return <EmptyState icon="notifications" title="No notifications yet" sub={admin ? "Post a notice or holiday to let your team know." : "No announcements from your admin yet."} />;
   return (
     <div className="grid">
       {items.map((n) => (

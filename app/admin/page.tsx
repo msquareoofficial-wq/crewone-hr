@@ -12,6 +12,7 @@ import CatIcon from "@/components/CatIcon";
 import { catLabel } from "@/lib/breakcats";
 import Link from "next/link";
 import { fmtDate, fmtMonth } from "@/lib/fmtdate";
+import { EmptyRow } from "@/components/EmptyState";
 
 export default async function AdminHome() {
   const admin = await requireAdminPage("dashboard");
@@ -130,7 +131,7 @@ export default async function AdminHome() {
                   <td><span title={r.current_task ?? undefined} style={{ display: "inline-block", maxWidth: 140, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", verticalAlign: "middle", cursor: r.current_task ? "default" : undefined }}>{r.current_task ?? "-"}</span></td>
                 </tr>
               ))}
-              {!rows.length && <tr><td colSpan={10} className="mute">No users yet. Create one from the Users page.</td></tr>}
+              {!rows.length && <EmptyRow icon="users" title="No employees yet" sub="Go to the Users page to add your first employee." cols={10} />}
             </tbody>
           </table>
         </div>
