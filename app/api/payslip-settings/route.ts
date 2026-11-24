@@ -2,14 +2,20 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { q } from "@/lib/db";
-import { PAYSLIP_DEFAULTS } from "@/lib/payslip-settings";
-import type { PayslipSettings } from "@/lib/payslip-settings";
+import { PAYSLIP_DEFAULTS, DEFAULT_FIELDS } from "@/lib/payslip-settings";
+import type { PayslipSettings, CustomField } from "@/lib/payslip-settings";
 
 export async function GET() {
   const rows = await q<{ key: string; value: string }>(
     "SELECT key, value FROM settings WHERE key LIKE 'payslip_%'"
   );
   const m = Object.fromEntries(rows.map((r) => [r.key.slice(8), r.value]));
+
+  let custom_fields: CustomField[] = DEFAULT_FIELDS;
+  if (m.fields) {
+    try { custom_fields = JSON.parse(m.fields); } catch {}
+  }
+
   return NextResponse.json({
     header_color: m.header_color || PAYSLIP_DEFAULTS.header_color,
     accent_color: m.accent_color || PAYSLIP_DEFAULTS.accent_color,
@@ -17,6 +23,8 @@ export async function GET() {
     currency: m.currency ?? "",
     footer_note: m.footer_note ?? PAYSLIP_DEFAULTS.footer_note,
     show_signature: m.show_signature === "true",
+    logo: m.logo ?? "",
+    custom_fields,
   } satisfies PayslipSettings);
 }
 
@@ -32,6 +40,8 @@ export async function PUT(req: Request) {
     payslip_currency: String(b.currency ?? ""),
     payslip_footer_note: String(b.footer_note ?? ""),
     payslip_show_signature: b.show_signature ? "true" : "false",
+    payslip_logo: String(b.logo ?? ""),
+    payslip_fields: JSON.stringify(Array.isArray(b.custom_fields) ? b.custom_fields : DEFAULT_FIELDS),
   };
 
   for (const [k, v] of Object.entries(fields))

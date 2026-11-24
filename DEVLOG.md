@@ -8,6 +8,18 @@
 
 ## 2026-11-24
 
+### Payslip customization — logo, custom fields, auto-generate
+- **lib/payslip-settings.ts**: Added `CustomField` type, `logo` (base64 string), `custom_fields: CustomField[]`, `SYSTEM_SOURCES`, `DEFAULT_FIELDS`, `isCountSource` helper
+- **lib/payslip-html.ts** (new): Shared `buildPayslipHtml()` function used by both payslip routes — renders custom fields with earning (green), deduction (red −), neutral styling; count-based sources show integers not currency
+- **app/api/payslip-settings/route.ts**: GET/PUT now handles `payslip_logo` (base64 TEXT) and `payslip_fields` (JSON array) in the `settings` table
+- **app/api/payslip/[id]/route.ts** + **preview/route.ts**: Both refactored to use `buildPayslipHtml`; custom logo takes priority over brand logo
+- **PayslipSettingsForm.tsx**: Full rebuild with:
+  - Logo upload: file → canvas resize (max 480px) → base64 — preview shown, Remove button
+  - Custom fields builder: table with Label / Type / Source / Amount inputs; reorder (↑↓), remove (×), + Add field, Reset to default
+  - System sources include all payroll columns (base_salary, bonus, absent_deduction, late_deduction, other_deduction, present/leave/absent days, late count, working days) plus "Manual value" for fixed amounts
+- **page.tsx**: `getPayslipSettingsFromDB()` updated to load `logo` and `fields` from DB
+- Existing "Payslip" button in PayrollClient already works — clicking generates the payslip with current custom fields instantly
+
 ### Appearance customization per user
 - **MyProfile.tsx**: Added Appearance section in the avatar modal (accessible to all users + admins)
   - Font style: Inter / System / Serif / Mono (live preview on click)
