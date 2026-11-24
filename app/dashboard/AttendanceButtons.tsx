@@ -2,6 +2,7 @@
 "use client";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "@/lib/toast";
 
 type Punch = { type: "in" | "out"; at: string };
 
@@ -19,7 +20,13 @@ export default function AttendanceButtons({ state, canUndo, punches = [], tz = "
     try {
       const r = await fetch("/api/attendance", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ action }) });
       let j: any = {}; try { j = await r.json(); } catch {}
-      if (!r.ok) setErr(j.error || "Error"); else router.refresh();
+      if (!r.ok) { toast(j.error || "Attendance error", "bad"); setErr(j.error || "Error"); }
+      else {
+        if (action === "in") toast("Marked IN — have a great day!", "ok");
+        else if (action === "out") toast("Marked OUT — see you tomorrow!", "ok");
+        else toast("OUT undone", "warn");
+        router.refresh();
+      }
     } catch { setErr("Network error, please try again"); }
     setBusy(false);
   }

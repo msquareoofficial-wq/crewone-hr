@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
+import { toast } from "@/lib/toast";
 import CatIcon from "@/components/CatIcon";
 import { BREAK_CATS, catLabel } from "@/lib/breakcats";
 import "@/components/breaklog.css";
@@ -34,7 +35,14 @@ export default function UserPanel({ onBreak, breakSince, breakCat, task }: { onB
     const r = await fetch(url, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
     const j = await r.json();
     setBusy(false);
-    if (!r.ok) return setErr(j.error || "Error");
+    if (!r.ok) { toast(j.error || "Something went wrong", "bad"); return setErr(j.error || "Error"); }
+    if (url === "/api/break") {
+      if (body.action === "start") toast(`Break started — ${j.category || body.category || ""}`.trimEnd(), "info");
+      else toast("Break ended, welcome back!", "ok");
+    } else if (url === "/api/task") {
+      if (body.action === "start") toast(`Task started: ${body.title}`, "ok");
+      else toast("Task ended", "ok");
+    }
     setTitle("");
     setPick(false);
     router.refresh();
