@@ -76,6 +76,8 @@ export default async function Shell({ user, children }: { user: SessionUser; chi
           )}
         </MobileNav>
         <NavActive />
+        {/* top-nav mode: clock sits outside .who so sidebar flex rules don't interfere */}
+        <span className="top-nav-cw"><ClockWeather timezone={s.timezone} /></span>
         <div className="who">
           <MyProfile name={user.name} picture={user.picture} status={user.status_text} />
           <span className="who-t">{user.name} ({user.emp_id}){(user.designation || user.status_text) && <small>{[user.designation, user.status_text].filter(Boolean).join(" " + String.fromCharCode(183) + " ")}</small>}</span>

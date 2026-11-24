@@ -200,6 +200,12 @@ body:has(.login){background:
 .bell-empty{padding:26px 14px;text-align:center;color:var(--mute);font-size:13px}
 [data-theme="dark"] .bell-badge{box-shadow:0 0 0 2px #0a0e18}
 
+/* top-nav mode: separate clock element outside .who (avoids sidebar flex-basis:100% conflict) */
+.top-nav-cw{display:none}
+html[data-nav="top"] .top .top-nav-cw{display:flex;align-items:center;flex:none;margin-right:4px}
+html[data-nav="top"] .top .top-nav-cw .cw{display:flex;flex-basis:auto;order:0;padding:4px 10px;font-size:12px;min-height:28px;white-space:nowrap}
+html[data-nav="top"] .top .top-nav-cw .cw .cw-d{display:none}
+
 /* header fit: many admin links + clock + bell */
 .top nav{min-width:0;align-items:center}
 .top nav a{white-space:nowrap}
