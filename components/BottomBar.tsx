@@ -61,13 +61,22 @@ const USER_TABS: Tab[] = [
   { href: "/chat", label: "Chat", icon: ICON_CHAT },
 ];
 
+const CLOSE_MS = 210;
+
 export default function BottomBar({ role, children }: { role: string; children: React.ReactNode }) {
   const [sheet, setSheet] = useState(false);
+  const [closing, setClosing] = useState(false);
   const path = usePathname();
   const tabs = role === "admin" ? ADMIN_TABS : USER_TABS;
 
   const isActive = (tab: Tab) =>
     tab.exact ? path === tab.href : path === tab.href || path.startsWith(tab.href + "/");
+
+  const open = () => setSheet(true);
+  const close = () => {
+    setClosing(true);
+    setTimeout(() => { setSheet(false); setClosing(false); }, CLOSE_MS);
+  };
 
   return (
     <>
@@ -78,16 +87,16 @@ export default function BottomBar({ role, children }: { role: string; children: 
             <span className="btm-lbl">{t.label}</span>
           </Link>
         ))}
-        <button type="button" className={`btm-tab${sheet ? " btm-on" : ""}`} onClick={() => setSheet((s) => !s)} aria-label="More navigation">
+        <button type="button" className={`btm-tab${sheet ? " btm-on" : ""}`} onClick={sheet ? close : open} aria-label="More navigation">
           <span className="btm-ic">{ICON_MORE}</span>
           <span className="btm-lbl">More</span>
         </button>
       </nav>
 
-      {sheet && (
+      {(sheet || closing) && (
         <>
-          <div className="btm-sheet-ov" onClick={() => setSheet(false)} />
-          <div className="btm-sheet" onClick={() => setSheet(false)}>
+          <div className={`btm-sheet-ov${closing ? " btm-closing" : ""}`} onClick={close} />
+          <div className={`btm-sheet${closing ? " btm-closing" : ""}`} onClick={close}>
             <div className="btm-sheet-handle" />
             {children}
           </div>

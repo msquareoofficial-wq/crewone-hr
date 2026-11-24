@@ -309,7 +309,8 @@ html[data-nav="top"] .top .top-nav-cw .cw .cw-d{display:none}
 .btm-bar{display:none}
 @media(max-width:640px){
 .btm-bar{display:flex;position:fixed;bottom:0;left:0;right:0;z-index:50;background:var(--card);border-top:1px solid var(--line);padding:0 0 env(safe-area-inset-bottom);box-shadow:0 -4px 20px rgba(0,0,0,.08)}
-.btm-tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex:1;padding:8px 4px 7px;cursor:pointer;color:var(--mute);text-decoration:none;border:0;background:none;font-family:inherit;transition:color .15s;position:relative;min-width:0}
+.btm-tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex:1;padding:8px 4px 7px;cursor:pointer;color:var(--mute);text-decoration:none;border:0;background:none;font-family:inherit;transition:color .15s,transform .08s;position:relative;min-width:0}
+.btm-tab:active{transform:scale(.88)}
 .btm-tab.btm-on{color:var(--brand)}
 .btm-tab.btm-on::after{content:"";position:absolute;top:0;left:50%;transform:translateX(-50%);width:28px;height:2.5px;background:var(--brand);border-radius:0 0 3px 3px}
 .btm-ic{width:22px;height:22px;flex:none}
@@ -317,15 +318,47 @@ html[data-nav="top"] .top .top-nav-cw .cw .cw-d{display:none}
 .btm-lbl{font-size:10px;font-weight:500;line-height:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:56px}
 /* sheet overlay */
 .btm-sheet-ov{position:fixed;inset:0;z-index:51;background:rgba(0,0,0,.35);backdrop-filter:blur(2px);animation:btmFadeIn .18s ease both}
+.btm-sheet-ov.btm-closing{animation:btmFadeOut .2s ease forwards}
 @keyframes btmFadeIn{from{opacity:0}to{opacity:1}}
+@keyframes btmFadeOut{from{opacity:1}to{opacity:0}}
 .btm-sheet{position:fixed;bottom:0;left:0;right:0;z-index:52;background:var(--card);border-radius:20px 20px 0 0;padding:8px 0 calc(16px + env(safe-area-inset-bottom));max-height:72vh;overflow-y:auto;animation:btmSlideUp .22s cubic-bezier(.2,.9,.3,1) both}
+.btm-sheet.btm-closing{animation:btmSlideDown .21s cubic-bezier(.4,0,1,1) forwards}
 @keyframes btmSlideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@keyframes btmSlideDown{from{transform:translateY(0)}to{transform:translateY(100%)}}
 .btm-sheet-handle{width:36px;height:4px;border-radius:2px;background:var(--line);margin:0 auto 12px;flex:none}
-.btm-sheet a,.btm-sheet button:not(.more-btn){display:flex;align-items:center;gap:12px;padding:13px 20px;font-size:15px;font-weight:500;color:var(--sbtxt);text-decoration:none;width:100%;border:0;background:none;font-family:inherit;cursor:pointer;text-align:left;border-radius:0}
+.btm-sheet a,.btm-sheet button:not(.more-btn){display:flex;align-items:center;gap:12px;padding:13px 20px;font-size:15px;font-weight:500;color:var(--sbtxt);text-decoration:none;width:100%;border:0;background:none;font-family:inherit;cursor:pointer;text-align:left;border-radius:0;transition:background .1s,color .1s}
 .btm-sheet a:hover,.btm-sheet button:not(.more-btn):hover{background:var(--sbhov);color:var(--ink)}
-.btm-sheet a.on,.btm-sheet .on{color:var(--brand);background:var(--brand-soft)}
+.btm-sheet a.on,.btm-sheet .on{color:var(--brand);background:var(--brand-soft);font-weight:600}
 /* hide burger on small phones, keep on tablet */
 @media(max-width:640px){.burger-btn{display:none!important}}
 /* extra bottom padding so content doesn't hide behind bar */
 .wrap{padding-bottom:calc(80px + env(safe-area-inset-bottom))!important}
 }
+
+/* ── Sprint 3: Micro-animations & polish ────────────────── */
+/* button press */
+.btn{transition:filter .12s,box-shadow .12s,transform .08s}
+.btn:active:not(:disabled){transform:scale(.97);transition:transform .06s}
+/* smooth input focus/hover */
+input,select,textarea{transition:border-color .15s,box-shadow .15s}
+/* table row hover transition */
+tbody tr{transition:background .1s}
+/* stat tile hover lift */
+.stat{transition:box-shadow .2s,transform .2s}
+.stat:hover{box-shadow:var(--sh2);transform:translateY(-2px)}
+/* card subtle hover (only interactive-looking cards) */
+.card{transition:box-shadow .2s}
+/* sidebar nav link smooth */
+.top nav a,.more-pop a,.more-btn{transition:background .12s,color .12s}
+/* bell & more-pop open animation */
+.bell-pop{animation:popIn .16s cubic-bezier(.2,.9,.3,1) both}
+.more-pop{animation:popIn .16s cubic-bezier(.2,.9,.3,1) both}
+@keyframes popIn{from{opacity:0;transform:translateY(-8px) scale(.96)}to{opacity:1;transform:none}}
+/* toast exit */
+@keyframes acOut{from{opacity:1;transform:none;max-height:80px}to{opacity:0;transform:translateX(18px) scale(.95);max-height:0;margin-bottom:0;padding-top:0;padding-bottom:0}}
+.ac-toast.ac-toast-out{animation:acOut .28s ease forwards;overflow:hidden}
+/* breadcrumb link already has transition */
+/* modal open */
+.modal-bg .modal{animation:dppop .22s cubic-bezier(.2,.9,.3,1.1) both}
+/* reduced motion safety */
+@media(prefers-reduced-motion:reduce){.stat,.card,.btn,.btm-tab,.top nav a,.more-pop a,.btm-sheet,.btm-sheet-ov,.ac-toast,.bell-pop,.more-pop,.modal-bg .modal{transition:none!important;animation:none!important}}
