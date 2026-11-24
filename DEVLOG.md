@@ -15,6 +15,19 @@
 
 ---
 
+## 2026-11-24 (Sprint 2 — Inline form validation)
+
+### Real-time field validation on key forms
+- **refine.css**: `.iv-field/.iv-err/.iv-ok/.iv-msg/.iv-hint` — red border + animated error message below field, green border on valid
+- **LoginForm**: identifier + password required, validated on blur/change, full submit-time check
+- **LeaveForm**: end date ≥ start date validation, reason required, toast on success/error
+- **CorrectionForm**: date required, at least one of IN/OUT must be filled, reason required, toast
+- **ProfileForm**: password min-8 live strength bar (red→amber→green), new ≠ current check, toast replaces okmsg/err inline messages
+- **PasswordInput**: added `onBlur`, `onChange`, `className` props for validation wiring
+- Commit: `8580382`
+
+---
+
 ## 2026-11-24 (Sprint 2 — Toast system)
 
 ### Global toast notification system
