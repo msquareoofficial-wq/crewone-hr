@@ -15,8 +15,9 @@ export async function PUT(req: Request, { params }: Ctx) {
   const b = await req.json();
   if (!b.title?.trim()) return NextResponse.json({ error: "Title is required" }, { status: 400 });
   const rec = ["none", "daily", "weekly", "monthly"].includes(b.recurrence) ? b.recurrence : "none";
+  const remindMin = Number(b.remind_minutes ?? 0);
   await q1(
-    `UPDATE calendar_events SET title=$2, description=$3, start_dt=$4, end_dt=$5, color=$6, all_day=$7, visibility=$8, recurrence=$9, recurrence_until=$10 WHERE id=$1`,
+    `UPDATE calendar_events SET title=$2, description=$3, start_dt=$4, end_dt=$5, color=$6, all_day=$7, visibility=$8, recurrence=$9, recurrence_until=$10, remind_minutes=$11 WHERE id=$1`,
     [
       id,
       b.title.trim(),
@@ -28,6 +29,7 @@ export async function PUT(req: Request, { params }: Ctx) {
       b.visibility === "team" ? "team" : "personal",
       rec,
       rec !== "none" && b.recurrence_until ? b.recurrence_until : null,
+      remindMin >= 0 ? remindMin : 0,
     ]
   );
   return NextResponse.json({ ok: true });

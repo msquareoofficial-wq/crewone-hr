@@ -8,6 +8,14 @@
 
 ## 2026-11-24
 
+### Calendar event reminders — push notification
+- **schema_calendar_remind.sql** (new): Adds `remind_minutes INT DEFAULT 0` to `calendar_events`; creates `calendar_reminders_sent (event_id, instance_dt)` table to prevent duplicate notifications
+- **vercel.json** (new): Configures Vercel Cron to call `/api/cron/reminders` every minute (requires Vercel Pro)
+- **app/api/cron/reminders/route.ts** (new): Cron handler — finds non-recurring + recurring events whose reminder time falls in a 90-second window, sends push notification via existing `lib/push.ts → pushTo()`, marks as sent in `calendar_reminders_sent`, cleans up entries older than 7 days. Protected by `CRON_SECRET` env var when set
+- **BigCalendar.tsx**: Added `remindMinutes` to `Ev` type and `SaveData`; event modal has "Remind me" dropdown (None / 5 min / 15 min / 30 min / 1 hour / 1 day); popup shows 🔔 bell with timing if reminder set
+- **calendar events API routes** (GET + POST + PUT): `remind_minutes` now saved and returned
+- Requires push notifications enabled on device (via "Alerts: On" button in the app)
+
 ### Payslip customization — logo, custom fields, auto-generate
 - **lib/payslip-settings.ts**: Added `CustomField` type, `logo` (base64 string), `custom_fields: CustomField[]`, `SYSTEM_SOURCES`, `DEFAULT_FIELDS`, `isCountSource` helper
 - **lib/payslip-html.ts** (new): Shared `buildPayslipHtml()` function used by both payslip routes — renders custom fields with earning (green), deduction (red −), neutral styling; count-based sources show integers not currency

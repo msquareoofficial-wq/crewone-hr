@@ -7,6 +7,7 @@ type DbEvent = {
   id: number; created_by: number; title: string; description: string | null;
   start_dt: string; end_dt: string; color: string; all_day: boolean;
   visibility: string; recurrence: string; recurrence_until: string | null;
+  remind_minutes: number;
 };
 
 // Advance a Date by N days
@@ -70,7 +71,7 @@ export async function GET(req: Request) {
   // Fetch base events (recurring ones may start before the range)
   const rows = await q<DbEvent>(
     `SELECT id, created_by, title, description, start_dt, end_dt, color, all_day, visibility,
-            recurrence, recurrence_until
+            recurrence, recurrence_until, remind_minutes
      FROM calendar_events
      WHERE (created_by = $1 OR visibility = 'team')
        AND (
@@ -107,9 +108,10 @@ export async function POST(req: Request) {
   if (!b.title?.trim()) return NextResponse.json({ error: "Title is required" }, { status: 400 });
   if (!b.start_dt || !b.end_dt) return NextResponse.json({ error: "start_dt and end_dt required" }, { status: 400 });
   const rec = ["none", "daily", "weekly", "monthly"].includes(b.recurrence) ? b.recurrence : "none";
+  const remindMin = Number(b.remind_minutes ?? 0);
   const row = await q1<{ id: number }>(
-    `INSERT INTO calendar_events (created_by, title, description, start_dt, end_dt, color, all_day, visibility, recurrence, recurrence_until)
-     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10) RETURNING id`,
+    `INSERT INTO calendar_events (created_by, title, description, start_dt, end_dt, color, all_day, visibility, recurrence, recurrence_until, remind_minutes)
+     VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11) RETURNING id`,
     [
       me.id,
       b.title.trim(),
@@ -121,6 +123,7 @@ export async function POST(req: Request) {
       b.visibility === "team" ? "team" : "personal",
       rec,
       rec !== "none" && b.recurrence_until ? b.recurrence_until : null,
+      remindMin >= 0 ? remindMin : 0,
     ]
   );
   return NextResponse.json(row, { status: 201 });

@@ -23,6 +23,7 @@ type Ev = {
   recurrence?: "none" | "daily" | "weekly" | "monthly";
   recurrenceUntil?: string;
   isRecurringInstance?: boolean;
+  remindMinutes?: number;
 };
 
 type Recurrence = "none" | "daily" | "weekly" | "monthly";
@@ -31,6 +32,7 @@ interface SaveData {
   title: string; description: string; date: string; endDate: string;
   startTime: string; endTime: string; color: string; allDay: boolean;
   visibility: "personal" | "team"; recurrence: Recurrence; recurrenceUntil: string;
+  remindMinutes: number;
 }
 
 // ---- Constants ----
@@ -104,6 +106,7 @@ function apiToEv(e: any): Ev {
     recurrence: e.recurrence ?? "none",
     recurrenceUntil: e.recurrence_until ?? undefined,
     isRecurringInstance: !!e.recurrence_base_id,
+    remindMinutes: e.remind_minutes ?? 0,
   };
 }
 
@@ -129,12 +132,13 @@ function EventModal({ mode, ev, initDate, initStartMin, saving, onSave, onClose 
   const [vis, setVis] = useState<"personal" | "team">(ev?.visibility ?? "personal");
   const [rec, setRec] = useState<Recurrence>(ev?.recurrence ?? "none");
   const [recUntil, setRecUntil] = useState(ev?.recurrenceUntil ?? "");
+  const [remindMin, setRemindMin] = useState(ev?.remindMinutes ?? 0);
   const [err, setErr] = useState("");
 
   function handleSave() {
     if (!title.trim()) { setErr("Title is required"); return; }
     setErr("");
-    onSave({ title: title.trim(), description: desc, date, endDate: endDate || date, startTime: startT, endTime: endT, color, allDay, visibility: vis, recurrence: rec, recurrenceUntil: recUntil });
+    onSave({ title: title.trim(), description: desc, date, endDate: endDate || date, startTime: startT, endTime: endT, color, allDay, visibility: vis, recurrence: rec, recurrenceUntil: recUntil, remindMinutes: remindMin });
   }
 
   return (
@@ -220,6 +224,18 @@ function EventModal({ mode, ev, initDate, initStartMin, saving, onSave, onClose 
             </div>
             {rec !== "none" && <div style={{ fontSize: 12, color: "var(--mute)", marginTop: 4 }}>Editing applies to all instances of this event.</div>}
           </div>
+          <div>
+            <div className="gcal-label">Remind me</div>
+            <select value={remindMin} onChange={(e) => setRemindMin(Number(e.target.value))}>
+              <option value={0}>No reminder</option>
+              <option value={5}>5 minutes before</option>
+              <option value={15}>15 minutes before</option>
+              <option value={30}>30 minutes before</option>
+              <option value={60}>1 hour before</option>
+              <option value={1440}>1 day before</option>
+            </select>
+            {remindMin > 0 && <div style={{ fontSize: 11, color: "var(--mute)", marginTop: 3 }}>Push notification will be sent (requires Alerts to be on)</div>}
+          </div>
           {err && <div style={{ color: "#ef4444", fontSize: 13 }}>{err}</div>}
         </div>
         <div className="gcal-modal-foot">
@@ -258,6 +274,11 @@ function EventPopup({ ev, onEdit, onDelete, onClose }: {
                 ↻ Repeats {ev.recurrence}{ev.recurrenceUntil ? ` until ${ev.recurrenceUntil}` : ""}
               </div>
             )}
+            {ev.remindMinutes && ev.remindMinutes > 0 ? (
+              <div className="gcal-popup-vis" style={{ color: "var(--mute)" }}>
+                🔔 {ev.remindMinutes < 60 ? `${ev.remindMinutes} min` : ev.remindMinutes === 60 ? "1 hr" : ev.remindMinutes === 1440 ? "1 day" : `${ev.remindMinutes / 60} hrs`} before
+              </div>
+            ) : null}
             {ev.description && <div className="gcal-popup-desc">{ev.description}</div>}
           </div>
           <button className="gcal-close" onClick={onClose}>✕</button>
@@ -344,7 +365,7 @@ export default function BigCalendar({ month: initialMonth, today, events: hrEven
     try {
       const start_dt = form.allDay ? form.date + "T00:00:00Z" : `${form.date}T${form.startTime}:00Z`;
       const end_dt = form.allDay ? (form.endDate || form.date) + "T23:59:59Z" : `${form.endDate || form.date}T${form.endTime}:00Z`;
-      const body = { title: form.title, description: form.description, start_dt, end_dt, color: form.color, all_day: form.allDay, visibility: form.visibility, recurrence: form.recurrence, recurrence_until: form.recurrenceUntil || null };
+      const body = { title: form.title, description: form.description, start_dt, end_dt, color: form.color, all_day: form.allDay, visibility: form.visibility, recurrence: form.recurrence, recurrence_until: form.recurrenceUntil || null, remind_minutes: form.remindMinutes };
       const isEdit = modal?.type === "edit" && (modal as { type: "edit"; ev: Ev }).ev?.id;
       const id = isEdit ? (modal as { type: "edit"; ev: Ev }).ev.id : undefined;
       const r = await fetch(isEdit ? `/api/calendar/events/${id}` : "/api/calendar/events", {
