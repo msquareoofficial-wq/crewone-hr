@@ -6,6 +6,20 @@
 
 ---
 
+## 2026-11-24 (Sprint 4 — Skeleton Screens)
+
+### Skeleton loading screens — all pages covered
+- Added `loading.tsx` to 12 previously uncovered routes: `projects`, `chat`, `admin/users`, `admin/leaves`, `admin/notifications`, `admin/corrections`, `admin/activity`, `admin/reports`, `admin/performance`, `admin/finance`, `admin/payroll`, `admin/settings`
+- Each skeleton mirrors its actual page layout (avatars, stat cards, table rows, form fields)
+- Added CSS utilities: `.skel-avatar`, `.skel-btn`, `.skel-badge`, `.skel-row`, `.skel-cell`, `.w30`, `.w80`
+- **Commit:** `932f738`
+
+### Day-end tooling
+- Added `devnote_update.ps1` — auto-updates `CrewOne_HR_DevNote.docx` with today's DEVLOG entries
+- Word developer note created: `CrewOne_HR_DevNote.docx` (6 sections, full project history)
+
+---
+
 ## 2026-11-24 (Sprint 3 — Micro-animations & UI polish)
 
 ### Weak points fixed (from UI/UX audit)
