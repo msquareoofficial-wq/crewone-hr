@@ -1,12 +1,18 @@
 {
-  "name": "CrewOne",
+  "id": "/",
+  "name": "CrewOne HR",
   "short_name": "CrewOne",
-  "description": "CrewOne: your team, one place.",
+  "description": "Manage your team, attendance, leaves and payroll in one place.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
-  "background_color": "#ffffff",
+  "display_override": ["window-controls-overlay", "standalone"],
+  "orientation": "portrait-primary",
+  "lang": "en",
+  "dir": "ltr",
+  "background_color": "#f5f6fa",
   "theme_color": "#4f46e5",
+  "categories": ["business", "productivity"],
   "icons": [
     {
       "src": "/api/pwa-icon?size=192",
@@ -25,6 +31,26 @@
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Dashboard",
+      "short_name": "Dashboard",
+      "url": "/dashboard",
+      "icons": [{ "src": "/api/pwa-icon?size=96", "sizes": "96x96", "type": "image/png" }]
+    },
+    {
+      "name": "Chat",
+      "short_name": "Chat",
+      "url": "/chat",
+      "icons": [{ "src": "/api/pwa-icon?size=96", "sizes": "96x96", "type": "image/png" }]
+    },
+    {
+      "name": "My Leaves",
+      "short_name": "Leaves",
+      "url": "/dashboard#leaves",
+      "icons": [{ "src": "/api/pwa-icon?size=96", "sizes": "96x96", "type": "image/png" }]
     }
   ]
 }

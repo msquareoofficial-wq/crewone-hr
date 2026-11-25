@@ -11,6 +11,7 @@ import "./calendar.css";
 import "../components/breaklog.css";
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
+import InstallPrompt from "@/components/InstallPrompt";
 
 const inter = Inter({ subsets: ["latin"], display: "swap", variable: "--font-inter" });
 
@@ -40,6 +41,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body>
         {children}
+        <InstallPrompt />
         <script dangerouslySetInnerHTML={{ __html: `if("serviceWorker"in navigator)window.addEventListener("load",function(){navigator.serviceWorker.register("/sw.js").catch(function(){})})` }} />
       </body>
     </html>
