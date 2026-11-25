@@ -6,6 +6,22 @@
 
 ---
 
+## 2026-11-25 (Sprint 5.5 — Policy Rich Text, Acknowledgment & Admin Page)
+
+### Sprint 5.5 — Policy Enhancements
+- **`app/admin/policy/page.tsx`**: Dedicated admin policy management page — acknowledgment stats (acked/pending counts), policy point editor, full acknowledged-by table
+- **`app/admin/settings/PolicyForm.tsx`**: Rich text toolbar — Bold (`**text**`) and Bullet (`- item`) buttons; monospace textarea; preview of raw format
+- **`app/api/policy/route.ts`**: POST now updates `policy_last_updated` in settings + inserts notification + push to all employees
+- **`app/api/policy/[id]/route.ts`**: PUT & DELETE also mark `policy_last_updated` → resets all acknowledgments
+- **`app/api/policy/ack/route.ts`**: POST to acknowledge; GET to check status (blue if unacked/new policy, green if acked)
+- **`app/policy/page.tsx`**: Rich text renderer (bold + bullet lists); `PolicyAckButton` client component
+- **`app/policy/PolicyAckButton.tsx`**: Blue → Green button; persists green until new policy added; stays green across reloads
+- **`app/admin/settings/page.tsx`**: PolicyForm removed; replaced with "Manage Policy →" link card to `/admin/policy`
+- **`app/admin/users/page.tsx`**: New "Policy" column — shows ✓ Ack'd (green) or Pending (grey) per user
+- **`components/Shell.tsx`**: "Policy Mgmt" added to admin NavMore dropdown
+
+---
+
 ## 2026-11-25 (Sprint 5.4 — Company Policy Feature)
 
 ### Sprint 5.4 — Company Policy

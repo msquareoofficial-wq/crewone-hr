@@ -2,6 +2,7 @@
 import { NextResponse } from "next/server";
 import { getSession } from "@/lib/auth";
 import { q } from "@/lib/db";
+import { pushAudience } from "@/lib/push";
 
 async function ensureTable() {
   await q(`
@@ -13,6 +14,13 @@ async function ensureTable() {
       created_at TIMESTAMPTZ NOT NULL DEFAULT now()
     )
   `);
+}
+
+async function markPolicyUpdated() {
+  await q(
+    "INSERT INTO settings (key, value) VALUES ('policy_last_updated', $1) ON CONFLICT (key) DO UPDATE SET value=EXCLUDED.value",
+    [new Date().toISOString()]
+  );
 }
 
 export async function GET() {
@@ -35,5 +43,14 @@ export async function POST(req: Request) {
     "INSERT INTO policy_points (title, body, sort_order) VALUES ($1, $2, $3) RETURNING id",
     [title.trim(), (body ?? "").trim(), nextOrder]
   );
+  await markPolicyUpdated();
+  // insert notification for all users
+  try {
+    await q(
+      "INSERT INTO notifications (author_id, title, body, audience, kind) VALUES ($1,$2,$3,'all','update')",
+      [me.id, "New Company Policy", title.trim().slice(0, 200)]
+    );
+    await pushAudience("all", me.id, "New Company Policy", title.trim(), "/policy");
+  } catch {}
   return NextResponse.json({ id: rows[0].id });
 }

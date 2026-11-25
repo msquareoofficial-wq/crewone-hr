@@ -12,10 +12,26 @@ import { onlineIds } from "@/lib/hr";
 import { EmptyRow } from "@/components/EmptyState";
 import Breadcrumbs from "@/components/Breadcrumbs";
 
+async function getPolicyAcks(): Promise<{ ackedIds: Set<number>; lastUpdated: Date | null }> {
+  try {
+    const [acks, lu] = await Promise.all([
+      q<{ user_id: number }>("SELECT user_id FROM policy_acks"),
+      q<{ value: string }>("SELECT value FROM settings WHERE key='policy_last_updated'"),
+    ]);
+    return {
+      ackedIds: new Set(acks.map(a => a.user_id)),
+      lastUpdated: lu[0]?.value ? new Date(lu[0].value) : null,
+    };
+  } catch { return { ackedIds: new Set(), lastUpdated: null }; }
+}
+
 export default async function UsersPage() {
   const admin = await requireAdminPage();
-  const users = await q<any>("SELECT id, emp_id, name, designation, department, email, phone, shift_start, shift_end, shift_type, picture, active FROM users WHERE role='user' ORDER BY id DESC");
-  const online = await onlineIds();
+  const [users, online, { ackedIds }] = await Promise.all([
+    q<any>("SELECT id, emp_id, name, designation, department, email, phone, shift_start, shift_end, shift_type, picture, active FROM users WHERE role='user' ORDER BY id DESC"),
+    onlineIds(),
+    getPolicyAcks(),
+  ]);
   return (
     <Shell user={admin}>
       <Breadcrumbs items={[{ href: "/admin", label: "Dashboard" }, { label: "Users" }]} />
@@ -28,7 +44,7 @@ export default async function UsersPage() {
         <h2>All users ({users.length})</h2>
         <div className="scroll">
           <table>
-            <thead><tr><th>User</th><th>ID</th><th>Dept</th><th>Email</th><th>Number</th><th>Shift</th><th>Status</th><th>Password</th></tr></thead>
+            <thead><tr><th>User</th><th>ID</th><th>Dept</th><th>Email</th><th>Number</th><th>Shift</th><th>Status</th><th>Policy</th><th>Password</th></tr></thead>
             <tbody>
               {users.map((u) => (
                 <tr key={u.id}>
@@ -36,10 +52,11 @@ export default async function UsersPage() {
                   <td>{u.emp_id}</td><td>{u.department ?? "-"}</td><td>{u.email}</td><td>{u.phone ?? "-"}</td>
                   <td>{u.shift_type === "hybrid" ? <span className="badge b-info">Hybrid</span> : `${fmt12(u.shift_start)} - ${fmt12(u.shift_end)}`}</td>
                   <td>{u.active ? <span className="badge b-ok">Active</span> : <span className="badge b-mute">Inactive</span>}</td>
+                  <td>{ackedIds.has(u.id) ? <span className="badge b-ok">✓ Ack&apos;d</span> : <span className="badge b-mute">Pending</span>}</td>
                   <td><ResetPasswordBtn id={u.id} /></td>
                 </tr>
               ))}
-              {!users.length && <EmptyRow icon="users" title="No employees yet" sub="Add your first employee using the form above." cols={8} />}
+              {!users.length && <EmptyRow icon="users" title="No employees yet" sub="Add your first employee using the form above." cols={9} />}
             </tbody>
           </table>
         </div>

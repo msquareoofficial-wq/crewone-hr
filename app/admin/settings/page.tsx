@@ -15,7 +15,7 @@ import FinUsdColorForm from "./FinUsdColorForm";
 import PayslipSettingsForm from "./PayslipSettingsForm";
 import type { PayslipSettings, CustomField } from "@/lib/payslip-settings";
 import { DEFAULT_FIELDS } from "@/lib/payslip-settings";
-import PolicyForm from "./PolicyForm";
+import Link from "next/link";
 
 async function getPayslipSettingsFromDB(): Promise<PayslipSettings> {
   const rows = await q<{ key: string; value: string }>(
@@ -39,23 +39,14 @@ async function getPayslipSettingsFromDB(): Promise<PayslipSettings> {
   };
 }
 
-async function getPolicyPoints() {
-  try {
-    return await q<{ id: number; title: string; body: string; sort_order: number }>(
-      "SELECT id, title, body, sort_order FROM policy_points ORDER BY sort_order ASC, id ASC"
-    );
-  } catch { return []; }
-}
-
 export default async function SettingsPage() {
   const admin = await requireAdminPage();
-  const [s, logos, navLabels, usdColors, payslipSettings, policyPoints] = await Promise.all([
+  const [s, logos, navLabels, usdColors, payslipSettings] = await Promise.all([
     getSettings(),
     getBrandLogos(),
     getNavLabels(),
     getFinUsdColors(),
     getPayslipSettingsFromDB(),
-    getPolicyPoints(),
   ]);
   return (
     <Shell user={admin}>
@@ -72,10 +63,12 @@ export default async function SettingsPage() {
       </div>
       <div className="card"><h2>My name and designation</h2><AdminName name={admin.name} designation={admin.designation} /></div>
       <div className="card"><h2>My profile picture (DP)</h2><AdminPicture picture={admin.picture} /></div>
-      <div className="card">
-        <h2>Company Policy</h2>
-        <p className="mute" style={{ marginTop: 0, marginBottom: 16 }}>Add and manage company policy points that employees can read on the Policy page.</p>
-        <PolicyForm initial={policyPoints} />
+      <div className="card" style={{ display: "flex", alignItems: "center", justifyContent: "space-between", gap: 16 }}>
+        <div>
+          <h2 style={{ margin: "0 0 4px" }}>Company Policy</h2>
+          <p className="mute" style={{ margin: 0 }}>Manage policy points, track employee acknowledgments.</p>
+        </div>
+        <Link href="/admin/policy" className="btn" style={{ flexShrink: 0 }}>Manage Policy →</Link>
       </div>
       <div className="card"><h2>Change my password</h2><AdminPassword /></div>
       <div className="card"><h2>Backup</h2><p className="mute" style={{ marginTop: 0 }}>Download all main data (users, attendance, leaves, payroll, projects, activity) as one JSON file. Passwords and uploaded files are not included.</p><a className="btn" href="/api/admin/backup">Download backup</a></div>
