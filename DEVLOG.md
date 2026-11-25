@@ -8,6 +8,13 @@
 
 ## 2026-11-24 (Sprint 4 — Skeleton Screens)
 
+### Sprint 5.2 — PWA upgrade
+- `public/offline.html`: styled branded offline page, auto-reloads on reconnect, dark mode support
+- `public/sw.js` v2: pre-cache offline.html, cache-first for `_next/static` assets, network-first navigation, old cache cleanup on activate
+- `manifest.webmanifest`: added `id`, `orientation`, `lang`, `dir`, `categories`, `display_override`, 3 app shortcuts (Dashboard / Chat / Leaves)
+- `components/InstallPrompt.tsx`: `beforeinstallprompt` install banner with 14-day dismiss, iOS Safari tip, `slideUp` animation
+- **Commit:** `188cb09`
+
 ### Sprint 5.1 — Lighthouse & SEO improvements
 - **Font**: replaced render-blocking Google Fonts `<link>` with `next/font/google` (Inter self-hosted, no external request, `font-display:swap`). `--font-inter` CSS variable used in `globals.css`
 - **Metadata**: title template `%s | CrewOne`, OG tags, robots noindex (private app). Per-page titles for admin, dashboard, login, projects, chat, calendar, users
