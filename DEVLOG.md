@@ -6,6 +6,22 @@
 
 ---
 
+## 2026-11-24 (Sprint 5.3 — Accessibility / WCAG 2.1 AA)
+
+### Sprint 5.3 — Accessibility
+- **LoginForm**: added `htmlFor`/`id` associations for all labels; inline error gets `role="alert"`
+- **PasswordInput**: exposed `id` prop so label can reference the input field
+- **Toaster**: added `role="log" aria-live="polite" aria-atomic="false"` on container; `role="status"` per toast; icon spans `aria-hidden="true"` to hide decorative symbols from screen readers
+- **refine.css**: extended `focus-visible` ring to `button`, `input`, `select`, `textarea`, `[role="button"]`; added `.sr-only` utility class; added `.skip-link` with `:focus` reveal transition
+- **layout.tsx**: skip-to-main-content link added as first `<body>` child (`.skip-link.sr-only`)
+- **Shell.tsx**: `id="main-content"` on `<main>` — skip link target
+- **ThemeToggle**: `aria-pressed={dark}` for screen reader toggle state
+- **NavToggle**: `aria-pressed={isTop}` for screen reader toggle state
+- **NavActive**: sets `aria-current="page"` on active nav links; removes on inactive
+- **Commit:** `e14f77e`
+
+---
+
 ## 2026-11-24 (Sprint 4 — Skeleton Screens)
 
 ### Sprint 5.2 — PWA upgrade
