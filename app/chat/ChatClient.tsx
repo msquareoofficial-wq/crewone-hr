@@ -1,6 +1,7 @@
 ﻿// Powered By Vistech Force
 "use client";
 import { useCallback, useEffect, useRef, useState } from "react";
+import EmptyState from "@/components/EmptyState";
 
 // Powered By Vistech Force
 type U = { id: number; name: string; emp_id?: string; role?: string; has_picture: boolean; online: boolean; last_read_id?: number; status_text?: string | null };
@@ -200,12 +201,12 @@ export default function ChatClient({ meId, meRole, tz, initialRoom }: { meId: nu
               {r.unread > 0 && <span className="unread">{r.unread}</span>}
             </div>
           ))}
-          {!rooms.length && <p className="mute" style={{ padding: 14 }}>No chats yet. Click + New to start one.</p>}
+          {!rooms.length && <EmptyState icon="chat" title="No chats yet" sub="Click + New above to start a conversation." compact />}
         </div>
       </div>
 
       <div className="chat-main">
-        {!active ? <div className="mute" style={{ margin: "auto" }}>Select a chat or start a new one</div> : (
+        {!active ? <EmptyState icon="chat" title="Select a conversation" sub="Choose a chat from the left, or start a new one." /> : (
           <>
             <div className="chat-head">
               {cur?.kind === "dm" ? <Av id={cur.other_id} name={title} has={cur.has_picture} online={cur.online} /> : <span className="avatar" style={{ width: 36, height: 36 }}>G</span>}

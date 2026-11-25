@@ -2,6 +2,19 @@
 import React from "react";
 
 const ICONS: Record<string, React.ReactNode> = {
+  chat: (
+    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M42 26a4 4 0 0 1-4 4H14l-8 8V10a4 4 0 0 1 4-4h28a4 4 0 0 1 4 4v16z" stroke="currentColor" strokeWidth="2.5" strokeLinejoin="round" />
+      <path d="M16 18h16M16 25h10" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+    </svg>
+  ),
+  finance: (
+    <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <rect x="6" y="10" width="36" height="28" rx="4" stroke="currentColor" strokeWidth="2.5" />
+      <circle cx="24" cy="24" r="6" stroke="currentColor" strokeWidth="2.5" />
+      <path d="M6 18h4M38 18h4M6 30h4M38 30h4" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" />
+    </svg>
+  ),
   tasks: (
     <svg viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
       <rect x="8" y="6" width="32" height="38" rx="4" stroke="currentColor" strokeWidth="2.5" />
@@ -90,17 +103,20 @@ export default function EmptyState({
   title,
   sub,
   compact = false,
+  action,
 }: {
   icon?: EmptyIcon;
   title: string;
   sub?: string;
   compact?: boolean;
+  action?: { label: string; href: string };
 }) {
   return (
     <div className={`es-wrap${compact ? " es-compact" : ""}`}>
       <span className="es-icon">{ICONS[icon]}</span>
       <strong className="es-title">{title}</strong>
       {sub && <span className="es-sub">{sub}</span>}
+      {action && <a href={action.href} className="btn sm" style={{ marginTop: 4 }}>{action.label}</a>}
     </div>
   );
 }

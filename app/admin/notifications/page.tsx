@@ -8,6 +8,7 @@ import Feed from "@/components/Feed";
 import { DeleteBtn } from "@/components/FeedClient";
 import ComposeForm from "./ComposeForm";
 import { fmtDate, fmtMonth } from "@/lib/fmtdate";
+import EmptyState from "@/components/EmptyState";
 
 export default async function NotificationsPage() {
   const admin = await requireAdminPage("notifications");
@@ -27,7 +28,7 @@ export default async function NotificationsPage() {
             <div className="scroll"><table><thead><tr><th>Date</th><th>Title</th><th></th></tr></thead><tbody>
               {hols.map((h) => (<tr key={h.id}><td>{fmtDate(h.holiday_date)}</td><td>{h.title}</td><td><DeleteBtn url={`/api/holidays/${h.id}`} confirmText="Remove this holiday?" /></td></tr>))}
             </tbody></table></div>
-          ) : <p className="mute">No holidays.</p>}
+          ) : <EmptyState icon="leaves" title="No holidays added" sub="Add a holiday above to mark it as an off day in the calendar." compact />}
         </div>
       </div>
     </Shell>

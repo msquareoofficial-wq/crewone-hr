@@ -6,6 +6,7 @@ import { currentMonth } from "@/lib/hr";
 import { monthPerformance, BREAK_ALLOWANCE_MIN } from "@/lib/perf";
 import Shell, { Avatar } from "@/components/Shell";
 import Breadcrumbs from "@/components/Breadcrumbs";
+import EmptyState from "@/components/EmptyState";
 import { MonthPicker } from "@/components/MonthTable";
 import { fmtDate, fmtMonth } from "@/lib/fmtdate";
 
@@ -44,7 +45,7 @@ export default async function Performance({ searchParams }: { searchParams: Prom
             <b>{r.overall === null ? "-" : r.overall + "%"}</b>
           </div>
         ))}
-        {!rows.length && <p className="mute">No users.</p>}
+        {!rows.length && <EmptyState icon="users" title="No data for this month" sub="No attendance or task records found for the selected period." compact />}
       </div>
       <div className="card">
         <h2>Breakdown</h2>
