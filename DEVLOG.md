@@ -6,6 +6,18 @@
 
 ---
 
+## 2026-11-25 (Sprint 5.4 — Company Policy Feature)
+
+### Sprint 5.4 — Company Policy
+- **`app/api/policy/route.ts`**: GET (all logged-in users) + POST (admin only) for policy points; auto-creates `policy_points` table if not exists
+- **`app/api/policy/[id]/route.ts`**: PUT (edit) + DELETE — admin only
+- **`app/policy/page.tsx`**: User-facing policy page; shows numbered cards with title + details; accessible to all logged-in users
+- **`app/admin/settings/PolicyForm.tsx`**: Admin client component — inline edit, delete, add new policy point; live state without full page reload
+- **`app/admin/settings/page.tsx`**: Added "Company Policy" card with `PolicyForm`; loads existing points server-side
+- **`components/Shell.tsx`**: "Policy" nav link added for both admin and user navigation (top nav + bottom bar)
+
+---
+
 ## 2026-11-24 (Sprint 5.3 — Accessibility / WCAG 2.1 AA)
 
 ### Sprint 5.3 — Accessibility

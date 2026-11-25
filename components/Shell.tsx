@@ -54,6 +54,7 @@ export default async function Shell({ user, children }: { user: SessionUser; chi
               <ProjectsNavLink />
               <ChatNavLink />
               <LiveNavLink tab="settings" href="/admin/settings" label={labels.settings} />
+              <Link href="/policy">Policy</Link>
               <NavMore items={[
                 { href: "/admin/corrections", label: labels.corrections },
                 { href: "/admin/reports", label: labels.reports },
@@ -74,6 +75,7 @@ export default async function Shell({ user, children }: { user: SessionUser; chi
               <LiveNavLink tab="calendar" href="/calendar" label="Calendar" />
               <ProjectsNavLink />
               <ChatNavLink />
+              <Link href="/policy">Policy</Link>
             </>
           )}
         </MobileNav>
@@ -104,6 +106,7 @@ export default async function Shell({ user, children }: { user: SessionUser; chi
             <ProjectsNavLink />
             <ChatNavLink />
             <LiveNavLink tab="settings" href="/admin/settings" label={labels.settings} />
+            <Link href="/policy">Policy</Link>
             <LiveNavLink tab="corrections" href="/admin/corrections" label={labels.corrections} />
             <LiveNavLink tab="reports" href="/admin/reports" label={labels.reports} />
             <LiveNavLink tab="performance" href="/admin/performance" label={labels.performance} />
@@ -122,6 +125,7 @@ export default async function Shell({ user, children }: { user: SessionUser; chi
             <LiveNavLink tab="calendar" href="/calendar" label="Calendar" />
             <ProjectsNavLink />
             <ChatNavLink />
+            <Link href="/policy">Policy</Link>
           </>
         )}
       </BottomBar>
