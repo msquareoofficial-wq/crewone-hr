@@ -8,6 +8,12 @@
 
 ## 2026-11-24 (Sprint 4 — Skeleton Screens)
 
+### Empty states — all pages upgraded
+- Added `chat` and `finance` icons to `EmptyState` component
+- Added `action` link prop to `EmptyState` (renders a button-link)
+- Replaced inline custom empty states in: `ProjectsClient.tsx`, `ChatClient.tsx` (sidebar + main area), `admin/notifications/page.tsx`, `admin/performance/page.tsx`
+- Commits: `fa30c93`
+
 ### Skeleton loading screens — all pages covered
 - Added `loading.tsx` to 12 previously uncovered routes: `projects`, `chat`, `admin/users`, `admin/leaves`, `admin/notifications`, `admin/corrections`, `admin/activity`, `admin/reports`, `admin/performance`, `admin/finance`, `admin/payroll`, `admin/settings`
 - Each skeleton mirrors its actual page layout (avatars, stat cards, table rows, form fields)
