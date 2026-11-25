@@ -39,9 +39,9 @@ export default async function Shell({ user, children }: { user: SessionUser; chi
       <header className="top">
         <div className="logo">
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="lg-d" src={logos.dark} alt={BRAND.name} />
+          <img className="lg-d" src={logos.dark} alt={BRAND.name} height="36" />
           {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="lg-l" src={logos.light} alt={BRAND.name} />
+          <img className="lg-l" src={logos.light} alt={BRAND.name} height="36" />
         </div>
         <MobileNav>
           {admin ? (

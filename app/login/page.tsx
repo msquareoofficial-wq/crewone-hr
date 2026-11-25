@@ -1,4 +1,6 @@
 ﻿// Powered By Vistech Force
+import type { Metadata } from "next";
+export const metadata: Metadata = { title: "Login" };
 import { redirect } from "next/navigation";
 import { getSession } from "@/lib/auth";
 import LoginForm from "./LoginForm";

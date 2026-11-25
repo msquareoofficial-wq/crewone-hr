@@ -1,4 +1,6 @@
 ﻿// Powered By Vistech Force
+import type { Metadata } from "next";
+export const metadata: Metadata = { title: "Users" };
 import Link from "next/link";
 import { requireAdminPage } from "@/lib/auth";
 import { q } from "@/lib/db";

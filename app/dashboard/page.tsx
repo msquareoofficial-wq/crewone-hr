@@ -1,4 +1,6 @@
 ﻿// Powered By Vistech Force
+import type { Metadata } from "next";
+export const metadata: Metadata = { title: "Dashboard" };
 import { requireUser } from "@/lib/auth";
 import TaskLog from "@/components/TaskLog";
 import BreakLog from "@/components/BreakLog";

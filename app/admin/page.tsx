@@ -1,4 +1,6 @@
 ﻿// Powered By Vistech Force
+import type { Metadata } from "next";
+export const metadata: Metadata = { title: "Admin Dashboard" };
 import { requireAdminPage } from "@/lib/auth";
 import { q, getSettings } from "@/lib/db";
 import { adminToday, todayDate } from "@/lib/hr";

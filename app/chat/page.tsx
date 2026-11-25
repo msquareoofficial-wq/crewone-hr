@@ -1,4 +1,6 @@
 ﻿// Powered By Vistech Force
+import type { Metadata } from "next";
+export const metadata: Metadata = { title: "Chat" };
 import { requireUser } from "@/lib/auth";
 import { getSettings } from "@/lib/db";
 import Shell from "@/components/Shell";

@@ -1,4 +1,6 @@
 ﻿// Powered By Vistech Force
+import type { Metadata } from "next";
+export const metadata: Metadata = { title: "Calendar" };
 import { requireUser, can } from "@/lib/auth";
 import { q, getSettings } from "@/lib/db";
 import { currentMonth, todayDate } from "@/lib/hr";
