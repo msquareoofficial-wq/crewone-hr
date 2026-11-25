@@ -8,6 +8,14 @@
 
 ## 2026-11-24 (Sprint 4 — Skeleton Screens)
 
+### Sprint 5.1 — Lighthouse & SEO improvements
+- **Font**: replaced render-blocking Google Fonts `<link>` with `next/font/google` (Inter self-hosted, no external request, `font-display:swap`). `--font-inter` CSS variable used in `globals.css`
+- **Metadata**: title template `%s | CrewOne`, OG tags, robots noindex (private app). Per-page titles for admin, dashboard, login, projects, chat, calendar, users
+- **next.config.mjs**: `poweredByHeader: false`, 5 security headers, cache headers for avatar/pwa-icon
+- **robots.ts**: disallow all (private HR app)
+- **CLS fix**: logo `<img>` in Shell.tsx gets `height="36"`
+- **Commit:** `00fc589`
+
 ### Error boundaries — full crash recovery
 - Created `components/ErrorBoundary.tsx` — shared branded error UI (alert icon, Try again + Go home buttons, error digest ID)
 - Created `error.tsx` for: root, admin, dashboard, projects, chat, calendar
