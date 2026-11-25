@@ -8,6 +8,13 @@
 
 ## 2026-11-24 (Sprint 4 — Skeleton Screens)
 
+### Error boundaries — full crash recovery
+- Created `components/ErrorBoundary.tsx` — shared branded error UI (alert icon, Try again + Go home buttons, error digest ID)
+- Created `error.tsx` for: root, admin, dashboard, projects, chat, calendar
+- Created `app/global-error.tsx` — full app crash recovery (owns its own `<html>` + `<body>`)
+- CSS `err-*` classes added to `refine.css`
+- **Commit:** `a92fb8c`
+
 ### Empty states — all pages upgraded
 - Added `chat` and `finance` icons to `EmptyState` component
 - Added `action` link prop to `EmptyState` (renders a button-link)
