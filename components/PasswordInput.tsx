@@ -3,11 +3,11 @@
 import { useState } from "react";
 import "./passwordinput.css";
 
-export default function PasswordInput(props: { name: string; required?: boolean; minLength?: number; autoComplete?: string; onBlur?: React.FocusEventHandler<HTMLInputElement>; onChange?: React.ChangeEventHandler<HTMLInputElement>; className?: string }) {
+export default function PasswordInput(props: { id?: string; name: string; required?: boolean; minLength?: number; autoComplete?: string; onBlur?: React.FocusEventHandler<HTMLInputElement>; onChange?: React.ChangeEventHandler<HTMLInputElement>; className?: string }) {
   const [show, setShow] = useState(false);
   return (
     <div className="pw-wrap">
-      <input name={props.name} type={show ? "text" : "password"} required={props.required} minLength={props.minLength} autoComplete={props.autoComplete} onBlur={props.onBlur} onChange={props.onChange} className={props.className} />
+      <input id={props.id} name={props.name} type={show ? "text" : "password"} required={props.required} minLength={props.minLength} autoComplete={props.autoComplete} onBlur={props.onBlur} onChange={props.onChange} className={props.className} />
       <button type="button" className="pw-eye" aria-label={show ? "Hide password" : "Show password"} title={show ? "Hide password" : "Show password"} onClick={() => setShow(!show)}>
         {show ? (
           <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">

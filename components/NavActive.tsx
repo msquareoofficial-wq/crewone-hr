@@ -11,6 +11,8 @@ export default function NavActive() {
       const h = a.getAttribute("href") || "";
       const on = h === "/admin" ? path === h : path === h || path.startsWith(h + "/");
       a.classList.toggle("on", on);
+      if (on) a.setAttribute("aria-current", "page");
+      else a.removeAttribute("aria-current");
     });
   }, [path]);
   return null;

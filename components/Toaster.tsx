@@ -20,10 +20,10 @@ export default function Toaster() {
   }), []);
   if (!toasts.length || typeof document === "undefined") return null;
   return createPortal(
-    <div className="ac-toasts">
+    <div className="ac-toasts" role="log" aria-live="polite" aria-atomic="false" aria-label="Notifications">
       {toasts.map((t) => (
-        <div key={t.id} className={`ac-toast ac-toast-${t.type}${exiting.has(t.id) ? " ac-toast-out" : ""}`}>
-          <span className="ac-toast-ic">{ICONS[t.type]}</span>
+        <div key={t.id} role="status" className={`ac-toast ac-toast-${t.type}${exiting.has(t.id) ? " ac-toast-out" : ""}`}>
+          <span className="ac-toast-ic" aria-hidden="true">{ICONS[t.type]}</span>
           <span className="ac-toast-msg">{t.msg}</span>
         </div>
       ))}

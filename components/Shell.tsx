@@ -91,7 +91,7 @@ export default async function Shell({ user, children }: { user: SessionUser; chi
           <LogoutButton />
         </div>
       </header>
-      <main className="wrap">{children}</main>
+      <main id="main-content" className="wrap">{children}</main>
       <Footer />
       <BottomBar role={user.role}>
         {admin ? (

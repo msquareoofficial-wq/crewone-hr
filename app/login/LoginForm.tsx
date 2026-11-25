@@ -61,13 +61,13 @@ export default function LoginForm() {
   return (
     <form onSubmit={submit} className="grid">
       <div className="iv-field">
-        <label>Employee ID or Email</label>
-        <input name="identifier" autoFocus onBlur={blur} onChange={change} className={cls("identifier")} />
-        {errs.identifier && <span className="iv-msg">{errs.identifier}</span>}
+        <label htmlFor="login-identifier">Employee ID or Email</label>
+        <input id="login-identifier" name="identifier" autoFocus onBlur={blur} onChange={change} className={cls("identifier")} autoComplete="username" />
+        {errs.identifier && <span className="iv-msg" role="alert">{errs.identifier}</span>}
       </div>
       <div className="iv-field">
-        <label>Password</label>
-        <PasswordInput name="password" autoComplete="current-password" onBlur={blur} onChange={change} className={cls("password")} />
+        <label htmlFor="login-password">Password</label>
+        <PasswordInput id="login-password" name="password" autoComplete="current-password" onBlur={blur} onChange={change} className={cls("password")} />
         {errs.password && <span className="iv-msg">{errs.password}</span>}
       </div>
       {err && <div className="err">{err}</div>}
