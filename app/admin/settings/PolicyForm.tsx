@@ -47,21 +47,25 @@ function PointRow({ p, index, onDelete, onSaved }: { p: Point; index: number; on
   async function save() {
     if (!title.trim()) { setErr("Title required"); return; }
     setBusy(true); setErr("");
-    const r = await fetch(`/api/policy/${p.id}`, {
-      method: "PUT",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, body, sort_order: p.sort_order }),
-    });
-    setBusy(false);
-    if (r.ok) { onSaved({ ...p, title, body }); setEditing(false); }
-    else { const j = await r.json(); setErr(j.error || "Failed"); }
+    try {
+      const r = await fetch(`/api/policy/${p.id}`, {
+        method: "PUT",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, body, sort_order: p.sort_order }),
+      });
+      if (r.ok) { onSaved({ ...p, title, body }); setEditing(false); }
+      else { const j = await r.json().catch(() => ({})); setErr(j.error || `Error ${r.status}`); }
+    } catch { setErr("Network error — please try again"); }
+    finally { setBusy(false); }
   }
 
   async function del() {
     if (!confirm(`Delete "${p.title}"?`)) return;
     setBusy(true);
-    await fetch(`/api/policy/${p.id}`, { method: "DELETE" });
-    onDelete(p.id);
+    try {
+      await fetch(`/api/policy/${p.id}`, { method: "DELETE" });
+      onDelete(p.id);
+    } catch { setErr("Delete failed — please try again"); setBusy(false); }
   }
 
   return (
@@ -135,18 +139,20 @@ export default function PolicyForm({ initial }: { initial: Point[] }) {
   async function add() {
     if (!title.trim()) { setErr("Title required"); return; }
     setBusy(true); setErr(""); setMsg("");
-    const r = await fetch("/api/policy", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ title, body }),
-    });
-    const j = await r.json();
-    setBusy(false);
-    if (r.ok) {
-      setPoints(prev => [...prev, { id: j.id, title: title.trim(), body: body.trim(), sort_order: prev.length + 1 }]);
-      setTitle(""); setBody(""); setMsg("Point added — all employees notified!"); setShowAdd(false);
-      router.refresh();
-    } else { setErr(j.error || "Failed"); }
+    try {
+      const r = await fetch("/api/policy", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ title, body }),
+      });
+      const j = await r.json().catch(() => ({}));
+      if (r.ok) {
+        setPoints(prev => [...prev, { id: j.id, title: title.trim(), body: body.trim(), sort_order: prev.length + 1 }]);
+        setTitle(""); setBody(""); setMsg("Point added — all employees notified!"); setShowAdd(false);
+        router.refresh();
+      } else { setErr(j.error || `Error ${r.status}`); }
+    } catch { setErr("Network error — please try again"); }
+    finally { setBusy(false); }
   }
 
   return (
