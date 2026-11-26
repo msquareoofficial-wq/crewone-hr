@@ -6,6 +6,18 @@
 
 ---
 
+## 2026-11-26 (Sprint 5.6 — Read-only User Profile + Admin Pencil Unlock)
+
+### Changes
+- **`app/dashboard/UserInfoCard.tsx`** (new): Read-only card showing user's own info (name, emp_id, designation, department, email, office email, phone, office phone, CNIC, joining date, shift). "View only" badge + "contact admin" footer note.
+- **`app/dashboard/page.tsx`**: Replaced ProfileForm with UserInfoCard. Expanded DB query to fetch email, office_email, office_phone, cnic, joining_date.
+- **`components/UserForm.tsx`**: Added `initialLocked` prop. When `initialLocked=true` (edit mode), all fields start disabled with a pencil/Edit button at top. Clicking it unlocks all fields. Saving re-locks automatically.
+- **`app/admin/users/[id]/page.tsx`**: Passes `initialLocked={true}` to UserForm so admin sees user info locked by default.
+
+### Commit: `0b4491a`
+
+---
+
 ## 2026-11-25 (Sprint 5.5 — Policy Rich Text, Acknowledgment & Admin Page)
 
 ### Sprint 5.5 — Policy Enhancements
