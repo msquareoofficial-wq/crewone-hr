@@ -42,7 +42,7 @@ export default async function UserDetail({ params, searchParams }: { params: Pro
       </div>
       <BreakLog rows={await getBreakLog(u.id, month)} tz={s.timezone} csvHref={`/api/breaklog?month=${month}&userId=${u.id}`} title={`Break log (${month})`} />
       <TaskLog rows={await getTaskLog(u.id, month)} tz={s.timezone} csvHref={`/api/tasklog?month=${month}&userId=${u.id}`} title={`Task log (${month})`} />
-      <div className="card"><h2>Edit user details</h2><UserForm id={u.id} initial={u} /></div>
+      <div className="card"><h2>User details</h2><UserForm id={u.id} initial={u} initialLocked={true} /></div>
     </Shell>
   );
 }

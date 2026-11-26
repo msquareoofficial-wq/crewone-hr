@@ -17,7 +17,7 @@ import MissedOutPrompt from "@/components/MissedOutPrompt";
 import Shell from "@/components/Shell";
 import MonthTable, { MonthStats, MonthPicker } from "@/components/MonthTable";
 import UserPanel from "./UserPanel";
-import ProfileForm from "./ProfileForm";
+import UserInfoCard from "./UserInfoCard";
 import AutoRefresh from "@/components/AutoRefresh";
 import EmptyState from "@/components/EmptyState";
 import { redirect } from "next/navigation";
@@ -70,7 +70,7 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
   const hols = await q<any>("SELECT holiday_date, title FROM holidays WHERE holiday_date LIKE $1", [cal + "-%"]);
   const myLeaves = await q<any>("SELECT * FROM leave_requests WHERE user_id=$1 ORDER BY start_date DESC LIMIT 30", [user.id]);
   const calAtt = await q<any>("SELECT work_date, late FROM attendance WHERE user_id=$1 AND work_date LIKE $2", [user.id, cal + "-%"]);
-  const me = await q1<any>("SELECT phone, leave_quota FROM users WHERE id=$1", [user.id]);
+  const me = await q1<any>("SELECT phone, office_phone, email, office_email, cnic, joining_date, leave_quota FROM users WHERE id=$1", [user.id]);
   const bal = await leaveBalance(user.id, today.slice(0, 4), s.leave_quota, me?.leave_quota);
   const corrs = await q<any>("SELECT id, work_date, req_in, req_out, status, admin_note FROM attendance_corrections WHERE user_id=$1 ORDER BY created_at DESC LIMIT 10", [user.id]);
   // Heatmap: last 364 days attendance + leaves + holidays
@@ -194,7 +194,22 @@ export default async function Dashboard({ searchParams }: { searchParams: Promis
       <BreakLog rows={await getBreakLog(user.id, month)} tz={s.timezone} csvHref={`/api/breaklog?month=${month}`} title={`My break log (${month})`} />
       <TaskLog rows={await getTaskLog(user.id, month)} tz={s.timezone} csvHref={`/api/tasklog?month=${month}`} title={`My task log (${month})`} />
 
-      <ProfileForm user={{ pseudo_name: user.pseudo_name, picture: user.picture, phone: me?.phone ?? null }} />
+      <UserInfoCard u={{
+        name: user.name,
+        emp_id: user.emp_id,
+        pseudo_name: user.pseudo_name,
+        designation: user.designation,
+        department: user.department,
+        email: me?.email ?? null,
+        office_email: me?.office_email ?? null,
+        phone: me?.phone ?? null,
+        office_phone: me?.office_phone ?? null,
+        cnic: me?.cnic ?? null,
+        joining_date: me?.joining_date ?? null,
+        shift_start: user.shift_start,
+        shift_end: user.shift_end,
+        shift_type: user.shift_type,
+      }} />
     </Shell>
   );
 }
