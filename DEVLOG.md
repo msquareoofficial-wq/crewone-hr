@@ -6,6 +6,29 @@
 
 ---
 
+## 2026-11-27 (Sprint 5.9 — Late Reason Popup + Admin Late Log)
+
+### Changes
+- **`app/api/attendance/route.ts`**: Added `late_reason` action — saves user's late reason to `late_reason` column (auto-migrate). Full request body parsed once.
+- **`app/dashboard/AttendanceButtons.tsx`**: After late IN, shows modal popup asking for reason (Skip option available). Reason submitted via separate API call.
+- **`app/admin/late-log/page.tsx`** (new): Table of all late arrivals — date, employee, sign-in time, late minutes, reason. Stats cards: Total / Reason Given / No Reason.
+- **`components/Shell.tsx`**: "Late Log" added to admin NavMore.
+
+### Commit: `8ddc0af`
+
+---
+
+## 2026-11-27 (Sprint 5.8 — Nav Labels: Policy Mgmt + Credentials)
+
+### Changes
+- **`lib/db.ts`**: Added `policy` and `credentials` to NAV_KEYS and DEFAULT_NAV_LABELS
+- **`app/admin/settings/NavLabelsForm.tsx`**: Added Policy Mgmt and Credentials fields to nav labels form
+- **`components/Shell.tsx`**: Both NavMore items now use `labels.policy` and `labels.credentials` instead of hardcoded strings
+
+### Commits: `9e8fbe4`, `ada4608`
+
+---
+
 ## 2026-11-27 (Sprint 5.7 — Admin Credentials Page)
 
 ### Changes
