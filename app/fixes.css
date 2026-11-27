@@ -208,7 +208,7 @@ html:not([data-nav="top"]) .top .who>.who-t small{white-space:normal;overflow:vi
 .fin-num{text-align:right;font-variant-numeric:tabular-nums}
 .fin-dim{color:var(--mute)}
 .fin-calc{font-variant-numeric:tabular-nums;font-weight:600;padding-right:14px}
-.fin-total td{font-weight:700;border-top:2px solid var(--ink,#111827);padding-top:10px;padding-bottom:10px;font-variant-numeric:tabular-nums}
+.fin-total td{font-weight:700;border-top:2px solid var(--ink,#111827);border-bottom:0;padding-top:10px;padding-bottom:10px;font-variant-numeric:tabular-nums}
 .fin-zero td{background:rgba(250,204,21,.16)}
 .fin-x{border:0;background:transparent;color:var(--mute);font-size:20px;line-height:1;cursor:pointer;border-radius:6px;padding:2px 9px}
 .fin-x:hover{background:rgba(220,38,38,.1);color:#dc2626}
