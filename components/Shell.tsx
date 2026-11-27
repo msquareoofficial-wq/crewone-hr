@@ -65,6 +65,7 @@ export default async function Shell({ user, children }: { user: SessionUser; chi
                 { href: "/admin/activity", label: labels.activity },
                 { href: "/admin/policy", label: labels.policy },
                 { href: "/admin/credentials", label: labels.credentials },
+                { href: "/admin/late-log", label: "Late Log" },
               ]} />
             </>
           ) : (

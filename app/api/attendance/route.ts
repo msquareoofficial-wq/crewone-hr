@@ -23,7 +23,8 @@ export async function POST(req: Request) {
   const me = await getSession();
   if (!me || me.role !== "user") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
 
-  const { action, work_date, time } = await req.json();
+  const body = await req.json();
+  const { action, work_date, time, reason } = body;
   const [today] = await Promise.all([todayDate(), autoCloseStale(me.id)]);
   const ip = getIp(req);
 
@@ -119,6 +120,17 @@ export async function POST(req: Request) {
     }
 
     await q("UPDATE attendance SET out_confirmed=TRUE WHERE id=$1", [row.id]);
+    return NextResponse.json({ ok: true });
+  }
+
+  // ── LATE REASON ──
+  if (action === "late_reason") {
+    await q(`ALTER TABLE attendance ADD COLUMN IF NOT EXISTS late_reason TEXT`);
+    const r = String(reason || "").trim().slice(0, 300);
+    if (!r) return NextResponse.json({ error: "Reason required" }, { status: 400 });
+    if (!todayAtt) return NextResponse.json({ error: "No attendance record found for today" }, { status: 400 });
+    await q("UPDATE attendance SET late_reason=$2 WHERE id=$1", [todayAtt.id, r]);
+    await logActivity(me.id, "attendance", "Provided late reason", r, ip);
     return NextResponse.json({ ok: true });
   }
 
