@@ -186,7 +186,7 @@ export default function FinanceClient({ month, cur, today, initial, usdC1 = "#1d
         </div>
         <div className="scroll">
           <table className="fin-t fin-w1">
-            <thead><tr><th style={{ width: 44 }}>#</th><th>Name</th><th className="r">Salary PKR</th><th className="r">Get</th><th className="r">Commission</th><th className="r">Total pay</th><th>Department</th><th style={{ width: 92 }}>Status</th><th style={{ width: 90 }}></th></tr></thead>
+            <thead><tr><th style={{ width: 44 }}>#</th><th>Name</th><th className="r" style={{ minWidth: 110 }}>Salary PKR</th><th className="r" style={{ minWidth: 60 }}>Get</th><th className="r" style={{ minWidth: 100 }}>Commission</th><th className="r" style={{ minWidth: 120 }}>Total pay</th><th>Department</th><th style={{ width: 92 }}>Status</th><th style={{ width: 90 }}></th></tr></thead>
             <tbody>
               {salary.map((r, i) => (
                 <tr key={r.id}>
@@ -202,7 +202,7 @@ export default function FinanceClient({ month, cur, today, initial, usdC1 = "#1d
                 </tr>
               ))}
               {!salary.length && <tr><td colSpan={9} className="mute">No one added yet. Click &quot;+ Add person&quot; or &quot;Import staff from HR&quot;.</td></tr>}
-              <tr className="fin-total"><td></td><td>Total</td><td className="r" style={{paddingRight:16}}>{fmt(tSalary)}</td><td className="r fin-dim" style={{paddingRight:16}}>{fmt(tGet)}</td><td className="r fin-dim" style={{paddingRight:16}}>{fmt(tComm)}</td><td className="r fin-calc">{fmt(tSalary + tComm)}</td><td></td><td></td><td></td></tr>
+              <tr className="fin-total"><td></td><td>Total</td><td className="r">{fmt(tSalary)}</td><td className="r fin-dim">{fmt(tGet)}</td><td className="r fin-dim">{fmt(tComm)}</td><td className="r fin-calc">{fmt(tSalary + tComm)}</td><td></td><td></td><td></td></tr>
             </tbody>
           </table>
         </div>
