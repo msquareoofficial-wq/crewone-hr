@@ -69,6 +69,6 @@ input:focus,select:focus{outline:2px solid #c7d2fe;border-color:var(--brand)}
 .msg .tm{font-size:10px;color:var(--mute);margin-top:3px;text-align:right}
 .msg .file{display:flex;gap:8px;align-items:center;background:#fff;border:1px solid var(--line);border-radius:8px;padding:6px 10px;margin-top:4px}
 .chat-input{display:flex;gap:8px;padding:10px;border-top:1px solid var(--line);align-items:center}
-.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:50}
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.4);display:flex;align-items:center;justify-content:center;z-index:200}
 .modal{background:#fff;border-radius:12px;padding:18px;width:min(460px,94vw);max-height:84vh;overflow:auto}
 @media(max-width:800px){.chat{grid-template-columns:1fr;height:auto}.chat-side{max-height:260px}.chat-main{height:70vh}}

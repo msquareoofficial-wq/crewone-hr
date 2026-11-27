@@ -6,6 +6,13 @@
 
 ---
 
+## 2026-11-27 (Sprint 5.10 — Modal Z-Index Fix)
+
+### Changes
+- **`app/globals.css`**: Increased `.modal-bg` z-index from 50 → 200. Root cause: `.btm-bar` (mobile bottom nav) also had z-index 50 and rendered later in DOM, causing it to appear on top of the modal overlay. Footer text "Powered by Vistech Force" was bleeding through the modal at the same visual location as the Cancel button.
+
+---
+
 ## 2026-11-27 (Sprint 5.9 — Late Reason Popup + Admin Late Log)
 
 ### Changes
