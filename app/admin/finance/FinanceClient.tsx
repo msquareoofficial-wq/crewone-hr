@@ -202,7 +202,7 @@ export default function FinanceClient({ month, cur, today, initial, usdC1 = "#1d
                 </tr>
               ))}
               {!salary.length && <tr><td colSpan={9} className="mute">No one added yet. Click &quot;+ Add person&quot; or &quot;Import staff from HR&quot;.</td></tr>}
-              <tr className="fin-total"><td></td><td>Total</td><td className="r">{fmt(tSalary)}</td><td className="r">{fmt(tGet)}</td><td className="r">{fmt(tComm)}</td><td className="r fin-calc">{fmt(tSalary + tComm)}</td><td colSpan={3}></td></tr>
+              <tr className="fin-total"><td></td><td>Total</td><td className="r">{fmt(tSalary)}</td><td className="r fin-dim">{fmt(tGet)}</td><td className="r fin-dim">{fmt(tComm)}</td><td className="r fin-calc">{fmt(tSalary + tComm)}</td><td></td><td></td><td></td></tr>
             </tbody>
           </table>
         </div>
