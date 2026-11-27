@@ -1,6 +1,7 @@
 ﻿// Powered By Vistech Force
 "use client";
 import { useCallback, useEffect, useState } from "react";
+import { createPortal } from "react-dom";
 import Link from "next/link";
 import EmptyState from "@/components/EmptyState";
 import "../projects.css";
@@ -89,7 +90,7 @@ function NewProject({ onClose, onDone }: { onClose: () => void; onDone: () => vo
     } catch { setErr("Network error"); setBusy(false); }
   }
 
-  return (
+  return createPortal(
     <div className="modal-bg" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <h3 style={{ marginTop: 0 }}>New project</h3>
@@ -110,6 +111,7 @@ function NewProject({ onClose, onDone }: { onClose: () => void; onDone: () => vo
           <button className="btn sec" onClick={onClose}>Cancel</button>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
