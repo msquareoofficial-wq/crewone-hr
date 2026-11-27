@@ -6,7 +6,8 @@ import { q } from "@/lib/db";
 import Shell from "@/components/Shell";
 import Breadcrumbs from "@/components/Breadcrumbs";
 import { fmtDate } from "@/lib/fmtdate";
-import { fmt12 } from "@/lib/time";
+import { fmtTime } from "@/lib/time";
+import { getSettings } from "@/lib/db";
 
 async function getLateLog() {
   await q(`ALTER TABLE attendance ADD COLUMN IF NOT EXISTS late_reason TEXT`);
@@ -31,7 +32,7 @@ async function getLateLog() {
 
 export default async function LateLogPage() {
   const admin = await requireAdminPage();
-  const rows = await getLateLog();
+  const [rows, s] = await Promise.all([getLateLog(), getSettings()]);
 
   const withReason = rows.filter(r => r.late_reason);
   const withoutReason = rows.filter(r => !r.late_reason);
@@ -90,7 +91,7 @@ export default async function LateLogPage() {
                       <div className="mute" style={{ fontSize: "0.78rem" }}>{r.emp_id}</div>
                     </td>
                     <td>{r.department ?? <span className="mute">—</span>}</td>
-                    <td style={{ whiteSpace: "nowrap" }}>{fmt12(r.sign_in?.slice(11, 16) ?? "")}</td>
+                    <td style={{ whiteSpace: "nowrap" }}>{fmtTime(r.sign_in, s.timezone)}</td>
                     <td>
                       <span className="badge b-bad" style={{ fontSize: "0.78rem" }}>{r.late_minutes} min</span>
                     </td>
