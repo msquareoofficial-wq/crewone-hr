@@ -17,6 +17,7 @@ const NAV_ITEMS: { key: NavKey; placeholder: string }[] = [
   { key: "finance", placeholder: "Finance" },
   { key: "activity", placeholder: "Activity" },
   { key: "settings", placeholder: "Settings" },
+  { key: "policy", placeholder: "Policy Mgmt" },
   { key: "credentials", placeholder: "Credentials" },
 ];
 
