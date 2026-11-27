@@ -6,6 +6,20 @@
 
 ---
 
+## 2026-11-27 (Sprint 5.7 — Admin Credentials Page)
+
+### Changes
+- **`app/admin/credentials/page.tsx`** (new): Admin-only page listing all employees with their emp_id and last-set plain password
+- **`app/admin/credentials/CredentialsTable.tsx`** (new): Client component with eye-icon reveal, copy button, search/filter, inactive toggle
+- **`app/api/users/route.ts`**: Now saves `plain_password` on user create
+- **`app/api/users/[id]/route.ts`**: Now saves `plain_password` on password reset
+- **`components/Shell.tsx`**: Added "Credentials" to admin NavMore dropdown
+- DB auto-migration: `ALTER TABLE users ADD COLUMN IF NOT EXISTS plain_password TEXT`
+
+### Commit: `af8c6a1`
+
+---
+
 ## 2026-11-26 (Sprint 5.6 — Read-only User Profile + Admin Pencil Unlock)
 
 ### Changes
