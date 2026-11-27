@@ -21,9 +21,9 @@ export async function POST(req: Request) {
   const hash = await bcrypt.hash(password, 10);
   const vals = FIELDS.map((f) => (b[f] === "" || b[f] === undefined ? null : b[f]));
   const user = await q1<{ id: number }>(
-    `INSERT INTO users (emp_id, role, password_hash, ${FIELDS.join(",")})
-     VALUES ($1,'user',$2, ${FIELDS.map((_, i) => "$" + (i + 3)).join(",")}) RETURNING id`,
-    [empId, hash, ...vals.map((v, i) => (FIELDS[i] === "shift_start" ? v || "09:00" : FIELDS[i] === "shift_end" ? v || "17:00" : FIELDS[i] === "shift_type" ? (v === "hybrid" ? "hybrid" : "fixed") : v))]
+    `INSERT INTO users (emp_id, role, password_hash, plain_password, ${FIELDS.join(",")})
+     VALUES ($1,'user',$2,$3, ${FIELDS.map((_, i) => "$" + (i + 4)).join(",")}) RETURNING id`,
+    [empId, hash, password, ...vals.map((v, i) => (FIELDS[i] === "shift_start" ? v || "09:00" : FIELDS[i] === "shift_end" ? v || "17:00" : FIELDS[i] === "shift_type" ? (v === "hybrid" ? "hybrid" : "fixed") : v))]
   );
   const perms = Array.isArray(b.perms) ? b.perms.filter((x: any) => PERM_KEYS.includes(x)) : [];
   if (perms.length) await q1("UPDATE users SET perms=$2::text[] WHERE id=$1 RETURNING id", [user!.id, perms]);

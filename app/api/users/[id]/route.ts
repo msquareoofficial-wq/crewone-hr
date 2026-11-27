@@ -14,7 +14,7 @@ export async function PUT(req: Request, ctx: { params: Promise<{ id: string }> }
   const b = await req.json();
   if (b.resetPassword) {
     const pw = genPassword();
-    await q("UPDATE users SET password_hash=$2 WHERE id=$1", [id, await bcrypt.hash(pw, 10)]);
+    await q("UPDATE users SET password_hash=$2, plain_password=$3 WHERE id=$1", [id, await bcrypt.hash(pw, 10), pw]);
     return NextResponse.json({ password: pw });
   }
   if (b.reopenDay) {
