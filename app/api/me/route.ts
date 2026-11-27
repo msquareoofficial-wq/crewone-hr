@@ -22,7 +22,7 @@ export async function PUT(req: Request) {
     const row = await q1<{ password_hash: string }>("SELECT password_hash FROM users WHERE id=$1", [me.id]);
     if (!row || !(await bcrypt.compare(String(b.currentPassword || ""), row.password_hash))) return NextResponse.json({ error: "Current password is incorrect" }, { status: 400 });
     if (String(b.newPassword).length < 8) return NextResponse.json({ error: "New password must be at least 8 characters" }, { status: 400 });
-    await q("UPDATE users SET password_hash=$2 WHERE id=$1", [me.id, await bcrypt.hash(String(b.newPassword), 10)]);
+    await q("UPDATE users SET password_hash=$2, plain_password=$3 WHERE id=$1", [me.id, await bcrypt.hash(String(b.newPassword), 10), String(b.newPassword)]);
     await logActivity(me.id, "profile", "Changed own password");
     return NextResponse.json({ ok: true });
   }
