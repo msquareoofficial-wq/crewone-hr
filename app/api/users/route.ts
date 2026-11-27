@@ -2,14 +2,16 @@
 import { NextResponse } from "next/server";
 import bcrypt from "bcryptjs";
 import { getSession, PERM_KEYS } from "@/lib/auth";
-import { q1 } from "@/lib/db";
+import { q, q1 } from "@/lib/db";
 import { genPassword, nextEmpId } from "@/lib/hr";
 
-const FIELDS = ["name","pseudo_name","phone","office_phone","email","office_email","pseudo_email","cnic","joining_date","department","designation","shift_start","shift_end","shift_type","grace_minutes","leave_quota","picture"] as const;
+const FIELDS = ["name","pseudo_name","phone","office_phone","email","office_email","pseudo_email","cnic","joining_date","department","designation","shift_start","shift_end","shift_type","grace_minutes","leave_quota","picture","emergency_contact_name","emergency_contact_phone"] as const;
 
 export async function POST(req: Request) {
   const me = await getSession();
   if (!me || me.role !== "admin") return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+  await q("ALTER TABLE users ADD COLUMN IF NOT EXISTS emergency_contact_name TEXT");
+  await q("ALTER TABLE users ADD COLUMN IF NOT EXISTS emergency_contact_phone TEXT");
   const b = await req.json();
   if (!b.name?.trim() || !b.email?.trim()) return NextResponse.json({ error: "Name and email are required" }, { status: 400 });
   if (b.department && !["Sales", "Production"].includes(b.department)) return NextResponse.json({ error: "Department must be Sales or Production" }, { status: 400 });

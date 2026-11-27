@@ -5,7 +5,7 @@ import { getBreakLog } from "@/lib/breaklog";
 import { getTaskLog } from "@/lib/tasklog";
 import Link from "next/link";
 import { requireAdminPage } from "@/lib/auth";
-import { q1, getSettings } from "@/lib/db";
+import { q, q1, getSettings } from "@/lib/db";
 import { currentMonth, monthSummary, onlineIds, todayDate } from "@/lib/hr";
 import Shell, { Avatar } from "@/components/Shell";
 import UserForm from "@/components/UserForm";
@@ -17,6 +17,8 @@ export default async function UserDetail({ params, searchParams }: { params: Pro
   const admin = await requireAdminPage();
   const { id } = await params;
   if (!/^[0-9]+$/.test(id)) notFound();
+  await q("ALTER TABLE users ADD COLUMN IF NOT EXISTS emergency_contact_name TEXT");
+  await q("ALTER TABLE users ADD COLUMN IF NOT EXISTS emergency_contact_phone TEXT");
   const u = await q1<any>("SELECT * FROM users WHERE id=$1 AND role='user'", [id]);
   if (!u) notFound();
   const s = await getSettings();

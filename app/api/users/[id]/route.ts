@@ -5,7 +5,7 @@ import { q, q1 } from "@/lib/db";
 import { genPassword, todayDate } from "@/lib/hr";
 import { logActivity } from "@/lib/activity";
 
-const FIELDS = ["name","pseudo_name","phone","office_phone","email","office_email","pseudo_email","cnic","joining_date","department","designation","shift_start","shift_end","shift_type","grace_minutes","leave_quota","picture"] as const;
+const FIELDS = ["name","pseudo_name","phone","office_phone","email","office_email","pseudo_email","cnic","joining_date","department","designation","shift_start","shift_end","shift_type","grace_minutes","leave_quota","picture","emergency_contact_name","emergency_contact_phone"] as const;
 
 export async function PUT(req: Request, ctx: { params: Promise<{ id: string }> }) {
   const me = await getSession();

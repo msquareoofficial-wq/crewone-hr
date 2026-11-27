@@ -90,6 +90,8 @@ export default function UserForm({ initial, id, initialLocked }: { initial?: U; 
           {inp("office_email", "6. Office email", "email")}
           {inp("pseudo_email", "7. Pseudo email", "email")}
           {inp("cnic", "8. CNIC")}
+          {inp("emergency_contact_name", "Emergency contact name")}
+          {inp("emergency_contact_phone", "Emergency contact number", "tel")}
           {inp("joining_date", "9. Date of joining", "date")}
           <div>
             <label>10. Department</label>
