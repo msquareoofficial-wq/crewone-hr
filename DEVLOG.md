@@ -6,10 +6,11 @@
 
 ---
 
-## 2026-11-27 (Sprint 5.10 — Modal Z-Index Fix)
+## 2026-11-27 (Sprint 5.10 — Modal Z-Index + fadeUp transform fix)
 
 ### Changes
-- **`app/globals.css`**: Increased `.modal-bg` z-index from 50 → 200. Root cause: `.btm-bar` (mobile bottom nav) also had z-index 50 and rendered later in DOM, causing it to appear on top of the modal overlay. Footer text "Powered by Vistech Force" was bleeding through the modal at the same visual location as the Cancel button.
+- **`app/globals.css`**: Increased `.modal-bg` z-index from 50 → 200 (above btm-bar/btm-sheet).
+- **`app/refine.css`**: Removed `transform: translateY(6px)` from `@keyframes fadeUp`. Root cause: CSS transform on `.wrap` creates a stacking context — `position:fixed` modals inside `.wrap` become fixed to `.wrap`'s bounds, not the viewport, so the footer rendered outside the overlay. Animation is now opacity-only.
 
 ---
 
